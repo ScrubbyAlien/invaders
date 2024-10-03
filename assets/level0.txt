@@ -1,0 +1,4 @@
+# enemy type, number, spacing (0 = adjacent) in increments of 8 pixels;
+# ; separates enemy groups, new line separates ranks
+# n means none, following number is empty spaces
+g,4,3;n,9;g,4,3;n,9;g,4,3       
