@@ -2,36 +2,42 @@ using SFML.Graphics;
 
 namespace invaders;
 
-public class Scene
+// Scene class mostly the same as in lab project 4
+public static class Scene
 {
-    private string _nextLevel;
-    private string _currentLevel;
+    public static bool LoadNextLevel;
+    public static int LevelCounter;
 
     public const int MarginTop = 50;
-    
-    private List<Entity> _entities = new();
-    private SceneLoader _loader = new();
+    public const int MarginSide = 24;
 
-    public Scene()
+    public const float MaxEnemySpeed = 30f;
+    
+    private static List<Entity> _entities = new();
+    private static List<List<AbstractEnemy>> enemies = new();
+
+    static Scene()
     {
-        _nextLevel = "level0";
-        _currentLevel = "";
+        LoadNextLevel = true;
+        LevelCounter = -1;
     }
     
-    public void LoadLevel()
+    public static void LoadLevel()
     {
-        _loader.Load(this, _nextLevel);
-        _currentLevel = _nextLevel;
-        _nextLevel = "";
+        SceneLoader.Load(LevelCounter, ref enemies);
     }
 
-    public void Spawn(Entity entity)
+    public static void Spawn(Entity entity)
     {
         _entities.Add(entity);
         entity.Init();
+        if (entity is IAnimatable animatable)
+        {
+            Animator.InitAnimatable(animatable);
+        }
     }
 
-    public void Clear()
+    public static void Clear()
     {
         for (int i = _entities.Count - 1; i >= 0; i--) // iterate backwards
         {
@@ -40,24 +46,31 @@ public class Scene
             if (!entity.DontDestroyOnLoad)
             {
                 _entities.RemoveAt(i);
-                entity.Destroy(this);    
+                entity.Destroy();    
             }
         }
+        Animator.ClearAnimatables();
     }
     
-    public void UpdateAll(float deltaTime)
+    public static void UpdateAll(float deltaTime)
     {
-        if (_nextLevel != "") LoadLevel();
+        if (LoadNextLevel)
+        {
+            LevelCounter++;
+            LoadLevel();
+            LoadNextLevel = false;
+        }
         
         foreach (Entity entity in _entities)
         {
             entity.Update(deltaTime);
         }
         
-        // broadcast events here
+        EventManager.BroadcastEvents();
+        Animator.Animate(deltaTime);
     }
 
-    public void RenderAll(RenderTarget target)
+    public static void RenderAll(RenderTarget target)
     {
         foreach (Entity entity in _entities)
         {

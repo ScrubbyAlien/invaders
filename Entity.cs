@@ -19,7 +19,7 @@ public abstract class Entity
         AssetManager.LoadTexture(textureName, initRect, ref sprite);
         sprite.Scale = new Vector2f(scale, scale);
     }
-
+    
     public Vector2f Position
     {
         get => sprite.Position;
@@ -30,12 +30,21 @@ public abstract class Entity
 
     public abstract void Init();
 
-    public abstract void Destroy(Scene scene);
+    public abstract void Destroy();
         
     public virtual void Update(float deltaTime) { }
 
     public virtual void Render(RenderTarget target)
     {
         target.Draw(sprite);
+    }
+    
+    protected enum ScreenState
+    {
+        OutSideLeft,
+        OutSideRight,
+        OutSideTop,
+        OutSideBottom,
+        Inside
     }
 }

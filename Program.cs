@@ -4,6 +4,7 @@ using SFML.Window;
 
 namespace invaders;
 
+// SFML main loop implementation borrowed wholesale from lab project 3 and 4
 internal static class Program
 {
     public const int ScreenWidth = 720;
@@ -17,16 +18,15 @@ internal static class Program
             window.Closed += (o, e) => window.Close();
 
             Clock clock = new();
-            Scene scene = new();
 
             while (window.IsOpen)
             {
                 window.DispatchEvents();
                 float deltaTime = clock.Restart().AsSeconds();
-                scene.UpdateAll(deltaTime);
+                Scene.UpdateAll(deltaTime);
                 
                 window.Clear();
-                scene.RenderAll(window);
+                Scene.RenderAll(window);
                 
                 window.Display();
             }

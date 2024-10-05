@@ -2,22 +2,23 @@ using SFML.System;
 
 namespace invaders;
 
-public class SceneLoader
+public static class SceneLoader
 {
-    private Dictionary<char, Func<Entity>> _constructors = new()
+    // entity constructor dictionary system borrowed from lab project 4
+    private static Dictionary<char, Func<int, AbstractEnemy>> _constructors = new()
     {
-        { 'g', () => new Grunt() },
+        { 'g', (rank) => new Grunt(rank) },
     };
-
-    private Dictionary<char, int[]> _enemyDimensions = new()
+    
+    private static Dictionary<char, int[]> _enemyDimensions = new()
     {
         { ' ', new int[3] {8, 8, 1}},
         { 'g', new int[3] {Grunt.SpriteWidth, Grunt.SpriteHeight, (int)Grunt.Scale}},
     };
     
-    private Dictionary<string, List<string>> _loadedLevels = new();
+    private static Dictionary<int, List<string>> _loadedLevels = new();
     
-    public void Load(Scene scene, string level)
+    public static void Load(int level, ref List<List<AbstractEnemy>> enemies)
     {
         List<string> levelToLoad;
         if (_loadedLevels.TryGetValue(level, out List<string>? loadedLevel))
@@ -30,28 +31,31 @@ public class SceneLoader
             _loadedLevels.Add(level, levelToLoad);
         }
 
-        
-        for (var j = 0; j < levelToLoad.Count; j++)
+        enemies = new();
+        for (int i = 0; i < levelToLoad.Count; i++)
         {
-            int leftMargin = (Program.ScreenWidth - CalculateEnemyLineWidth(levelToLoad[j])) / 2;
-            for (int i = 0; i < levelToLoad[j].Length; i++)
+            int leftMargin = (Program.ScreenWidth - CalculateEnemyLineWidth(levelToLoad[i])) / 2;
+            int heightPosition = CalculateEnemyHeightPosition(levelToLoad, i, 24);
+            enemies.Add(new List<AbstractEnemy>());
+            for (int j = 0; j < levelToLoad[i].Length; j++)
             {
-                if (_constructors.ContainsKey(levelToLoad[j][i]))
+                if (_constructors.ContainsKey(levelToLoad[i][j]))
                 {
-                    Entity entity = _constructors[levelToLoad[j][i]]();
-                    entity.Position = new Vector2f(
-                        leftMargin + CalculateEnemyLineWidth(levelToLoad[j], i), 
-                        Scene.MarginTop + j * entity.Bounds.Height);
-                    scene.Spawn(entity);
+                    AbstractEnemy enemy = _constructors[levelToLoad[i][j]](i); 
+                    enemies[i].Add(enemy);
+                    enemy.Position = new Vector2f(
+                        leftMargin + CalculateEnemyLineWidth(levelToLoad[i], j),
+                        Scene.MarginTop + heightPosition);
+                    Scene.Spawn(enemy);
                 }
             }
         }
     }
 
-    private List<string> ParseLevel(string level)
+    private static List<string> ParseLevel(int level)
     {
-        List<string> cleaned = AssetManager.ReadLevel(level)
-            .Select(s => s.IndexOf("#") >= 0 ? s.Remove(s.IndexOf("#")) : s)
+        List<string> cleaned = AssetManager.ReadLevel($"level{level}")
+            .Select(s => s.IndexOf("#") >= 0 ? s.Remove(s.IndexOf("#")).Trim() : s)
             .Where(s => s.Length > 0)
             .ToList();
 
@@ -81,7 +85,7 @@ public class SceneLoader
         return parsed;
     }
 
-    private int CalculateEnemyLineWidth(string line)
+    private static int CalculateEnemyLineWidth(string line)
     {
         int width = 0;
         for (int i = 0; i < line.Length; i++)
@@ -91,7 +95,7 @@ public class SceneLoader
         return width;
     }
     
-    private int CalculateEnemyLineWidth(string line, int untilIndex)
+    private static int CalculateEnemyLineWidth(string line, int untilIndex)
     {
         int width = 0;
         for (int i = 0; i < untilIndex; i++)
@@ -100,5 +104,21 @@ public class SceneLoader
         }
         return width;
     }
-    
+
+    private static int CalculateEnemyHeightPosition(List<string> enemies, int untilIndex, int margin)
+    {
+        int height = 0;
+        for (int i = 0; i < untilIndex; i++)
+        {
+            int tallest = 0;
+            for (int j = 0; j < enemies[i].Length; j++)
+            {
+                // extract largest height value (adjusted by scale) from all the enemies in the row;
+                tallest = enemies[i].Select(c => _enemyDimensions[c][1] * _enemyDimensions[c][2]).Max();
+                
+            }
+            height += tallest + margin;
+        }
+        return height;
+    }
 }
