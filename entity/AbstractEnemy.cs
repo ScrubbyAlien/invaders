@@ -1,35 +1,29 @@
-using System.Diagnostics;
 using SFML.Graphics;
 using SFML.System;
 
-namespace invaders;
+namespace invaders.entity;
 
 public abstract class AbstractEnemy : Actor
 {
-    protected delegate void RankEvent(AbstractEnemy sender, int rank);
-    protected static event RankEvent? RankHitWall;
-    protected void InvokeRankHitWall() { RankHitWall?.Invoke(this, Rank); }
-    
-    
-    public int Rank;
+    public int Wave;
 
-    public AbstractEnemy(int rank, string textureName, IntRect initRect, float scale) : 
+    public AbstractEnemy(int wave, string textureName, IntRect initRect, float scale) : 
            base(textureName, initRect, scale)
     {
-        Rank = rank;
+        Wave = wave;
     }
 
     protected Dictionary<int, float> _speedByLevel = new()
     {
         {-1, 0f},
-        {0, 10f},
-        {1, 15f}
+        {0, 20f},
+        {1, 25f}
     };
     
     public override void Update(float deltaTime)
     {
         Vector2f velocity = new Vector2f(_horizontalSpeed, GetVerticalSpeedByLevel());
-        TryMoveWithinBounds(velocity * deltaTime);
+        TryMoveWithinBounds(velocity * deltaTime, Scene.MarginSide, 0);
     }
     
     protected void Reverse()

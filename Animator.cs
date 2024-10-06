@@ -1,3 +1,5 @@
+using invaders.interfaces;
+
 namespace invaders;
 
 public static class Animator

@@ -1,8 +1,8 @@
-using System.Diagnostics;
 using SFML.Graphics;
 using SFML.System;
+using invaders.interfaces;
 
-namespace invaders;
+namespace invaders.entity;
 
 public class Grunt : AbstractEnemy, IAnimatable
 {
@@ -18,25 +18,14 @@ public class Grunt : AbstractEnemy, IAnimatable
     public float AnimationRate => 0.3f;
     private IAnimatable.AnimationStage _animStage = IAnimatable.AnimationStage.Stage1;
     
-    public Grunt(int rank) : base(rank, "invaders", AnimationStages[0], Scale) { }
+    public Grunt(int wave) : base(wave, "invaders", AnimationStages[0], Scale) { }
 
     public override void Init()
     {
-        _horizontalSpeed = 30f;
-        RankHitWall += OnRankHitWall;
+        _horizontalSpeed = new Random().Next(2) == 0 ? 30f : -30f;
     }
     
-    public override void Destroy()
-    {
-        RankHitWall -= OnRankHitWall;
-    }
-
-    public override void Update(float deltaTime)
-    {
-        base.Update(deltaTime);
-        
-    }
-
+    public override void Destroy() { }
 
     protected override void OnOutsideScreen((ScreenState x, ScreenState y) state, Vector2f outsidePos, out Vector2f adjustedPos)
     {
@@ -46,20 +35,14 @@ public class Grunt : AbstractEnemy, IAnimatable
         {
             case ScreenState.OutSideLeft: 
                 adjustedPos.X = Scene.MarginSide;
-                InvokeRankHitWall();
+                Reverse();
                 break;
             case ScreenState.OutSideRight: 
                 adjustedPos.X = Program.ScreenWidth - Bounds.Width - Scene.MarginSide;
-                InvokeRankHitWall();
+                Reverse();
                 break;
         }
     }
-
-    private void OnRankHitWall(AbstractEnemy sender, int rank)
-    {
-        if (rank == Rank) Reverse();
-    }
-
     
     public void Animate()
     {

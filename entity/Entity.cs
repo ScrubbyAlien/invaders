@@ -1,7 +1,7 @@
 using SFML.Graphics;
 using SFML.System;
 
-namespace invaders;
+namespace invaders.entity;
 
 public abstract class Entity
 {

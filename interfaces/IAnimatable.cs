@@ -1,6 +1,6 @@
 using SFML.Graphics;
 
-namespace invaders;
+namespace invaders.interfaces;
 
 public interface IAnimatable
 {
