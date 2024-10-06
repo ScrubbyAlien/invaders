@@ -153,8 +153,29 @@ public static class Scene
             {
                 waveTimer += deltaTime;
             }
-
-            
         }
     }
+
+    // borrowed from lab project 4
+    public static IEnumerable<T> FindIntersectingEntities<T>(FloatRect bounds, CollisionLayer layer) where T : Entity
+    {
+        int lastEntity = _entities.Count - 1;
+
+        for (int i = lastEntity; i >= 0; i--)
+        {
+            Entity entity = _entities[i];
+            if (entity is not T t) continue; 
+            if (t.Dead) continue;
+            if (t.Layer != layer) continue;
+            if (t.Bounds.Intersects(bounds))
+            {
+                yield return t;
+            }
+        }
+    }
+}
+
+public enum CollisionLayer
+{
+    Player, Enemy, None
 }

@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using SFML.Graphics;
 using SFML.System;
 
@@ -6,12 +5,14 @@ namespace invaders.entity;
 
 public abstract class Actor : Entity
 {
-    protected float _horizontalSpeed;
+    protected float _maxHealth;
+    protected float _currentHealth;
     
     public Actor(string textureName, IntRect initRect, float scale) : base(textureName, initRect, scale) { }
 
-    // implement movement functions, children determine specifc movement behaviour
-
+    protected virtual Vector2f _bulletOrigin => Position;
+    protected virtual float _bulletSpeed => 700f;
+    
     protected bool TryMoveWithinBounds(Vector2f velocity, int horizontalMargin, int verticalMargin)
     {
         Vector2f newPos = Position + velocity;
@@ -32,6 +33,15 @@ public abstract class Actor : Entity
         else Position = newPos;
         return outside;
     }
+
+    public virtual void Shoot(Bullet.BulletType type)
+    {
+        Bullet bullet = new(type, _bulletSpeed);
+        bullet.Position = _bulletOrigin;
+        Scene.QueueSpawn(bullet);
+    }
+    
+    public virtual void HitByBullet(Bullet bullet) { }
 
     protected virtual void OnOutsideScreen(
         (ScreenState x, ScreenState y) state, 

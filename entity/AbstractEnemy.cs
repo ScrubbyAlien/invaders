@@ -6,6 +6,14 @@ namespace invaders.entity;
 public abstract class AbstractEnemy : Actor
 {
     public int Wave;
+    protected float _horizontalSpeed;
+    
+    protected Dictionary<int, float> _speedByLevel = new()
+    {
+        {-1, 0f},
+        {0, 20f},
+        {1, 25f}
+    };
 
     public AbstractEnemy(int wave, string textureName, IntRect initRect, float scale) : 
            base(textureName, initRect, scale)
@@ -13,12 +21,7 @@ public abstract class AbstractEnemy : Actor
         Wave = wave;
     }
 
-    protected Dictionary<int, float> _speedByLevel = new()
-    {
-        {-1, 0f},
-        {0, 20f},
-        {1, 25f}
-    };
+    public override CollisionLayer Layer => CollisionLayer.Enemy;
     
     public override void Update(float deltaTime)
     {

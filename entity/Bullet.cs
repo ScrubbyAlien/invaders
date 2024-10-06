@@ -5,8 +5,11 @@ namespace invaders.entity;
 
 public class Bullet : Entity
 {
-    private BulletType bulletType;
-    private Vector2f velocity = new();
+    public BulletType Type;
+    public CollisionLayer EffectiveAgainstLayer; // the collision layer that this bullet should collide with
+    private Vector2f velocity;
+
+    private new const float Scale = 3;
     
     private static Dictionary<BulletType, IntRect[]> bulletTypes = new()
     {
@@ -22,14 +25,20 @@ public class Bullet : Entity
         ]}
     };
 
-    public Bullet(BulletType type, float speed) : base("invaders", bulletTypes[type][0], 3)
+    public Bullet(BulletType type, float speed) : base("invaders", bulletTypes[type][0], Scale)
     {
-        bulletType = type;
-        if (bulletType == BulletType.Player) velocity = new Vector2f(0, -speed);
+        Type = type;
+        EffectiveAgainstLayer = Type switch
+        {
+            BulletType.Enemy => CollisionLayer.Player,
+            BulletType.Player => CollisionLayer.Enemy,
+            _ => CollisionLayer.None
+        };
+        if (Type == BulletType.Player) velocity = new Vector2f(0, -speed);
         else velocity = new Vector2f(0, speed);
         sprite.Origin = new Vector2f(
-            bulletTypes[bulletType][0].Width * 3 / 2f,
-            bulletTypes[bulletType][0].Height * 3 / 2f);
+            bulletTypes[Type][0].Width * Scale / 2f,
+            bulletTypes[Type][0].Height * Scale / 2f);
     }
 
     public override void Update(float deltaTime)
@@ -38,18 +47,18 @@ public class Bullet : Entity
         if (Position.Y > Program.ScreenHeight + Bounds.Height / 2 || Position.Y < 0 - Bounds.Height / 2)
         {
             Dead = true;
-        }   
+        }
+        
+        foreach (Actor actor in Scene.FindIntersectingEntities<Actor>(Bounds, EffectiveAgainstLayer))
+        {
+            Dead = true;
+            actor.HitByBullet(this);
+        }
     }
 
-    public override void Init()
-    {
-        
-    }
+    public override void Init() { }
 
-    public override void Destroy()
-    {
-        
-    }
+    public override void Destroy() { }
     
     public enum BulletType 
     {

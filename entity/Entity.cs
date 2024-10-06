@@ -28,6 +28,8 @@ public abstract class Entity
 
     public virtual FloatRect Bounds => sprite.GetGlobalBounds();
 
+    public virtual CollisionLayer Layer => CollisionLayer.None;
+    
     public abstract void Init();
 
     public abstract void Destroy();

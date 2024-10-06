@@ -1,5 +1,4 @@
 # enemy type, number, separated by semicolon, t is the wave timer.
-g,10
-g,10;t,10
-g,10;t,10
+g,7
+g,7;t,10
 g,10;t,10
