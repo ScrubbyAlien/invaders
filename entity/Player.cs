@@ -2,6 +2,7 @@ using invaders.interfaces;
 using SFML.Graphics;
 using SFML.System;
 using static SFML.Window.Keyboard;
+using static SFML.Window.Keyboard.Key;
 
 namespace invaders.entity;
 
@@ -9,42 +10,43 @@ public class Player : Actor, IAnimatable
 {
     protected new const int Scale = 3;
     private const float Speed = 200f;
-    private float FireRate = 0.5f;
-    private float fireTimer;
-    private int burstLength = 2;
-    private int burstIndex;
-    private float burstRate = 0.1f;
-    private float invicibilityWindow = 0.5f;
-    private float invincibilityTimer;
+    private float _fireRate = 0.5f;
+    private float _fireTimer;
+    private int _burstLength = 2;
+    private int _burstIndex;
+    private float _burstRate = 0.1f;
+    private float _invicibilityWindow = 0.5f;
+    private float _invincibilityTimer;
 
     private static readonly IntRect PlayerRect = new(73, 19, 14, 12);
-    private static readonly IntRect blank = new(0, 0, 0, 0);
+    
     
     public Player() : base("invaders", PlayerRect, Scale)
     {
         sprite.Scale = new Vector2f(sprite.Scale.X, -sprite.Scale.Y);
         sprite.Origin = new Vector2f(sprite.Origin.X, 12); // adjust origin after flipping sprite
-        _maxHealth = 3;
-        _currentHealth = 3;
-        invincibilityTimer = invicibilityWindow;
+        maxHealth = 3;
+        currentHealth = 3;
+        _invincibilityTimer = _invicibilityWindow;
     }
 
-    protected override Vector2f _bulletOrigin => Position + new Vector2f(9 * Scale, Bounds.Height);
+    protected override Vector2f bulletOrigin => Position + new Vector2f(25, 25);
 
     public override CollisionLayer Layer => CollisionLayer.Player;
     public float AnimationRate => 0.05f;
-    private bool IsInvincible => invincibilityTimer < invicibilityWindow;
+    private bool IsInvincible => _invincibilityTimer < _invicibilityWindow;
     
     public override void Update(float deltaTime)
     {
-        fireTimer += deltaTime;
-        invincibilityTimer += deltaTime;
+        base.Update(deltaTime);
+        _fireTimer += deltaTime;
+        _invincibilityTimer += deltaTime;
         
         Vector2f newPos = new();
-        bool right = AreAnyKeysPressed([Key.Right, Key.D]);
-        bool left = AreAnyKeysPressed([Key.Left, Key.A]);
-        bool up = AreAnyKeysPressed([Key.Up, Key.W]);
-        bool down = AreAnyKeysPressed([Key.Down, Key.S]);
+        bool right = AreAnyKeysPressed([Right, D]);
+        bool left = AreAnyKeysPressed([Left, A]);
+        bool up = AreAnyKeysPressed([Up, W]);
+        bool down = AreAnyKeysPressed([Down, S]);
         
         if (right) newPos.X = 1;
         if (left) newPos.X = -1;
@@ -53,26 +55,26 @@ public class Player : Actor, IAnimatable
         if (down) newPos.Y = 1;
         if (up && down) newPos.Y = 0;
         
-        TryMoveWithinBounds(Normalized(newPos) * Speed * deltaTime, Scene.MarginSide,Scene.MarginSide);
+        TryMoveWithinBounds(newPos.Normalized() * Speed * deltaTime, Scene.MarginSide,Scene.MarginSide);
 
-        if (AreAnyKeysPressed([Key.Space]))
+        if (AreAnyKeysPressed([Space]))
         {
-            if (burstIndex == 0 && fireTimer >= FireRate)
+            if (_burstIndex == 0 && _fireTimer >= _fireRate)
             {
                 Shoot(Bullet.BulletType.Player);
-                burstIndex++;
-                fireTimer = 0;
+                _burstIndex++;
+                _fireTimer = 0;
             } 
-            else if (burstIndex > 0 && burstIndex < burstLength && fireTimer >= burstRate)
+            else if (_burstIndex > 0 && _burstIndex < _burstLength && _fireTimer >= _burstRate)
             {
                 Shoot(Bullet.BulletType.Player);
-                burstIndex++;
-                fireTimer = 0;
+                _burstIndex++;
+                _fireTimer = 0;
             }
         }
 
-        if (fireTimer >= FireRate) burstIndex = 0;
-        if (_currentHealth <= 0) Dead = true;
+        if (_fireTimer >= _fireRate) _burstIndex = 0;
+        if (currentHealth <= 0) WillDie = true;
     }
     
     
@@ -84,8 +86,8 @@ public class Player : Actor, IAnimatable
     {
         if (!IsInvincible)
         {
-            _currentHealth--;
-            invincibilityTimer = 0f;
+            currentHealth--;
+            _invincibilityTimer = 0f;
         }
     }
 
@@ -125,20 +127,13 @@ public class Player : Actor, IAnimatable
         return true;
     }
 
-    private Vector2f Normalized(Vector2f v)
-    {
-        float magnitude = MathF.Sqrt(v.X * v.X + v.Y * v.Y);
-        if (magnitude == 0) return new Vector2f(0, 0);
-        return new Vector2f(v.X / magnitude, v.Y / magnitude);
-    }
-
     
     public void Animate()
     {
         if (IsInvincible)
         {
-            if (sprite.TextureRect == PlayerRect) sprite.TextureRect = blank;
-            else if (sprite.TextureRect == blank) sprite.TextureRect = PlayerRect;
+            if (sprite.TextureRect == PlayerRect) sprite.TextureRect = NoSprite;
+            else if (sprite.TextureRect == NoSprite) sprite.TextureRect = PlayerRect;
         }
         else
         {

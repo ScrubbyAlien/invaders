@@ -20,9 +20,9 @@ public static class Scene
     
     private static List<Entity> _entities = new();
     private static List<Entity> _spawnQueue = new();
-    private static List<(List<char> c, int timer)> currentLevel = new();
-    private static float waveTimer = -1f;
-    private static int currentWave = -1;
+    private static List<(List<char> c, int timer)> _currentLevel = new();
+    private static float _waveTimer = -1f;
+    private static int _currentWave = -1;
     
 
     static Scene()
@@ -33,9 +33,9 @@ public static class Scene
     
     public static void LoadLevel()
     {
-        SceneLoader.Load(LevelCounter, ref currentLevel);
-        currentWave = 0;
-        waveTimer = currentLevel[currentWave].timer;
+        SceneLoader.Load(LevelCounter, ref _currentLevel);
+        _currentWave = 0;
+        _waveTimer = _currentLevel[_currentWave].timer;
         
         Player player = new();
         player.Position = new Vector2f(
@@ -104,12 +104,12 @@ public static class Scene
             Spawn(entity);
         }
         _spawnQueue.Clear();
-        
+
         foreach (Entity entity in _entities)
         {
             if (!entity.Dead) entity.Update(deltaTime);
-        }
-        
+        }   
+
         EventManager.BroadcastEvents();
         Animator.Animate(deltaTime);
     }
@@ -124,15 +124,15 @@ public static class Scene
 
     private static void SpawnNextEnemyWave(float deltaTime)
     {
-        if (currentWave >= 0)
+        if (_currentWave >= 0)
         {
-            if (waveTimer >= currentLevel[currentWave].timer)
+            if (_waveTimer >= _currentLevel[_currentWave].timer)
             {
-                List<char> enemies = currentLevel[currentWave].c;
+                List<char> enemies = _currentLevel[_currentWave].c;
                 while (enemies.Count > 0)
                 {
                     int randomIndex = new Random().Next(0, enemies.Count);
-                    AbstractEnemy enemy = SceneLoader.Constructors[enemies[randomIndex]](currentWave);
+                    AbstractEnemy enemy = SceneLoader.Constructors[enemies[randomIndex]](_currentWave);
                     enemy.Position = new Vector2f(
                         new Random().Next(MarginSide, Program.ScreenWidth - MarginSide - (int)enemy.Bounds.Width),
                         new Random().Next(-MarginSide - SpawnInterval, -MarginSide));
@@ -140,24 +140,24 @@ public static class Scene
                     enemies.RemoveAt(randomIndex);
                 }
 
-                currentWave++;
-                waveTimer = 0f;
+                _currentWave++;
+                _waveTimer = 0f;
                 
-                if (currentWave == currentLevel.Count)
+                if (_currentWave == _currentLevel.Count)
                 { // reached last wave
-                    currentWave = -1;
-                    waveTimer = -1f;
+                    _currentWave = -1;
+                    _waveTimer = -1f;
                 }
             }
             else
             {
-                waveTimer += deltaTime;
+                _waveTimer += deltaTime;
             }
         }
     }
 
     // borrowed from lab project 4
-    public static IEnumerable<T> FindIntersectingEntities<T>(FloatRect bounds, CollisionLayer layer) where T : Entity
+    public static IEnumerable<IntersectResult<T>> FindIntersectingEntities<T>(FloatRect bounds, CollisionLayer layer) where T : Entity
     {
         int lastEntity = _entities.Count - 1;
 
@@ -167,9 +167,9 @@ public static class Scene
             if (entity is not T t) continue; 
             if (t.Dead) continue;
             if (t.Layer != layer) continue;
-            if (t.Bounds.Intersects(bounds))
+            if (t.Bounds.IntersectsOutDiff(bounds, out Vector2f diff))
             {
-                yield return t;
+                yield return new IntersectResult<T>(t, diff);
             }
         }
     }

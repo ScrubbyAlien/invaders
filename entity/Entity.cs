@@ -10,8 +10,8 @@ public abstract class Entity
     public const int SpriteWidth = 0;
     public const int SpriteHeight = 0;
     public const float Scale = 1f;
-    public bool Dead;
-    public bool DontDestroyOnLoad;
+    public bool Dead = false;
+    public bool DontDestroyOnLoad = false;
 
     public Entity(string textureName, IntRect initRect, float scale)
     {

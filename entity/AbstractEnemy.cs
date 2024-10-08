@@ -6,9 +6,9 @@ namespace invaders.entity;
 public abstract class AbstractEnemy : Actor
 {
     public int Wave;
-    protected float _horizontalSpeed;
+    protected float horizontalSpeed;
     
-    protected Dictionary<int, float> _speedByLevel = new()
+    private Dictionary<int, float> _speedByLevel = new()
     {
         {-1, 0f},
         {0, 20f},
@@ -19,19 +19,28 @@ public abstract class AbstractEnemy : Actor
            base(textureName, initRect, scale)
     {
         Wave = wave;
+        deathAnimationLength = 0.3f;
     }
 
     public override CollisionLayer Layer => CollisionLayer.Enemy;
     
     public override void Update(float deltaTime)
     {
-        Vector2f velocity = new Vector2f(_horizontalSpeed, GetVerticalSpeedByLevel());
-        TryMoveWithinBounds(velocity * deltaTime, Scene.MarginSide, 0);
+        base.Update(deltaTime);
+        if (!WillDie)
+        {
+            Vector2f velocity = new Vector2f(horizontalSpeed, GetVerticalSpeedByLevel());
+            TryMoveWithinBounds(velocity * deltaTime, Scene.MarginSide, 0);
+            foreach (IntersectResult<AbstractEnemy> intersect in Scene.FindIntersectingEntities<AbstractEnemy>(Bounds, CollisionLayer.Enemy))
+            {
+                Position += intersect.Diff * deltaTime;
+            }
+        }
     }
     
     protected void Reverse()
     {
-        _horizontalSpeed = -_horizontalSpeed;
+        horizontalSpeed = -horizontalSpeed;
     }
     
     protected override void OnOutsideScreen((ScreenState x, ScreenState y) state, Vector2f outsidePos, out Vector2f adjustedPos)

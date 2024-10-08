@@ -5,13 +5,27 @@ namespace invaders.entity;
 
 public abstract class Actor : Entity
 {
-    protected float _maxHealth;
-    protected float _currentHealth;
+    protected float maxHealth;
+    protected float currentHealth;
+
+    public bool WillDie;
+    protected bool inDeathAnimation => timeSinceDeath < deathAnimationLength && WillDie;
+    protected float deathAnimationLength = 0f;
+    protected float timeSinceDeath;
     
+    protected static readonly IntRect NoSprite = new(0, 0, 0, 0);
+
     public Actor(string textureName, IntRect initRect, float scale) : base(textureName, initRect, scale) { }
 
-    protected virtual Vector2f _bulletOrigin => Position;
-    protected virtual float _bulletSpeed => 700f;
+    protected virtual Vector2f bulletOrigin => Position;
+    protected virtual float bulletSpeed => 700f;
+
+    public override void Update(float deltaTime)
+    {
+        
+        if (WillDie) timeSinceDeath += deltaTime; // start death timer
+        if (WillDie && timeSinceDeath >= deathAnimationLength) Dead = true;
+    }
     
     protected bool TryMoveWithinBounds(Vector2f velocity, int horizontalMargin, int verticalMargin)
     {
@@ -36,13 +50,18 @@ public abstract class Actor : Entity
 
     public virtual void Shoot(Bullet.BulletType type)
     {
-        Bullet bullet = new(type, _bulletSpeed);
-        bullet.Position = _bulletOrigin;
+        Bullet bullet = new(type, bulletSpeed);
+        bullet.Position = bulletOrigin;
         Scene.QueueSpawn(bullet);
     }
-    
-    public virtual void HitByBullet(Bullet bullet) { }
 
+    public abstract void HitByBullet(Bullet bullet);
+
+    protected virtual void Die()
+    {
+        WillDie = true;
+    }
+    
     protected virtual void OnOutsideScreen(
         (ScreenState x, ScreenState y) state, 
         Vector2f outsidePos, 
