@@ -5,7 +5,6 @@ using invaders.interfaces;
 
 namespace invaders;
 
-
 // Scene class mostly the same as in lab project 4
 public static class Scene
 {
@@ -15,6 +14,7 @@ public static class Scene
     public const int MarginTop = 50;
     public const int MarginSide = 24;
     public const int SpawnInterval = 100;
+    public const float AmbientScroll = 30;
 
     public const float MaxEnemySpeed = 30f;
     
@@ -23,10 +23,13 @@ public static class Scene
     private static List<(List<char> c, int timer)> _currentLevel = new();
     private static float _waveTimer = -1f;
     private static int _currentWave = -1;
-    
 
+    // background is continuous throughout the game so is not added to _entities;
+    private static Background _background;  
+    
     static Scene()
     {
+        _background = new Background();
         LoadNextLevel = true;
         LevelCounter = -1;
     }
@@ -90,6 +93,7 @@ public static class Scene
     
     public static void UpdateAll(float deltaTime)
     {
+        _background.Update(deltaTime);
         if (LoadNextLevel)
         {
             LevelCounter++;
@@ -116,6 +120,8 @@ public static class Scene
 
     public static void RenderAll(RenderTarget target)
     {
+        _background.Render(target);
+        _entities.Sort(Entity.CompareByZIndex);
         foreach (Entity entity in _entities)
         {
             if (!entity.Dead) entity.Render(target);

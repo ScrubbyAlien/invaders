@@ -9,15 +9,16 @@ public abstract class Entity
     protected string textureName;
     public const int SpriteWidth = 0;
     public const int SpriteHeight = 0;
-    public const float Scale = 1f;
+    protected const float Scale = 3;
     public bool Dead = false;
     public bool DontDestroyOnLoad = false;
+    public int zIndex;
 
-    public Entity(string textureName, IntRect initRect, float scale)
+    public Entity(string textureName, IntRect initRect, float scale) 
     {
         this.textureName = textureName;
         AssetManager.LoadTexture(textureName, initRect, ref sprite);
-        sprite.Scale = new Vector2f(scale, scale);
+        sprite.Scale = new Vector2f(scale, scale); // scale is constructor parameter so it can be changed by children
     }
     
     public Vector2f Position
@@ -30,9 +31,9 @@ public abstract class Entity
 
     public virtual CollisionLayer Layer => CollisionLayer.None;
     
-    public abstract void Init();
+    public virtual void Init() {}
 
-    public abstract void Destroy();
+    public virtual void Destroy() {}
         
     public virtual void Update(float deltaTime) { }
 
@@ -48,5 +49,13 @@ public abstract class Entity
         OutSideTop,
         OutSideBottom,
         Inside
+    }
+
+    public static int CompareByZIndex(Entity? e1, Entity? e2)
+    {
+        if (e1 == null && e2 == null) return 0;
+        if (e1 == null) return -1;
+        if (e2 == null) return 1;
+        return e1.zIndex - e2.zIndex;
     }
 }

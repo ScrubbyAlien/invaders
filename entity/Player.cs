@@ -8,7 +8,6 @@ namespace invaders.entity;
 
 public class Player : Actor, IAnimatable
 {
-    protected new const int Scale = 3;
     private const float Speed = 200f;
     private float _fireRate = 0.5f;
     private float _fireTimer;
@@ -28,6 +27,7 @@ public class Player : Actor, IAnimatable
         maxHealth = 3;
         currentHealth = 3;
         _invincibilityTimer = _invicibilityWindow;
+        zIndex = 10;
     }
 
     protected override Vector2f bulletOrigin => Position + new Vector2f(25, 25);
@@ -76,11 +76,6 @@ public class Player : Actor, IAnimatable
         if (_fireTimer >= _fireRate) _burstIndex = 0;
         if (currentHealth <= 0) WillDie = true;
     }
-    
-    
-    public override void Init() { }
-
-    public override void Destroy() { }
 
     public override void HitByBullet(Bullet bullet)
     {

@@ -8,8 +8,6 @@ public class Bullet : Entity
     public BulletType Type;
     public CollisionLayer EffectiveAgainstLayer; // the collision layer that this bullet should collide with
     private Vector2f _velocity;
-
-    private new const float Scale = 3;
     
     private static Dictionary<BulletType, IntRect[]> bulletTypes = new()
     {
@@ -53,10 +51,6 @@ public class Bullet : Entity
             }
         }
     }
-
-    public override void Init() { }
-
-    public override void Destroy() { }
     
     public enum BulletType 
     {

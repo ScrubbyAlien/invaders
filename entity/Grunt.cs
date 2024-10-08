@@ -8,7 +8,6 @@ public class Grunt : AbstractEnemy, IAnimatable
 {
     public new const int SpriteWidth = 8;
     public new const int SpriteHeight = 8;
-    public new const float Scale = 3;
 
     private float _timeUntilFire;
     private float _fireTimer;
@@ -34,8 +33,6 @@ public class Grunt : AbstractEnemy, IAnimatable
         horizontalSpeed = new Random().Next(2) == 0 ? 30f : -30f;
         _timeUntilFire = getNewFireTime();
     }
-    
-    public override void Destroy() { }
 
     public override void Update(float deltaTime)
     {
