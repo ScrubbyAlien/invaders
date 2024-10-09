@@ -2,6 +2,7 @@ using SFML.Graphics;
 using SFML.System;
 using invaders.entity;
 using invaders.interfaces;
+using SFML.Window;
 
 namespace invaders;
 
@@ -14,16 +15,15 @@ public static class Scene
     public const int MarginTop = 50;
     public const int MarginSide = 24;
     public const int SpawnInterval = 100;
-    public const float AmbientScroll = 30;
-
     public const float MaxEnemySpeed = 30f;
+    
+    public static float AmbientScroll = 30;
     
     private static List<Entity> _entities = new();
     private static List<Entity> _spawnQueue = new();
     private static List<(List<char> c, int timer)> _currentLevel = new();
     private static float _waveTimer = -1f;
     private static int _currentWave = -1;
-
     // background is continuous throughout the game so is not added to _entities;
     private static Background _background;  
     
@@ -100,14 +100,14 @@ public static class Scene
             LoadLevel();
             LoadNextLevel = false;
         }
-
-        SpawnNextEnemyWave(deltaTime);
-
+        
         foreach (Entity entity in _spawnQueue)
         {
             Spawn(entity);
         }
         _spawnQueue.Clear();
+
+        SpawnNextEnemyWave(deltaTime);
 
         foreach (Entity entity in _entities)
         {
