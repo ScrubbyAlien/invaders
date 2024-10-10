@@ -6,7 +6,8 @@ namespace invaders;
 public class Animation
 {
     public delegate void AnimationEvent(Animation sender);
-    public event AnimationEvent? AnimationFinished; 
+    public event AnimationEvent? AnimationFinished;
+    public event AnimationEvent? FrameFinished;
     
     private float _framelength;
     private float _animationLength; // length 0 means until frames end for non looping or indefinitely for looping
@@ -19,6 +20,8 @@ public class Animation
     private List<FrameRenderer> _frameRenderers = new();
     private float _frameTimer;
     private float _animationTimer;
+
+    public int CurrentFrame => _currentFrame;
     
     public Animation(string name, bool looping, float fps, float length, FrameRenderer[] renderers)
     {
@@ -57,10 +60,20 @@ public class Animation
             _animationTimer += deltaTime;
             _frameTimer += deltaTime;
             
+            if (Name == "death")
+            {
+                Console.WriteLine(_frameTimer);
+            }
+            
             if (_frameTimer >= _framelength)
             {
+                if (Name == "death")
+                {
+                    Console.WriteLine(_framelength);
+                }
                 _currentFrame++;
                 _frameTimer = 0f;
+                FrameFinished?.Invoke(this);
             }
 
             if (_currentFrame == _frameRenderers.Count())
@@ -72,7 +85,6 @@ public class Animation
             if (_animationLength != 0 && _animationTimer >= _animationLength)
             {
                 _playingAnimation = false;
-                
                 _animationTimer = 0f;
             }
             if (!_playingAnimation) AnimationFinished?.Invoke(this);

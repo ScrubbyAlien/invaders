@@ -1,8 +1,7 @@
-using SFML.Graphics;
 using SFML.System;
 using static SFML.Window.Keyboard;
 using static SFML.Window.Keyboard.Key;
-
+using static invaders.Utility;
 namespace invaders.entity;
 
 public class Player : Actor
@@ -15,10 +14,8 @@ public class Player : Actor
     private float _burstRate = 0.1f;
     private float _invicibilityWindow = 1f;
     private float _invincibilityTimer;
-
-    private static readonly IntRect PlayerRect = new(73, 19, 14, 12);
     
-    public Player() : base("invaders", PlayerRect, Scale)
+    public Player() : base("invaders", TextureRects["player"], Scale)
     {
         sprite.Scale = new Vector2f(sprite.Scale.X, -sprite.Scale.Y);
         sprite.Origin = new Vector2f(sprite.Origin.X, 12); // adjust origin after flipping sprite
@@ -39,7 +36,7 @@ public class Player : Actor
     protected override void Initialize()
     {
         base.Initialize();
-        animator.SetDefaultTextureRect(PlayerRect);
+        animator.SetDefaultTextureRect(TextureRects["player"]);
         Animation invincible = new Animation("invincible", true, 25, _invicibilityWindow, blinking);
         animator.AddAnimation(invincible);
     }
@@ -140,15 +137,7 @@ public class Player : Actor
 
     private Animation.FrameRenderer[] blinking =
     [
-        (animatable, target) =>
-        {
-            animatable.Sprite.TextureRect = NoSprite;
-            target.Draw(animatable.Sprite);
-        },
-        (animatable, target) =>
-        {
-            animatable.Sprite.TextureRect = PlayerRect;
-            target.Draw(animatable.Sprite);
-        }
+        BasicFrameRenderer(NoSprite),
+        BasicFrameRenderer(TextureRects["player"]),
     ];
 }

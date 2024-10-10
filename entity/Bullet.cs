@@ -1,5 +1,6 @@
 using SFML.Graphics;
 using SFML.System;
+using static invaders.Utility;
 
 namespace invaders.entity;
 
@@ -13,14 +14,14 @@ public class Bullet : Entity
     private static Dictionary<BulletType, IntRect[]> bulletTypes = new()
     {
         {BulletType.Player, [
-            new IntRect(11, 20, 2,2),
-            new IntRect(10, 26, 4, 4),
-            new IntRect(8, 32, 8, 8)
+            TextureRects["playerBulletSmall"],
+            TextureRects["playerBulletMedium"],
+            TextureRects["playerBulletLarge"],
         ]},
         { BulletType.Enemy, [
-            new IntRect(19, 20, 2,2),
-            new IntRect(18, 26, 4, 4),
-            new IntRect(16, 32, 8, 8)
+            TextureRects["enemyBulletSmall"],
+            TextureRects["enemyBulletMedium"],
+            TextureRects["enemyBulletLarge"],
         ]}
     };
 

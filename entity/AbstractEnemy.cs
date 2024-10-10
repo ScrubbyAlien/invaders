@@ -20,7 +20,7 @@ public abstract class AbstractEnemy : Actor
            base(textureName, initRect, scale)
     {
         Wave = wave;
-        deathAnimationLength = 0.3f;
+        deathAnimationLength = 0.5f;
     }
 
     public override CollisionLayer Layer => CollisionLayer.Enemy;

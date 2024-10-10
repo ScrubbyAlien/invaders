@@ -34,7 +34,8 @@ public abstract class Entity
 
     public virtual CollisionLayer Layer => CollisionLayer.None;
 
-    public Sprite Sprite => sprite;
+    public Sprite pSprite => sprite;
+    public Animator pAnimator => animator;
     /// <summary>
     /// Any functionality that requires references to other entities should be called from Initialize,
     /// such as FindByType calls, or event handlers/listerners
@@ -75,5 +76,14 @@ public abstract class Entity
         if (e1 == null) return -1;
         if (e2 == null) return 1;
         return e1.zIndex - e2.zIndex;
+    }
+
+    protected static Animation.FrameRenderer BasicFrameRenderer(IntRect rect)
+    {
+        return (animatable, target) =>
+        {
+            animatable.pSprite.TextureRect = rect;
+            target.Draw(animatable.pSprite);
+        };
     }
 }

@@ -6,6 +6,7 @@ namespace invaders;
 public class Animator
 {
     private IntRect _defaultSprite;
+    private int _frameCount;
     private string _currentAnimation = "";
     private readonly Dictionary<string, Animation> _animationSet = new()
     {
@@ -14,7 +15,8 @@ public class Animator
     private Entity _instance;
 
     public bool IsAnimated => _currentAnimation != "";
-    private Animation _animation => _animationSet[_currentAnimation];
+    public Animation Animation => _animationSet[_currentAnimation];
+    public int FrameCount => _frameCount;
     
     public Animator(Entity instance)
     {
@@ -30,36 +32,39 @@ public class Animator
     {
         if (animation == _currentAnimation && !fromBeginning)
         {
-            _animation.Unpause();
+            Animation.Unpause();
         }
         else
         {
             ResetAnimations();
+            _frameCount = 0;
             _currentAnimation = animation;
-            _animation.Play();
+            Animation.Play();
         }
     }
 
-    public void PauseAnimation() { _animation.Pause(); }
+    public void PauseAnimation() { Animation.Pause(); }
 
     public void AddAnimation(Animation animation)
     {
         animation.AnimationFinished += AnimationFinished;
+        animation.FrameFinished += s => _frameCount++;
         _animationSet.Add(animation.Name, animation);
     }
 
     public void ProgressAnimation(float deltaTime)
     {
-        if (IsAnimated) _animation.ProgressAnimation(deltaTime);
+        if (IsAnimated) Animation.ProgressAnimation(deltaTime);
     }
 
     public void RenderAnimation(RenderTarget target)
     {
-        if (IsAnimated) _animation.DrawFrame(_instance, target);
+        if (IsAnimated) Animation.DrawFrame(_instance, target);
     }
 
     private void ResetAnimations()
     {
+        _frameCount = 0;
         foreach (KeyValuePair<string,Animation> pair in _animationSet)
         {
             pair.Value.Reset();
@@ -68,7 +73,8 @@ public class Animator
 
     private void AnimationFinished(Animation finished)
     {
+        _frameCount = 0;
         _currentAnimation = "";
-        _instance.Sprite.TextureRect = _defaultSprite;
+        _instance.pSprite.TextureRect = _defaultSprite;
     } 
 }

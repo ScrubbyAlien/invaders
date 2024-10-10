@@ -1,5 +1,7 @@
-using SFML.Graphics;
+using System.Runtime.Intrinsics.X86;
 using SFML.System;
+using SFML.Graphics;
+using static invaders.Utility;
 
 namespace invaders.entity;
 
@@ -10,15 +12,8 @@ public class Grunt : AbstractEnemy
 
     private float _timeUntilFire;
     private float _fireTimer;
-    
-    // make overridden property of entity
-    public static IntRect[] Rects => new IntRect[2]
-    {
-        new(24, 0, SpriteWidth, SpriteHeight),
-        new(24, 8, SpriteWidth, SpriteHeight)
-    };
 
-    public Grunt(int wave) : base(wave, "invaders", Rects[0], Scale)
+    public Grunt(int wave) : base(wave, "invaders", TextureRects["grunt1"], Scale)
     {
         maxHealth = 5;
         bulletDamage = 5;
@@ -32,9 +27,9 @@ public class Grunt : AbstractEnemy
         horizontalSpeed = new Random().Next(2) == 0 ? 30f : -30f;
         _timeUntilFire = getNewFireTime();
         
-        animator.SetDefaultTextureRect(Rects[0]);
+        animator.SetDefaultTextureRect(TextureRects["grunt1"]);
         Animation idle = new Animation("idle", true, 3, 0, idleFrames);
-        Animation death = new Animation("death", true, 20, deathAnimationLength, deathFrames);
+        Animation death = new Animation("death", true, 18, deathAnimationLength, deathFrames);
         animator.AddAnimation(idle);
         animator.AddAnimation(death);
         animator.PlayAnimation("idle", true);
@@ -97,30 +92,31 @@ public class Grunt : AbstractEnemy
 
     private Animation.FrameRenderer[] idleFrames =
     [
-        (animatable, target) =>
-        {
-            animatable.Sprite.TextureRect = Rects[0];
-            target.Draw(animatable.Sprite);
-        },
-        (animatable, target) =>
-        {
-            animatable.Sprite.TextureRect = Rects[1];
-            target.Draw(animatable.Sprite);
-        }
+        BasicFrameRenderer(TextureRects["grunt1"]),
+        BasicFrameRenderer(TextureRects["grunt2"]),
     ];
 
     private Animation.FrameRenderer[] deathFrames =
     {
         (animatable, target) =>
-        {
-            animatable.Sprite.TextureRect = NoSprite;
-            target.Draw(animatable.Sprite);
+        { // simulates explosion by randomly placing bullet sprites over the enemy rapidly
+            animatable.pSprite.TextureRect = TextureRects["grunt1"];
+            target.Draw(animatable.pSprite);
+            Sprite explosion = new Sprite();
+            int frameCount = animatable.pAnimator.FrameCount;
+            string rectKey = new Random().Next(2) == 0 ? "enemyBulletMedium" : "enemyBulletLarge";
+            AssetManager.LoadTexture("invaders", TextureRects[rectKey], ref explosion);
+            explosion.Scale = new Vector2f(Scale, Scale);
+            // this function is called every frame so seed needs to be set so fps can be set
+            // otherwise it will render something new every frame no matter what fps is
+            explosion.Position = animatable.Position + new Vector2f(
+                (float) new Random((int) animatable.Position.X + frameCount).NextDouble() * 
+                animatable.pSprite.TextureRect.Width * Scale - 12,
+                (float) new Random((int) animatable.Position.Y * frameCount).NextDouble() * 
+                animatable.pSprite.TextureRect.Height * Scale - 12
+                );
+            target.Draw(explosion);
         },
-        (animatable, target) =>
-        {
-            animatable.Sprite.TextureRect = Rects[0];
-            target.Draw(animatable.Sprite);
-        }
     };
 
 }
