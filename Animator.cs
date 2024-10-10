@@ -1,43 +1,74 @@
 using invaders.entity;
-using invaders.interfaces;
+using SFML.Graphics;
 
 namespace invaders;
 
-public static class Animator
+public class Animator
 {
-    private static Dictionary<IAnimatable, float> _animatables = new();
-
-    public static void Animate(float deltaTime)
+    private IntRect _defaultSprite;
+    private string _currentAnimation = "";
+    private readonly Dictionary<string, Animation> _animationSet = new()
     {
-        foreach (IAnimatable animatable in _animatables.Keys)
+        {"" , new Animation("", false, 0, 0, [])}
+    };
+    private Entity _instance;
+
+    public bool IsAnimated => _currentAnimation != "";
+    private Animation _animation => _animationSet[_currentAnimation];
+    
+    public Animator(Entity instance)
+    {
+        _instance = instance;
+    }
+
+    public void SetDefaultTextureRect(IntRect rect)
+    {
+        _defaultSprite = rect;
+    }
+    
+    public void PlayAnimation(string animation, bool fromBeginning)
+    {
+        if (animation == _currentAnimation && !fromBeginning)
         {
-            if (_animatables[animatable] >= animatable.AnimationRate)
-            {
-                animatable.Animate();
-                _animatables[animatable] = 0f;
-            }
-            else
-            {
-                _animatables[animatable] += deltaTime;
-            }
+            _animation.Unpause();
+        }
+        else
+        {
+            ResetAnimations();
+            _currentAnimation = animation;
+            _animation.Play();
         }
     }
 
-    public static void InitAnimatable(IAnimatable animatable)
+    public void PauseAnimation() { _animation.Pause(); }
+
+    public void AddAnimation(Animation animation)
     {
-        _animatables.Add(animatable, 0f);
+        animation.AnimationFinished += AnimationFinished;
+        _animationSet.Add(animation.Name, animation);
     }
 
-    public static void ClearAnimatables()
+    public void ProgressAnimation(float deltaTime)
     {
-        _animatables.Clear();
+        if (IsAnimated) _animation.ProgressAnimation(deltaTime);
     }
 
-    public static void RemoveAnimatable(Entity entity)
+    public void RenderAnimation(RenderTarget target)
     {
-        if (entity is IAnimatable animatable)
+        if (IsAnimated) _animation.DrawFrame(_instance, target);
+    }
+
+    private void ResetAnimations()
+    {
+        foreach (KeyValuePair<string,Animation> pair in _animationSet)
         {
-            if (_animatables.ContainsKey(animatable)) _animatables.Remove(animatable);
-        } 
+            pair.Value.Reset();
+        }
     }
+
+    private void AnimationFinished(Animation finished)
+    {
+        _currentAnimation = "";
+        _instance.Sprite.TextureRect = _defaultSprite;
+    } 
 }

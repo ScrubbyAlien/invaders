@@ -1,4 +1,3 @@
-using invaders.interfaces;
 using SFML.Graphics;
 using SFML.System;
 using static SFML.Window.Keyboard;
@@ -6,7 +5,7 @@ using static SFML.Window.Keyboard.Key;
 
 namespace invaders.entity;
 
-public class Player : Actor, IAnimatable
+public class Player : Actor
 {
     private const float Speed = 200f;
     private float _fireRate = 0.5f;
@@ -14,7 +13,7 @@ public class Player : Actor, IAnimatable
     private int _burstLength = 2;
     private int _burstIndex;
     private float _burstRate = 0.1f;
-    private float _invicibilityWindow = 0.5f;
+    private float _invicibilityWindow = 1f;
     private float _invincibilityTimer;
 
     private static readonly IntRect PlayerRect = new(73, 19, 14, 12);
@@ -23,7 +22,7 @@ public class Player : Actor, IAnimatable
     {
         sprite.Scale = new Vector2f(sprite.Scale.X, -sprite.Scale.Y);
         sprite.Origin = new Vector2f(sprite.Origin.X, 12); // adjust origin after flipping sprite
-        maxHealth = 30;
+        maxHealth = 20;
         bulletDamage = 5;
         
         _invincibilityTimer = _invicibilityWindow;
@@ -33,11 +32,18 @@ public class Player : Actor, IAnimatable
     protected override Vector2f bulletOrigin => Position + new Vector2f(25, 25);
 
     public override CollisionLayer Layer => CollisionLayer.Player;
-    public float AnimationRate => 0.05f;
     public override bool IsInvincible => _invincibilityTimer < _invicibilityWindow;
 
     public int CurrentHealth => currentHealth;
-    
+
+    protected override void Initialize()
+    {
+        base.Initialize();
+        animator.SetDefaultTextureRect(PlayerRect);
+        Animation invincible = new Animation("invincible", true, 25, _invicibilityWindow, blinking);
+        animator.AddAnimation(invincible);
+    }
+
     public override void Update(float deltaTime)
     {
         base.Update(deltaTime);
@@ -76,7 +82,7 @@ public class Player : Actor, IAnimatable
         }
 
         if (_fireTimer >= _fireRate) _burstIndex = 0;
-        if (currentHealth <= 0) WillDie = true;
+        
     }
 
     public override void HitByBullet(Bullet bullet)
@@ -91,6 +97,8 @@ public class Player : Actor, IAnimatable
     {
         currentHealth -= damage;
         _invincibilityTimer = 0f;
+        animator.PlayAnimation("invincible", true);
+        if (currentHealth <= 0) Die();
         EventManager.PublishPlayerChangeHealth(-damage);
     }
 
@@ -130,17 +138,17 @@ public class Player : Actor, IAnimatable
         return true;
     }
 
-    
-    public void Animate()
-    {
-        if (IsInvincible)
+    private Animation.FrameRenderer[] blinking =
+    [
+        (animatable, target) =>
         {
-            if (sprite.TextureRect == PlayerRect) sprite.TextureRect = NoSprite;
-            else if (sprite.TextureRect == NoSprite) sprite.TextureRect = PlayerRect;
-        }
-        else
+            animatable.Sprite.TextureRect = NoSprite;
+            target.Draw(animatable.Sprite);
+        },
+        (animatable, target) =>
         {
-            sprite.TextureRect = PlayerRect;
+            animatable.Sprite.TextureRect = PlayerRect;
+            target.Draw(animatable.Sprite);
         }
-    }
+    ];
 }

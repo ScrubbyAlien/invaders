@@ -1,10 +1,9 @@
 using SFML.Graphics;
 using SFML.System;
-using invaders.interfaces;
 
 namespace invaders.entity;
 
-public class Grunt : AbstractEnemy, IAnimatable
+public class Grunt : AbstractEnemy
 {
     public new const int SpriteWidth = 8;
     public new const int SpriteHeight = 8;
@@ -12,18 +11,14 @@ public class Grunt : AbstractEnemy, IAnimatable
     private float _timeUntilFire;
     private float _fireTimer;
     
-
-    public static IntRect[] AnimationStages => new IntRect[2]
+    // make overridden property of entity
+    public static IntRect[] Rects => new IntRect[2]
     {
         new(24, 0, SpriteWidth, SpriteHeight),
         new(24, 8, SpriteWidth, SpriteHeight)
     };
-    
-    public float AnimationRate => inDeathAnimation ? 0.05f : 0.3f;
-    
-    private IAnimatable.AnimationStage _animStage = IAnimatable.AnimationStage.Stage1;
 
-    public Grunt(int wave) : base(wave, "invaders", AnimationStages[0], Scale)
+    public Grunt(int wave) : base(wave, "invaders", Rects[0], Scale)
     {
         maxHealth = 5;
         bulletDamage = 5;
@@ -36,6 +31,13 @@ public class Grunt : AbstractEnemy, IAnimatable
     {
         horizontalSpeed = new Random().Next(2) == 0 ? 30f : -30f;
         _timeUntilFire = getNewFireTime();
+        
+        animator.SetDefaultTextureRect(Rects[0]);
+        Animation idle = new Animation("idle", true, 3, 0, idleFrames);
+        Animation death = new Animation("death", true, 20, deathAnimationLength, deathFrames);
+        animator.AddAnimation(idle);
+        animator.AddAnimation(death);
+        animator.PlayAnimation("idle", true);
     }
 
     public override void Update(float deltaTime)
@@ -82,29 +84,43 @@ public class Grunt : AbstractEnemy, IAnimatable
         if (currentHealth <= 0) Die();
     }
 
-    public void Animate()
+    protected override void Die()
     {
-        if (inDeathAnimation)
-        {
-            if (AnimationStages.Contains(sprite.TextureRect)) sprite.TextureRect = NoSprite;
-            else sprite.TextureRect = AnimationStages[1];
-            return;
-        }
-        switch (_animStage)
-        {
-            case IAnimatable.AnimationStage.Stage1:
-                sprite.TextureRect = AnimationStages[1];
-                _animStage = IAnimatable.AnimationStage.Stage2;
-                break;
-            case IAnimatable.AnimationStage.Stage2:
-                sprite.TextureRect = AnimationStages[0];
-                _animStage = IAnimatable.AnimationStage.Stage1;
-                break;
-        }
+        base.Die();
+        animator.PlayAnimation("death", true);
     }
 
     private float getNewFireTime()
     {
         return (float)(1 + new Random().NextDouble() * 6);
     }
+
+    private Animation.FrameRenderer[] idleFrames =
+    [
+        (animatable, target) =>
+        {
+            animatable.Sprite.TextureRect = Rects[0];
+            target.Draw(animatable.Sprite);
+        },
+        (animatable, target) =>
+        {
+            animatable.Sprite.TextureRect = Rects[1];
+            target.Draw(animatable.Sprite);
+        }
+    ];
+
+    private Animation.FrameRenderer[] deathFrames =
+    {
+        (animatable, target) =>
+        {
+            animatable.Sprite.TextureRect = NoSprite;
+            target.Draw(animatable.Sprite);
+        },
+        (animatable, target) =>
+        {
+            animatable.Sprite.TextureRect = Rects[0];
+            target.Draw(animatable.Sprite);
+        }
+    };
+
 }

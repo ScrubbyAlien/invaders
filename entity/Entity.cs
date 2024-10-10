@@ -10,13 +10,15 @@ public abstract class Entity
     public const int SpriteWidth = 0;
     public const int SpriteHeight = 0;
     protected const float Scale = 3;
+    protected Animator animator;
     public bool Dead = false;
     public bool DontDestroyOnClear = false;
     public int zIndex;
     public bool Initialized;
 
-    public Entity(string textureName, IntRect initRect, float scale) 
+    public Entity(string textureName, IntRect initRect, float scale)
     {
+        animator = new(this);
         this.textureName = textureName;
         AssetManager.LoadTexture(textureName, initRect, ref sprite);
         sprite.Scale = new Vector2f(scale, scale); // scale is constructor parameter so it can be changed by children
@@ -32,6 +34,7 @@ public abstract class Entity
 
     public virtual CollisionLayer Layer => CollisionLayer.None;
 
+    public Sprite Sprite => sprite;
     /// <summary>
     /// Any functionality that requires references to other entities should be called from Initialize,
     /// such as FindByType calls, or event handlers/listerners
@@ -45,12 +48,16 @@ public abstract class Entity
     }
 
     public virtual void Destroy() {}
-        
-    public virtual void Update(float deltaTime) { }
+
+    public virtual void Update(float deltaTime)
+    {
+        animator.ProgressAnimation(deltaTime);
+    }
 
     public virtual void Render(RenderTarget target)
     {
-        target.Draw(sprite);
+        if (animator.IsAnimated) animator.RenderAnimation(target);
+        else target.Draw(sprite);
     }
     
     protected enum ScreenState

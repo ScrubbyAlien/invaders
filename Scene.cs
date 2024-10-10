@@ -2,7 +2,6 @@ using SFML.Graphics;
 using SFML.System;
 using invaders.entity;
 using invaders.entity.GUI;
-using invaders.interfaces;
 
 namespace invaders;
 
@@ -81,11 +80,6 @@ public static class Scene
         {
             if (entity is GUI gui) _guiElements.Add(gui);
             else _entities.Add(entity);
-            
-            if (entity is IAnimatable animatable)
-            {
-                Animator.InitAnimatable(animatable);
-            }
         }
         _spawnQueue.Clear();
 
@@ -103,7 +97,6 @@ public static class Scene
             {
                 if (!entities[index].DontDestroyOnClear)
                 {
-                    Animator.RemoveAnimatable(entities[index]);
                     entities[index].Destroy();
                     entities.RemoveAt(index);
                     index--;
@@ -119,14 +112,12 @@ public static class Scene
             {
                 if (entities[index].Dead)
                 {
-                    Animator.RemoveAnimatable(entities[index]);
                     entities[index].Destroy();
                     entities.RemoveAt(index);
                     index--;
                 }
             }
         );
-        Console.WriteLine(_allEntities.Where(entity => entity.Dead).Count());
     }
     
     public static void UpdateAll(float deltaTime)
@@ -149,7 +140,6 @@ public static class Scene
         }
         
         EventManager.BroadcastEvents();
-        Animator.Animate(deltaTime);
     }
 
     public static void RenderAll(RenderTarget target)

@@ -29,6 +29,7 @@ public abstract class Actor : Entity
 
     public override void Update(float deltaTime)
     {
+        base.Update(deltaTime);
         if (WillDie) timeSinceDeath += deltaTime; // start death timer
         if (WillDie && timeSinceDeath >= deathAnimationLength) Dead = true;
     }
