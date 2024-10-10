@@ -11,8 +11,9 @@ public abstract class Entity
     public const int SpriteHeight = 0;
     protected const float Scale = 3;
     public bool Dead = false;
-    public bool DontDestroyOnLoad = false;
+    public bool DontDestroyOnClear = false;
     public int zIndex;
+    public bool Initialized;
 
     public Entity(string textureName, IntRect initRect, float scale) 
     {
@@ -30,8 +31,18 @@ public abstract class Entity
     public virtual FloatRect Bounds => sprite.GetGlobalBounds();
 
     public virtual CollisionLayer Layer => CollisionLayer.None;
-    
-    public virtual void Init() {}
+
+    /// <summary>
+    /// Any functionality that requires references to other entities should be called from Initialize,
+    /// such as FindByType calls, or event handlers/listerners
+    /// </summary>
+    protected virtual void Initialize() { }
+
+    public void FullInitialize()
+    {
+        Initialize();
+        Initialized = true;
+    }
 
     public virtual void Destroy() {}
         

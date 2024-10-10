@@ -19,13 +19,13 @@ public class Player : Actor, IAnimatable
 
     private static readonly IntRect PlayerRect = new(73, 19, 14, 12);
     
-    
     public Player() : base("invaders", PlayerRect, Scale)
     {
         sprite.Scale = new Vector2f(sprite.Scale.X, -sprite.Scale.Y);
         sprite.Origin = new Vector2f(sprite.Origin.X, 12); // adjust origin after flipping sprite
-        maxHealth = 3;
-        currentHealth = 3;
+        maxHealth = 30;
+        bulletDamage = 5;
+        
         _invincibilityTimer = _invicibilityWindow;
         zIndex = 10;
     }
@@ -34,7 +34,9 @@ public class Player : Actor, IAnimatable
 
     public override CollisionLayer Layer => CollisionLayer.Player;
     public float AnimationRate => 0.05f;
-    private bool IsInvincible => _invincibilityTimer < _invicibilityWindow;
+    public override bool IsInvincible => _invincibilityTimer < _invicibilityWindow;
+
+    public int CurrentHealth => currentHealth;
     
     public override void Update(float deltaTime)
     {
@@ -81,9 +83,15 @@ public class Player : Actor, IAnimatable
     {
         if (!IsInvincible)
         {
-            currentHealth--;
-            _invincibilityTimer = 0f;
+            TakeDamage(bullet.Damage);
         }
+    }
+
+    protected override void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        _invincibilityTimer = 0f;
+        EventManager.PublishPlayerChangeHealth(-damage);
     }
 
     protected override void OnOutsideScreen((ScreenState x, ScreenState y) state, Vector2f outsidePos, out Vector2f adjustedPos)

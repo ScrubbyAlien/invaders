@@ -5,8 +5,9 @@ namespace invaders.entity;
 
 public abstract class Actor : Entity
 {
-    protected float maxHealth;
-    protected float currentHealth;
+    protected int maxHealth;
+    protected int currentHealth;
+    protected int bulletDamage;
 
     public bool WillDie;
     protected bool inDeathAnimation => timeSinceDeath < deathAnimationLength && WillDie;
@@ -19,10 +20,15 @@ public abstract class Actor : Entity
 
     protected virtual Vector2f bulletOrigin => Position;
     protected virtual float bulletSpeed => 700f;
+    public virtual bool IsInvincible => false;
+
+    protected override void Initialize()
+    {
+        currentHealth = maxHealth;
+    }
 
     public override void Update(float deltaTime)
     {
-        
         if (WillDie) timeSinceDeath += deltaTime; // start death timer
         if (WillDie && timeSinceDeath >= deathAnimationLength) Dead = true;
     }
@@ -50,13 +56,15 @@ public abstract class Actor : Entity
 
     public virtual void Shoot(Bullet.BulletType type)
     {
-        Bullet bullet = new(type, bulletSpeed);
+        Bullet bullet = new(type, bulletSpeed, bulletDamage);
         bullet.Position = bulletOrigin;
         Scene.QueueSpawn(bullet);
     }
 
     public abstract void HitByBullet(Bullet bullet);
 
+    protected virtual void TakeDamage(int damage) {}
+    
     protected virtual void Die()
     {
         WillDie = true;
@@ -67,6 +75,4 @@ public abstract class Actor : Entity
         Vector2f outsidePos, 
         out Vector2f adjustedPos)
     { adjustedPos = outsidePos; }
- 
-    
 }

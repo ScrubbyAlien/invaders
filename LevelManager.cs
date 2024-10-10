@@ -2,7 +2,7 @@ using invaders.entity;
 
 namespace invaders;
 
-public static class SceneLoader
+public static class LevelManager
 {
     // entity constructor dictionary system borrowed from lab project 4
     public static Dictionary<char, Func<int, AbstractEnemy>> Constructors = new()

@@ -23,12 +23,16 @@ public class Grunt : AbstractEnemy, IAnimatable
     
     private IAnimatable.AnimationStage _animStage = IAnimatable.AnimationStage.Stage1;
 
-    public Grunt(int wave) : base(wave, "invaders", AnimationStages[0], Scale) { }
+    public Grunt(int wave) : base(wave, "invaders", AnimationStages[0], Scale)
+    {
+        maxHealth = 5;
+        bulletDamage = 5;
+    }
 
     protected override Vector2f bulletOrigin => Position + new Vector2f(Bounds.Width / 2, Bounds.Height);
     protected override float bulletSpeed => 300f;
 
-    public override void Init()
+    protected override void Initialize()
     {
         horizontalSpeed = new Random().Next(2) == 0 ? 30f : -30f;
         _timeUntilFire = getNewFireTime();
@@ -69,7 +73,13 @@ public class Grunt : AbstractEnemy, IAnimatable
 
     public override void HitByBullet(Bullet bullet)
     {
-        Die();
+        TakeDamage(bullet.Damage);
+    }
+
+    protected override void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        if (currentHealth <= 0) Die();
     }
 
     public void Animate()

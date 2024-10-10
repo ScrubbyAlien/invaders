@@ -7,6 +7,7 @@ public abstract class AbstractEnemy : Actor
 {
     public int Wave;
     protected float horizontalSpeed;
+    public const float MaxEnemySpeed = 30f;
     
     private Dictionary<int, float> _speedByLevel = new()
     {
@@ -62,7 +63,7 @@ public abstract class AbstractEnemy : Actor
         }
         else
         {
-            return Scene.MaxEnemySpeed;
+            return MaxEnemySpeed;
         }
     }
 }

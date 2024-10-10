@@ -1,3 +1,4 @@
+using invaders.entity;
 using invaders.interfaces;
 
 namespace invaders;
@@ -30,5 +31,13 @@ public static class Animator
     public static void ClearAnimatables()
     {
         _animatables.Clear();
+    }
+
+    public static void RemoveAnimatable(Entity entity)
+    {
+        if (entity is IAnimatable animatable)
+        {
+            if (_animatables.ContainsKey(animatable)) _animatables.Remove(animatable);
+        } 
     }
 }

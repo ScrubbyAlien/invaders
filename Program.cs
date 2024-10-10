@@ -24,7 +24,7 @@ internal static class Program
                 window.DispatchEvents();
                 float deltaTime = clock.Restart().AsSeconds();
                 Scene.UpdateAll(deltaTime);
-                Scene.Clean();
+                Scene.Bury();
                 
                 window.Clear();
                 Scene.RenderAll(window);

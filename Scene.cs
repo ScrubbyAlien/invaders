@@ -1,8 +1,8 @@
 using SFML.Graphics;
 using SFML.System;
 using invaders.entity;
+using invaders.entity.GUI;
 using invaders.interfaces;
-using SFML.Window;
 
 namespace invaders;
 
@@ -12,20 +12,34 @@ public static class Scene
     public static bool LoadNextLevel;
     public static int LevelCounter;
 
-    public const int MarginTop = 50;
     public const int MarginSide = 24;
     public const int SpawnInterval = 100;
-    public const float MaxEnemySpeed = 30f;
     
     public static float AmbientScroll = 30;
     
     private static List<Entity> _entities = new();
+    private static List<GUI> _guiElements = new();
     private static List<Entity> _spawnQueue = new();
     private static List<(List<char> c, int timer)> _currentLevel = new();
     private static float _waveTimer = -1f;
     private static int _currentWave = -1;
     // background is continuous throughout the game so is not added to _entities;
-    private static Background _background;  
+    private static Background _background;
+
+    /// <summary>
+    /// Returns a list of all elements in _entities and _guiElements.
+    /// Does not preserve their original position in their respective lists.
+    /// Do not use this to modify _entities or _guiElements. For that use ForAllEntities().
+    /// </summary>
+    private static List<Entity> _allEntities {
+        get
+        {
+            List<Entity> all = new();
+            all.AddRange(_entities);
+            all.AddRange(_guiElements);
+            return all;
+        }
+    }
     
     static Scene()
     {
@@ -36,7 +50,8 @@ public static class Scene
     
     public static void LoadLevel()
     {
-        SceneLoader.Load(LevelCounter, ref _currentLevel);
+        Clear();
+        LevelManager.Load(LevelCounter, ref _currentLevel);
         _currentWave = 0;
         _waveTimer = _currentLevel[_currentWave].timer;
         
@@ -44,51 +59,74 @@ public static class Scene
         player.Position = new Vector2f(
             (Program.ScreenWidth - player.Bounds.Width) / 2,
             Program.ScreenHeight - 72);
-        Spawn(player);
+        QueueSpawn(player);
+        
+        LoadLevelGUI();
     }
 
-    private static void Spawn(Entity entity)
-    {
-        _entities.Add(entity);
-        entity.Init();
-        if (entity is IAnimatable animatable)
-        {
-            Animator.InitAnimatable(animatable);
-        }
+    private static void LoadLevelGUI()
+    {  
+        QueueSpawn(new HealthGUI());
     }
-
+    
     public static void QueueSpawn(Entity entity)
     {
         _spawnQueue.Add(entity);
     }
 
-    public static void Clear()
+    public static void ProcessSpawnQueue()
     {
-        for (int i = _entities.Count - 1; i >= 0; i--) // iterate backwards
+        // spawn all entities in the queue;  
+        foreach (Entity entity in _spawnQueue)
         {
-            Entity entity = _entities[i];
-
-            if (!entity.DontDestroyOnLoad)
+            if (entity is GUI gui) _guiElements.Add(gui);
+            else _entities.Add(entity);
+            
+            if (entity is IAnimatable animatable)
             {
-                _entities.RemoveAt(i);
-                entity.Destroy();    
+                Animator.InitAnimatable(animatable);
             }
         }
-        Animator.ClearAnimatables();
+        _spawnQueue.Clear();
+
+        // initialize all entities and gui elements, gui elements always last
+        ForAllEntities((List<Entity> entities, ref int index) =>
+        {
+            if (!entities[index].Initialized) entities[index].FullInitialize();
+        });
     }
 
-    public static void Clean()
+    public static void Clear()
     {
-        for (int i = 0; i < _entities.Count();)
-        {
-            if (_entities[i].Dead)
+        ForAllEntities(
+            (List<Entity> entities, ref int index) =>
             {
-                _entities[i].Destroy();
-                _entities.RemoveAt(i);
-                continue;
+                if (!entities[index].DontDestroyOnClear)
+                {
+                    Animator.RemoveAnimatable(entities[index]);
+                    entities[index].Destroy();
+                    entities.RemoveAt(index);
+                    index--;
+                }
             }
-            i++;
-        }
+        );
+    }
+
+    public static void Bury()
+    {
+        ForAllEntities(
+            (List<Entity> entities, ref int index) =>
+            {
+                if (entities[index].Dead)
+                {
+                    Animator.RemoveAnimatable(entities[index]);
+                    entities[index].Destroy();
+                    entities.RemoveAt(index);
+                    index--;
+                }
+            }
+        );
+        Console.WriteLine(_allEntities.Where(entity => entity.Dead).Count());
     }
     
     public static void UpdateAll(float deltaTime)
@@ -101,19 +139,15 @@ public static class Scene
             LoadNextLevel = false;
         }
         
-        foreach (Entity entity in _spawnQueue)
-        {
-            Spawn(entity);
-        }
-        _spawnQueue.Clear();
-
+        ProcessSpawnQueue();
+        
         SpawnNextEnemyWave(deltaTime);
 
-        foreach (Entity entity in _entities)
+        foreach (Entity entity in _allEntities)
         {
             if (!entity.Dead) entity.Update(deltaTime);
-        }   
-
+        }
+        
         EventManager.BroadcastEvents();
         Animator.Animate(deltaTime);
     }
@@ -122,9 +156,10 @@ public static class Scene
     {
         _background.Render(target);
         _entities.Sort(Entity.CompareByZIndex);
-        foreach (Entity entity in _entities)
+        _guiElements.Sort(Entity.CompareByZIndex);
+        foreach (Entity entity in _allEntities)
         {
-            if (!entity.Dead) entity.Render(target);
+            if(!entity.Dead) entity.Render(target);
         }
     }
 
@@ -138,11 +173,11 @@ public static class Scene
                 while (enemies.Count > 0)
                 {
                     int randomIndex = new Random().Next(0, enemies.Count);
-                    AbstractEnemy enemy = SceneLoader.Constructors[enemies[randomIndex]](_currentWave);
+                    AbstractEnemy enemy = LevelManager.Constructors[enemies[randomIndex]](_currentWave);
                     enemy.Position = new Vector2f(
                         new Random().Next(MarginSide, Program.ScreenWidth - MarginSide - (int)enemy.Bounds.Width),
                         new Random().Next(-MarginSide - SpawnInterval, -MarginSide));
-                    Spawn(enemy);
+                    QueueSpawn(enemy);
                     enemies.RemoveAt(randomIndex);
                 }
 
@@ -177,6 +212,48 @@ public static class Scene
             {
                 yield return new IntersectResult<T>(t, diff);
             }
+        }
+    }
+
+    /// <summary>
+    /// Find the first entity of type T in _entities.
+    /// </summary>
+    /// <param name="typed">Reference to the found T typed entity if it exists, otherwise null</param>
+    /// <typeparam name="T">The type to search for.</typeparam>
+    /// <returns>Returns the first entity of type T in _entities</returns>
+    public static bool FindByType<T>(out T? typed) where T : Entity
+    {
+        foreach (Entity entity in _entities)
+        {
+            if (entity is T t)
+            {
+                typed = t;
+                return true;
+            }
+        }
+        typed = null;
+        return false;
+    }
+
+    /// <summary>
+    /// A delegate that takes a list of entities and an index and performs some action on the element at index.
+    /// </summary>
+    private delegate void EntitiesIteratorAction(List<Entity> entities, ref int index);
+    
+    /// <summary>
+    /// Perform an action on all elements of _entities and _guiElements.
+    /// </summary>
+    /// <param name="iteratorAction">The function to be called.</param>
+    private static void ForAllEntities(EntitiesIteratorAction iteratorAction)
+    {
+        for (int i = 0; i < _entities.Count; i++)
+        {
+            iteratorAction(_entities, ref i);
+        }
+        for (int i = 0; i < _guiElements.Count; i++)
+        {
+            List<Entity> guiElementsAsEntity = _guiElements.Select(gui => gui as Entity).ToList();
+            iteratorAction(guiElementsAsEntity, ref i);
         }
     }
 }

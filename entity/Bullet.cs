@@ -8,6 +8,7 @@ public class Bullet : Entity
     public BulletType Type;
     public CollisionLayer EffectiveAgainstLayer; // the collision layer that this bullet should collide with
     private Vector2f _velocity;
+    public int Damage;
     
     private static Dictionary<BulletType, IntRect[]> bulletTypes = new()
     {
@@ -23,11 +24,12 @@ public class Bullet : Entity
         ]}
     };
 
-    public Bullet(BulletType type, float speed) : base("invaders", bulletTypes[type][1], Scale)
+    public Bullet(BulletType type, float speed, int damage) : base("invaders", bulletTypes[type][1], Scale)
     {
         Type = type;
         EffectiveAgainstLayer = Type == BulletType.Player ? CollisionLayer.Enemy : CollisionLayer.Player;
         _velocity = new Vector2f(0, speed * (Type == BulletType.Player ? -1 : 1));
+        Damage = damage;
         
         sprite.Origin = new Vector2f(
             bulletTypes[Type][0].Width * Scale / 2f,
@@ -44,7 +46,8 @@ public class Bullet : Entity
         
         foreach (IntersectResult<Actor> intersect in Scene.FindIntersectingEntities<Actor>(Bounds, EffectiveAgainstLayer))
         {
-            if (!intersect.entity.WillDie)
+            // prevents enemies in death animation or invincible player to eat bullets
+            if (!intersect.entity.WillDie && !intersect.entity.IsInvincible)
             {
                 Dead = true;
                 intersect.entity.HitByBullet(this);
