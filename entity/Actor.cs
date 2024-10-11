@@ -1,5 +1,6 @@
 using SFML.Graphics;
 using SFML.System;
+using invaders.enums;
 
 namespace invaders.entity;
 
@@ -55,7 +56,7 @@ public abstract class Actor : Entity
         return outside;
     }
 
-    public virtual void Shoot(Bullet.BulletType type)
+    public virtual void Shoot(BulletType type)
     {
         Bullet bullet = new(type, bulletSpeed, bulletDamage);
         bullet.Position = bulletOrigin;

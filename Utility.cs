@@ -32,12 +32,12 @@ public static class Utility
         { "player", new(73, 19, 14, 12) },
         { "grunt1", new(24, 0, 8, 8) },
         { "grunt2", new(24, 8, 8, 8) },
-        { "playerBulletSmall", new IntRect(11, 20, 2, 2) },
-        { "playerBulletMedium", new IntRect(10, 26, 4, 4) },
-        { "playerBulletLarge", new IntRect(8, 32, 8, 8) },
-        { "enemyBulletSmall", new IntRect(19, 20, 2, 2) },
-        { "enemyBulletMedium", new IntRect(18, 26, 4, 4) },
-        { "enemyBulletLarge", new IntRect(16, 32, 8, 8) },
+        { "playerBulletSmall", new (11, 20, 2, 2) },
+        { "playerBulletMedium", new (10, 26, 4, 4) },
+        { "playerBulletLarge", new (8, 32, 8, 8) },
+        { "enemyBulletSmall", new (19, 20, 2, 2) },
+        { "enemyBulletMedium", new (18, 26, 4, 4) },
+        { "enemyBulletLarge", new (16, 32, 8, 8) },
         { "smallStar", new(2, 54, 1, 1) },
         { "mediumStar", new(1, 57, 3, 3) },
         { "largeStar", new(0, 62, 5, 5) },
@@ -46,8 +46,8 @@ public static class Utility
 
 }
 
-public struct IntersectResult<T>(T entity, Vector2f diff) 
+public struct IntersectResult<T>(T e, Vector2f diff) 
 {
-    public T entity = entity;
+    public T IntersectedEntity = e;
     public Vector2f Diff = diff;
 }

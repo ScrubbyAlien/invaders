@@ -1,6 +1,8 @@
 using SFML.Graphics;
 using SFML.System;
+using invaders.enums;
 using static invaders.Utility;
+
 
 namespace invaders.entity;
 
@@ -48,16 +50,11 @@ public class Bullet : Entity
         foreach (IntersectResult<Actor> intersect in Scene.FindIntersectingEntities<Actor>(Bounds, EffectiveAgainstLayer))
         {
             // prevents enemies in death animation or invincible player to eat bullets
-            if (!intersect.entity.WillDie && !intersect.entity.IsInvincible)
+            if (!intersect.IntersectedEntity.WillDie && !intersect.IntersectedEntity.IsInvincible)
             {
                 Dead = true;
-                intersect.entity.HitByBullet(this);
+                intersect.IntersectedEntity.HitByBullet(this);
             }
         }
-    }
-    
-    public enum BulletType 
-    {
-        Player, Enemy
     }
 }

@@ -1,5 +1,6 @@
 using SFML.Graphics;
 using SFML.System;
+using invaders.enums;
 
 namespace invaders.entity;
 

@@ -15,15 +15,15 @@ public class Animator
     private Entity _instance;
 
     public bool IsAnimated => _currentAnimation != "";
-    public Animation Animation => _animationSet[_currentAnimation];
+    public Animation CurrentAnimation => _animationSet[_currentAnimation];
     public int FrameCount => _frameCount;
-    
+
     public Animator(Entity instance)
     {
         _instance = instance;
     }
-
-    public void SetDefaultTextureRect(IntRect rect)
+    
+    public void SetDefaultSprite(IntRect rect)
     {
         _defaultSprite = rect;
     }
@@ -32,18 +32,18 @@ public class Animator
     {
         if (animation == _currentAnimation && !fromBeginning)
         {
-            Animation.Unpause();
+            CurrentAnimation.Unpause();
         }
         else
         {
             ResetAnimations();
             _frameCount = 0;
             _currentAnimation = animation;
-            Animation.Play();
+            CurrentAnimation.Play();
         }
     }
 
-    public void PauseAnimation() { Animation.Pause(); }
+    public void PauseAnimation() { CurrentAnimation.Pause(); }
 
     public void AddAnimation(Animation animation)
     {
@@ -54,12 +54,12 @@ public class Animator
 
     public void ProgressAnimation(float deltaTime)
     {
-        if (IsAnimated) Animation.ProgressAnimation(deltaTime);
+        if (IsAnimated) CurrentAnimation.ProgressAnimation(deltaTime);
     }
 
     public void RenderAnimation(RenderTarget target)
     {
-        if (IsAnimated) Animation.DrawFrame(_instance, target);
+        if (IsAnimated) CurrentAnimation.DrawFrame(_instance.GetAnimatable(), target);
     }
 
     private void ResetAnimations()
@@ -75,6 +75,6 @@ public class Animator
     {
         _frameCount = 0;
         _currentAnimation = "";
-        _instance.pSprite.TextureRect = _defaultSprite;
+        _instance.GetAnimatable().SetTextureRect(_defaultSprite);
     } 
 }

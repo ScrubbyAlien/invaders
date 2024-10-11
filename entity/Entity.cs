@@ -1,3 +1,4 @@
+using invaders.enums;
 using SFML.Graphics;
 using SFML.System;
 
@@ -7,14 +8,12 @@ public abstract class Entity
 {
     protected Sprite sprite = new();
     protected string textureName;
-    public const int SpriteWidth = 0;
-    public const int SpriteHeight = 0;
     protected const float Scale = 3;
     protected Animator animator;
     public bool Dead = false;
     public bool DontDestroyOnClear = false;
     public int zIndex;
-    public bool Initialized;
+    private bool _initialized;
 
     public Entity(string textureName, IntRect initRect, float scale)
     {
@@ -23,6 +22,8 @@ public abstract class Entity
         AssetManager.LoadTexture(textureName, initRect, ref sprite);
         sprite.Scale = new Vector2f(scale, scale); // scale is constructor parameter so it can be changed by children
     }
+
+    public bool Initialized => _initialized;
     
     public Vector2f Position
     {
@@ -33,9 +34,7 @@ public abstract class Entity
     public virtual FloatRect Bounds => sprite.GetGlobalBounds();
 
     public virtual CollisionLayer Layer => CollisionLayer.None;
-
-    public Sprite pSprite => sprite;
-    public Animator pAnimator => animator;
+    
     /// <summary>
     /// Any functionality that requires references to other entities should be called from Initialize,
     /// such as FindByType calls, or event handlers/listerners
@@ -45,7 +44,7 @@ public abstract class Entity
     public void FullInitialize()
     {
         Initialize();
-        Initialized = true;
+        _initialized = true;
     }
 
     public virtual void Destroy() {}
@@ -61,14 +60,6 @@ public abstract class Entity
         else target.Draw(sprite);
     }
     
-    protected enum ScreenState
-    {
-        OutSideLeft,
-        OutSideRight,
-        OutSideTop,
-        OutSideBottom,
-        Inside
-    }
 
     public static int CompareByZIndex(Entity? e1, Entity? e2)
     {
@@ -82,8 +73,25 @@ public abstract class Entity
     {
         return (animatable, target) =>
         {
-            animatable.pSprite.TextureRect = rect;
-            target.Draw(animatable.pSprite);
+            animatable.SetTextureRect(rect);
+            target.Draw(animatable.Sprite);
         };
+    }
+
+    public Animatable GetAnimatable()
+    {
+        return new Animatable(this, sprite, animator);
+    }
+}
+
+public class Animatable(Entity i, Sprite s, Animator a)
+{
+    public Entity Instance = i;
+    public Sprite Sprite = s;
+    public Animator Animator = a;
+    
+    public void SetTextureRect(IntRect rect)
+    {
+        Sprite.TextureRect = rect;
     }
 }

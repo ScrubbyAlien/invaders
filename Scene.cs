@@ -2,6 +2,7 @@ using SFML.Graphics;
 using SFML.System;
 using invaders.entity;
 using invaders.entity.GUI;
+using invaders.enums;
 
 namespace invaders;
 
@@ -73,7 +74,7 @@ public static class Scene
         _spawnQueue.Add(entity);
     }
 
-    public static void ProcessSpawnQueue()
+    private static void ProcessSpawnQueue()
     {
         // spawn all entities in the queue;  
         foreach (Entity entity in _spawnQueue)
@@ -248,7 +249,3 @@ public static class Scene
     }
 }
 
-public enum CollisionLayer
-{
-    Player, Enemy, None
-}

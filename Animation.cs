@@ -16,14 +16,14 @@ public class Animation
     private bool _playingAnimation;
     public string Name;
 
-    public delegate void FrameRenderer(Entity animatable, RenderTarget target);
+    public delegate void FrameRenderer(Animatable animatable, RenderTarget target);
     private List<FrameRenderer> _frameRenderers = new();
     private float _frameTimer;
     private float _animationTimer;
 
     public int CurrentFrame => _currentFrame;
     
-    public Animation(string name, bool looping, float fps, float length, FrameRenderer[] renderers)
+    public Animation(string name, bool looping, float fps, float length, FrameRenderer[] frames)
     {
         Name = name;
         _currentFrame = 0;
@@ -31,7 +31,7 @@ public class Animation
         _looping = looping;
         _framelength = 1 / (fps == 0 ? 1 : fps);
         _animationLength = length;
-        AddFrames(renderers);
+        AddFrames(frames);
     }
 
     public void Play() { _playingAnimation = true; }
@@ -48,7 +48,7 @@ public class Animation
         _playingAnimation = false;
     }
 
-    public void DrawFrame(Entity animatable, RenderTarget target)
+    public void DrawFrame(Animatable animatable, RenderTarget target)
     {
         _frameRenderers[_currentFrame](animatable, target);
     }
@@ -60,17 +60,8 @@ public class Animation
             _animationTimer += deltaTime;
             _frameTimer += deltaTime;
             
-            if (Name == "death")
-            {
-                Console.WriteLine(_frameTimer);
-            }
-            
             if (_frameTimer >= _framelength)
             {
-                if (Name == "death")
-                {
-                    Console.WriteLine(_framelength);
-                }
                 _currentFrame++;
                 _frameTimer = 0f;
                 FrameFinished?.Invoke(this);
@@ -91,13 +82,13 @@ public class Animation
         }
     }
 
-    public void AddFrame(FrameRenderer frameRenderer)
+    public void AddFrame(FrameRenderer frame)
     {
-        _frameRenderers.Add(frameRenderer);
+        _frameRenderers.Add(frame);
     }
 
-    public void AddFrames(FrameRenderer[] renderers)
+    public void AddFrames(FrameRenderer[] frames)
     {
-        _frameRenderers.AddRange(renderers);
+        _frameRenderers.AddRange(frames);
     }
 }

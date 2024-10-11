@@ -1,4 +1,5 @@
 using SFML.System;
+using invaders.enums;
 using static SFML.Window.Keyboard;
 using static SFML.Window.Keyboard.Key;
 using static invaders.Utility;
@@ -36,7 +37,7 @@ public class Player : Actor
     protected override void Initialize()
     {
         base.Initialize();
-        animator.SetDefaultTextureRect(TextureRects["player"]);
+        animator.SetDefaultSprite(TextureRects["player"]);
         Animation invincible = new Animation("invincible", true, 25, _invicibilityWindow, blinking);
         animator.AddAnimation(invincible);
     }
@@ -66,13 +67,13 @@ public class Player : Actor
         {
             if (_burstIndex == 0 && _fireTimer >= _fireRate)
             {
-                Shoot(Bullet.BulletType.Player);
+                Shoot(BulletType.Player);
                 _burstIndex++;
                 _fireTimer = 0;
             } 
             else if (_burstIndex > 0 && _burstIndex < _burstLength && _fireTimer >= _burstRate)
             {
-                Shoot(Bullet.BulletType.Player);
+                Shoot(BulletType.Player);
                 _burstIndex++;
                 _fireTimer = 0;
             }
