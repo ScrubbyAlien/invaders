@@ -1,5 +1,7 @@
+using invaders.sceneobjects;
 using SFML.Graphics;
 using SFML.System;
+using static SFML.Window.Keyboard;
 
 namespace invaders;
 
@@ -9,6 +11,12 @@ public static class Utility
     {
         diff = new Vector2f(rect2.Left - rect1.Left, rect2.Top - rect1.Top);
         return rect1.Intersects(rect2);
+    }
+    
+    public static bool AreAnyKeysPressed(Key[] keys)
+    {
+        foreach (Key key in keys) if (IsKeyPressed(key)) return true;
+        return false;
     }
     
     // Vector2f extension methods borrowed from Collision class from lab project breakout
@@ -50,4 +58,16 @@ public struct IntersectResult<T>(T e, Vector2f diff)
 {
     public T IntersectedEntity = e;
     public Vector2f Diff = diff;
+}
+
+public class Animatable(Entity i, Sprite s, Animator a)
+{
+    public Entity Instance = i;
+    public Sprite Sprite = s;
+    public Animator Animator = a;
+    
+    public void SetTextureRect(IntRect rect)
+    {
+        Sprite.TextureRect = rect;
+    }
 }

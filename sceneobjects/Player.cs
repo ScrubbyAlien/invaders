@@ -1,9 +1,8 @@
-using SFML.System;
 using invaders.enums;
-using static SFML.Window.Keyboard;
+using SFML.System;
 using static SFML.Window.Keyboard.Key;
 using static invaders.Utility;
-namespace invaders.entity;
+namespace invaders.sceneobjects;
 
 public class Player : Actor
 {
@@ -40,6 +39,11 @@ public class Player : Actor
         animator.SetDefaultSprite(TextureRects["player"]);
         Animation invincible = new Animation("invincible", true, 25, _invicibilityWindow, blinking);
         animator.AddAnimation(invincible);
+        
+        Position = new Vector2f(
+            (Program.ScreenWidth - Bounds.Width) / 2,
+            (Program.ScreenHeight - 50)
+        );
     }
 
     public override void Update(float deltaTime)
@@ -61,7 +65,7 @@ public class Player : Actor
         if (down) newPos.Y = 1;
         if (up && down) newPos.Y = 0;
         
-        TryMoveWithinBounds(newPos.Normalized() * Speed * deltaTime, Scene.MarginSide,Scene.MarginSide);
+        TryMoveWithinBounds(newPos.Normalized() * Speed * deltaTime, Settings.MarginSide, Settings.MarginSide);
 
         if (AreAnyKeysPressed([Space]))
         {
@@ -106,41 +110,28 @@ public class Player : Actor
         EventManager.PublishPlayerChangeHealth(-damage);
     }
     
-    
     protected override void OnOutsideScreen((ScreenState x, ScreenState y) state, Vector2f outsidePos, out Vector2f adjustedPos)
     {
         adjustedPos = outsidePos;
         switch (state.x)
         {
             case ScreenState.OutSideRight:
-                adjustedPos.X = Program.ScreenWidth - Bounds.Width - Scene.MarginSide;
+                adjustedPos.X = Program.ScreenWidth - Bounds.Width - Settings.MarginSide;
                 break;
             case ScreenState.OutSideLeft:
-                adjustedPos.X = Scene.MarginSide;
+                adjustedPos.X = Settings.MarginSide;
                 break;
         }
 
         switch (state.y)
         {
             case ScreenState.OutSideBottom:
-                adjustedPos.Y = Program.ScreenHeight - Bounds.Height - Scene.MarginSide;
+                adjustedPos.Y = Program.ScreenHeight - Bounds.Height - Settings.MarginSide;
                 break;
             case ScreenState.OutSideTop:
-                adjustedPos.Y = Scene.MarginSide;
+                adjustedPos.Y = Settings.MarginSide;
                 break;
         }
-    }
-
-    private bool AreAnyKeysPressed(Key[] keys)
-    {
-        foreach (Key key in keys) if (IsKeyPressed(key)) return true;
-        return false;
-    }
-
-    private bool AreAllKeysPressed(Key[] keys)
-    {
-        foreach (Key key in keys) if (!IsKeyPressed(key)) return false;
-        return true;
     }
 
     private Animation.FrameRenderer[] blinking =

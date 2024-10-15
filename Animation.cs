@@ -1,4 +1,3 @@
-using invaders.entity;
 using SFML.Graphics;
 
 namespace invaders;

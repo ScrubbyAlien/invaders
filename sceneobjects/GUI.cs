@@ -1,7 +1,6 @@
 using SFML.Graphics;
-using SFML.System;
 
-namespace invaders.entity.GUI;
+namespace invaders.sceneobjects;
 
 public abstract class GUI :  Entity
 {

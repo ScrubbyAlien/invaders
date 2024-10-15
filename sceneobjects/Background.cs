@@ -2,7 +2,7 @@ using SFML.Graphics;
 using SFML.System;
 using static invaders.Utility;
 
-namespace invaders.entity;
+namespace invaders.sceneobjects;
 
 public class Background : Entity
 {
@@ -11,23 +11,47 @@ public class Background : Entity
     private Dictionary<Vector2f, IntRect> StarMap =  new();
     private int _seed;
     private float _scroll;
+    private float _scrollSpeed = Settings.AmbientScrollInLevel;
+    private float _targetScrollSpeed = Settings.AmbientScrollInLevel;
+    private float _originalScrollSpeed = Settings.AmbientScrollInLevel;
+    private float _lerpTime;
+    private float _lerpTimer;
+    private bool _lerping;
+    public float ScrollSSpeed => _scrollSpeed;
     
-    public Background(int seed) : base("invaders", TextureRects["smallStar"], 1)
-    {
-        GenerateStarMap();
-        zIndex = -100;
-        _seed = seed;
-    }
-
     public Background() : base("invaders", TextureRects["smallStar"], 1)
     {
         GenerateStarMap();
         zIndex = -100;
     }
+    public Background(int seed) : this() { _seed = seed; }
+    public Background(int seed, float scroll) : this(seed) { _scroll = scroll; }
+
+    protected override void Initialize()
+    {
+        EventManager.BackgroundSetScrollSpeed += SetNewScrollSpeed;
+    }
+
+    public override void Destroy()
+    {
+        EventManager.BackgroundSetScrollSpeed -= SetNewScrollSpeed;
+    }
 
     public override void Update(float deltaTime)
     {
-        _scroll += (Scene.AmbientScroll * deltaTime);
+        if (_lerping)
+        {
+            _lerpTimer += deltaTime;
+            float t = _lerpTimer / _lerpTime;
+            _scrollSpeed = float.Lerp(_originalScrollSpeed, _targetScrollSpeed, t);
+            if (_lerpTimer >= _lerpTime)
+            {
+                _scrollSpeed = _targetScrollSpeed;
+                _lerping = false;
+            }
+        }
+        
+        _scroll += _scrollSpeed * deltaTime;
         _scroll %= Program.ScreenHeight;
     }
 
@@ -40,7 +64,6 @@ public class Background : Entity
             sprite.TextureRect = star.Value;
             target.Draw(sprite);
         }
-        
     }
 
     private void GenerateStarMap()
@@ -71,6 +94,19 @@ public class Background : Entity
                     };
                 }
             }
+        }
+    }
+
+    private void SetNewScrollSpeed(float speed, float lerpTime)
+    {
+        if (Math.Abs(_targetScrollSpeed - speed) > float.Epsilon)
+        {
+            Console.WriteLine($"{speed}, {lerpTime}");
+            _originalScrollSpeed = _scrollSpeed;
+            _targetScrollSpeed = speed;
+            _lerpTime = lerpTime;
+            _lerpTimer = 0f;
+            _lerping = true;
         }
     }
 }

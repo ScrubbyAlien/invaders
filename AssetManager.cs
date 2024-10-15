@@ -6,19 +6,14 @@ public static class AssetManager
 {
     private const string AssetPath = "assets";
 
-    public static void LoadTexture(string name, IntRect intRect, ref Sprite sprite)
+    public static Texture LoadTexture(string name)
     {
-        sprite.Texture = new Texture($"{AssetPath}/{name}.png");
-        sprite.TextureRect = intRect;
+        return new Texture($"{AssetPath}/{name}.png");
+        // sprite.TextureRect = intRect;
     }
 
     public static Font LoadFont(string name)
     {
         return new Font($"{AssetPath}/{name}.ttf");
-    }
-
-    public static List<string> ReadLevel(string name)
-    {
-        return File.ReadLines($"{AssetPath}/{name}.txt").ToList();
     }
 }

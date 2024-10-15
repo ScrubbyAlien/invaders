@@ -1,4 +1,4 @@
-using invaders.entity;
+using invaders.sceneobjects;
 using SFML.Graphics;
 
 namespace invaders;

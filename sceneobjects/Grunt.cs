@@ -1,17 +1,16 @@
 using invaders.enums;
-using SFML.System;
 using SFML.Graphics;
-using invaders.enums;
+using SFML.System;
 using static invaders.Utility;
 
-namespace invaders.entity;
+namespace invaders.sceneobjects;
 
 public class Grunt : AbstractEnemy
 {
     private float _timeUntilFire;
     private float _fireTimer;
 
-    public Grunt(int wave) : base(wave, "invaders", TextureRects["grunt1"], Scale)
+    public Grunt() : base("invaders", TextureRects["grunt1"], Scale)
     {
         maxHealth = 5;
         bulletDamage = 5;
@@ -22,7 +21,6 @@ public class Grunt : AbstractEnemy
 
     protected override void Initialize()
     {
-        horizontalSpeed = new Random().Next(2) == 0 ? 30f : -30f;
         _timeUntilFire = GetNewFireTime();
         
         animator.SetDefaultSprite(TextureRects["grunt1"]);
@@ -31,6 +29,8 @@ public class Grunt : AbstractEnemy
         animator.AddAnimation(idle);
         animator.AddAnimation(death);
         animator.PlayAnimation("idle", true);
+        
+        base.Initialize();
     }
 
     public override void Update(float deltaTime)
@@ -56,11 +56,11 @@ public class Grunt : AbstractEnemy
         switch (state.x)
         {
             case ScreenState.OutSideLeft: 
-                adjustedPos.X = Scene.MarginSide;
+                adjustedPos.X = Settings.MarginSide;
                 Reverse();
                 break;
             case ScreenState.OutSideRight: 
-                adjustedPos.X = Program.ScreenWidth - Bounds.Width - Scene.MarginSide;
+                adjustedPos.X = Program.ScreenWidth - Bounds.Width - Settings.MarginSide;
                 Reverse();
                 break;
         }
@@ -101,10 +101,12 @@ public class Grunt : AbstractEnemy
             animatable.SetTextureRect(TextureRects["grunt1"]);
             target.Draw(animatable.Sprite);
             
+            // draw explosion
             Sprite explosion = new Sprite();
             int frameCount = animatable.Animator.FrameCount;
             string rectKey = new Random().Next(2) == 0 ? "enemyBulletMedium" : "enemyBulletLarge";
-            AssetManager.LoadTexture("invaders", TextureRects[rectKey], ref explosion);
+            explosion.Texture = AssetManager.LoadTexture("invaders");
+            explosion.TextureRect = TextureRects[rectKey];
             explosion.Scale = new Vector2f(Scale, Scale);
             // this function is called every frame so seed needs to be set so fps can be set
             // otherwise it will render something new every frame no matter what fps is

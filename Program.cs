@@ -18,7 +18,9 @@ internal static class Program
             window.Closed += (o, e) => window.Close();
 
             Clock clock = new();
-
+            LevelManager.Instantiate();
+            Scene.LoadFirstLevel();
+            
             while (window.IsOpen)
             {
                 window.DispatchEvents();

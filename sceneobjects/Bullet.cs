@@ -1,10 +1,10 @@
+using invaders.enums;
 using SFML.Graphics;
 using SFML.System;
-using invaders.enums;
 using static invaders.Utility;
 
 
-namespace invaders.entity;
+namespace invaders.sceneobjects;
 
 public class Bullet : Entity
 {

@@ -1,8 +1,7 @@
-using System.Reflection.Metadata.Ecma335;
 using SFML.Graphics;
 using SFML.System;
 
-namespace invaders.entity.GUI;
+namespace invaders.sceneobjects;
 
 public class HealthGUI : GUI
 {
