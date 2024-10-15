@@ -4,7 +4,7 @@ using SFML.System;
 
 namespace invaders.sceneobjects;
 
-public abstract class Actor : Entity
+public abstract class Actor : RenderObject
 {
     protected int maxHealth;
     protected int currentHealth;

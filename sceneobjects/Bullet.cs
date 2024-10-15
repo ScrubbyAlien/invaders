@@ -6,7 +6,7 @@ using static invaders.Utility;
 
 namespace invaders.sceneobjects;
 
-public class Bullet : Entity
+public class Bullet : RenderObject
 {
     public BulletType Type;
     public CollisionLayer EffectiveAgainstLayer; // the collision layer that this bullet should collide with

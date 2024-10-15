@@ -1,4 +1,5 @@
 using invaders.enums;
+using SFML.Graphics;
 using SFML.System;
 using static SFML.Window.Keyboard.Key;
 using static invaders.Utility;
@@ -67,24 +68,29 @@ public class Player : Actor
         
         TryMoveWithinBounds(newPos.Normalized() * Speed * deltaTime, Settings.MarginSide, Settings.MarginSide);
 
-        if (AreAnyKeysPressed([Space]))
-        {
-            if (_burstIndex == 0 && _fireTimer >= _fireRate)
-            {
-                Shoot(BulletType.Player);
-                _burstIndex++;
-                _fireTimer = 0;
-            } 
-            else if (_burstIndex > 0 && _burstIndex < _burstLength && _fireTimer >= _burstRate)
-            {
-                Shoot(BulletType.Player);
-                _burstIndex++;
-                _fireTimer = 0;
-            }
-        }
+        Scene.FindByType(out WaveManager? manager);
+        bool inTransition = manager!.InTransition;
 
-        if (_fireTimer >= _fireRate) _burstIndex = 0;
-        
+        if (!inTransition)
+        {
+            if (AreAnyKeysPressed([Space]))
+            {
+                if (_burstIndex == 0 && _fireTimer >= _fireRate)
+                {
+                    Shoot(BulletType.Player);
+                    _burstIndex++;
+                    _fireTimer = 0;
+                } 
+                else if (_burstIndex > 0 && _burstIndex < _burstLength && _fireTimer >= _burstRate)
+                {
+                    Shoot(BulletType.Player);
+                    _burstIndex++;
+                    _fireTimer = 0;
+                }
+            }
+
+            if (_fireTimer >= _fireRate) _burstIndex = 0;
+        }
     }
 
     public void Reset()

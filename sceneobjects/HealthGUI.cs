@@ -9,7 +9,9 @@ public class HealthGUI : GUI
     private int currentHealth;
 
     public HealthGUI() : base("invaders", Bar, Scale)
-    { }
+    {
+        zIndex = 100;
+    }
 
     protected override void Initialize()
     {
@@ -29,7 +31,7 @@ public class HealthGUI : GUI
     {
         for (int i = 0; i < currentHealth; i++)
         {
-            Position = new Vector2f(12, 864 - i * Bar.Height * Scale);
+            Position = new Vector2f(12, 878 - i * Bar.Height * Scale);
             target.Draw(sprite);
         }
     }

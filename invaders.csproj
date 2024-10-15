@@ -30,10 +30,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="interfaces\" />
-    <Folder Include="sceneobjects\GUI\" />
-  </ItemGroup>
 
 
 

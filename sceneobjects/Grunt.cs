@@ -99,7 +99,7 @@ public class Grunt : AbstractEnemy
         (animatable, target) =>
         { // simulates explosion by randomly placing bullet sprites over the enemy rapidly
             animatable.SetTextureRect(TextureRects["grunt1"]);
-            target.Draw(animatable.Sprite);
+            target.Draw(animatable.Drawable);
             
             // draw explosion
             Sprite explosion = new Sprite();

@@ -7,7 +7,10 @@ public class InvasionLevel() : Level("invasion")
     public override void CreateLevel()
     {
         AddInitialObject(new Player());
-        AddInitialObject(new Background()); // todo: check if background seed already exists
+        if (!Scene.FindByType(out Background _))
+        {
+            AddInitialObject(new Background());
+        }
         AddInitialObject(new WaveManager());
         AddInitialObject(new HealthGUI());
     }

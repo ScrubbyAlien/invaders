@@ -12,13 +12,13 @@ public class Animator
     {
         {"" , new Animation("", false, 0, 0, [])}
     };
-    private Entity _instance;
+    private RenderObject _instance;
 
     public bool IsAnimated => _currentAnimation != "";
     public Animation CurrentAnimation => _animationSet[_currentAnimation];
     public int FrameCount => _frameCount;
 
-    public Animator(Entity instance)
+    public Animator(RenderObject instance)
     {
         _instance = instance;
     }

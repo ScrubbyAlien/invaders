@@ -4,7 +4,7 @@ using static invaders.Utility;
 
 namespace invaders.sceneobjects;
 
-public class Background : Entity
+public class Background : RenderObject
 {
     private const float StarDensity = 0.0002f;
 
@@ -17,12 +17,13 @@ public class Background : Entity
     private float _lerpTime;
     private float _lerpTimer;
     private bool _lerping;
-    public float ScrollSSpeed => _scrollSpeed;
+    public float ScrollSpeed => _scrollSpeed;
     
     public Background() : base("invaders", TextureRects["smallStar"], 1)
     {
         GenerateStarMap();
         zIndex = -100;
+        DontDestroyOnClear = true;
     }
     public Background(int seed) : this() { _seed = seed; }
     public Background(int seed, float scroll) : this(seed) { _scroll = scroll; }
@@ -101,7 +102,6 @@ public class Background : Entity
     {
         if (Math.Abs(_targetScrollSpeed - speed) > float.Epsilon)
         {
-            Console.WriteLine($"{speed}, {lerpTime}");
             _originalScrollSpeed = _scrollSpeed;
             _targetScrollSpeed = speed;
             _lerpTime = lerpTime;

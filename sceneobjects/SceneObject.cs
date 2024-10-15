@@ -1,11 +1,15 @@
+using invaders.enums;
+
 namespace invaders.sceneobjects;
 
 public abstract class SceneObject
 {
+    private SceneObjectTag _tag = SceneObjectTag.None;
     public bool Dead = false;
     public bool DontDestroyOnClear = false;
     private bool _initialized;
     public bool Initialized => _initialized;
+    public SceneObjectTag Tag => _tag;
     
     /// <summary>
     /// Any functionality that requires references to other entities should be called from Initialize,
@@ -22,6 +26,9 @@ public abstract class SceneObject
     public virtual void Destroy() {}
     
     public virtual void Update(float deltaTime) { }
-    
-    
+
+    public void SetTag(SceneObjectTag tag)
+    {
+        _tag = tag;
+    }
 }

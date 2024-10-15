@@ -4,15 +4,17 @@ using SFML.System;
 
 namespace invaders.sceneobjects;
 
-public abstract class Entity : SceneObject
+public abstract class RenderObject : SceneObject
 {
     protected Sprite sprite = new();
     protected string textureName;
     protected const float Scale = 3;
     protected Animator animator;
     public int zIndex;
+    private bool _hidden;
+    public bool Hidden => _hidden;
 
-    public Entity(string textureName, IntRect initRect, float scale)
+    public RenderObject(string textureName, IntRect initRect, float scale)
     {
         animator = new(this);
         this.textureName = textureName;
@@ -21,7 +23,7 @@ public abstract class Entity : SceneObject
         sprite.Scale = new Vector2f(scale, scale); // scale is constructor parameter so it can be changed by children
     }
     
-    public Vector2f Position
+    public virtual Vector2f Position
     {
         get => sprite.Position;
         set => sprite.Position = value;
@@ -42,7 +44,11 @@ public abstract class Entity : SceneObject
         else target.Draw(sprite);
     }
 
-    public static int CompareByZIndex(Entity? e1, Entity? e2)
+    public void Hide() { _hidden = true; }
+    public void Unhide() { _hidden = false; }
+    
+    
+    public static int CompareByZIndex(RenderObject? e1, RenderObject? e2)
     {
         if (e1 == null && e2 == null) return 0;
         if (e1 == null) return -1;
@@ -59,7 +65,7 @@ public abstract class Entity : SceneObject
         };
     }
 
-    public Animatable GetAnimatable()
+    public virtual Animatable GetAnimatable()
     {
         return new Animatable(this, sprite, animator);
     }

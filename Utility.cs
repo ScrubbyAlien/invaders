@@ -18,6 +18,22 @@ public static class Utility
         foreach (Key key in keys) if (IsKeyPressed(key)) return true;
         return false;
     }
+
+    public static void ForEach(this IEnumerable<SceneObject> objects, Action<SceneObject> action)
+    {
+        foreach (SceneObject sceneObject in objects)
+        {
+            action(sceneObject);
+        }
+    }
+
+    public static Vector2f MiddleOfScreen(FloatRect bounds)
+    {
+        return new Vector2f(
+            (Program.ScreenWidth - bounds.Width) / 2f,
+            (Program.ScreenHeight - bounds.Height) / 2f
+        );
+    }
     
     // Vector2f extension methods borrowed from Collision class from lab project breakout
     public static Vector2f Normalized(this Vector2f v)
@@ -52,6 +68,21 @@ public static class Utility
         { "largestStar", new(0, 69, 7, 7) },
     };
 
+    public static readonly List<string> numberToOrdinalWord = new()
+    {
+        "zeroeth",
+        "first",
+        "second",
+        "third",
+        "fourth",
+        "fifth",
+        "sixth",
+        "seventh",
+        "eighth",
+        "nineth",
+        "tenth"
+    };
+
 }
 
 public struct IntersectResult<T>(T e, Vector2f diff) 
@@ -60,14 +91,44 @@ public struct IntersectResult<T>(T e, Vector2f diff)
     public Vector2f Diff = diff;
 }
 
-public class Animatable(Entity i, Sprite s, Animator a)
+public class Animatable(RenderObject i, Drawable d, Animator a)
 {
-    public Entity Instance = i;
-    public Sprite Sprite = s;
-    public Animator Animator = a;
-    
+    public readonly RenderObject Instance = i;
+    public readonly Drawable Drawable = d;
+    public readonly Animator Animator = a;
+    public Sprite Sprite
+    {
+        get
+        {
+            if (Drawable is Sprite sprite) return sprite;
+            else throw new Exception($"animatable of {nameof(Instance)} does not animate Sprite");
+        }
+    }
+    public Text Text 
+    {
+        get
+        {
+            if (Drawable is Text text) return text;
+            else throw new Exception($"animatable of {nameof(Instance)} does not animate Text");
+        }
+    }
+
     public void SetTextureRect(IntRect rect)
     {
         Sprite.TextureRect = rect;
+    }
+}
+
+// solution for dynamically invoking method on an instance inspired by solution here
+// https://stackoverflow.com/questions/6469027/call-methods-using-names-in-c-sharp
+public class DeferredMethodCall(Object instance, string methodName, object[] arguments)
+{
+    private Object _instance = instance;
+    private string _methodName = methodName;
+    private object[] _arguments = arguments;
+
+    public void Invoke()
+    {
+        _instance.GetType().GetMethod(_methodName)?.Invoke(_instance, _arguments);
     }
 }
