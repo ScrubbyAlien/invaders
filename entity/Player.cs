@@ -83,6 +83,12 @@ public class Player : Actor
         
     }
 
+    public void Reset()
+    {
+        EventManager.PublishPlayerChangeHealth(maxHealth - currentHealth);
+        currentHealth = maxHealth;
+    }
+    
     public override void HitByBullet(Bullet bullet)
     {
         if (!IsInvincible)
@@ -99,7 +105,8 @@ public class Player : Actor
         if (currentHealth <= 0) Die();
         EventManager.PublishPlayerChangeHealth(-damage);
     }
-
+    
+    
     protected override void OnOutsideScreen((ScreenState x, ScreenState y) state, Vector2f outsidePos, out Vector2f adjustedPos)
     {
         adjustedPos = outsidePos;

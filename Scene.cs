@@ -9,23 +9,23 @@ namespace invaders;
 // Scene class mostly the same as in lab project 4
 public static class Scene
 {
-    public static bool LoadNextLevel;
     public static int LevelCounter;
-
+    public static bool LoadNextLevel;
+    
     public const int MarginSide = 24;
     public const int SpawnInterval = 100;
-    
-    public static float AmbientScroll = 30;
+    public const float AmbientScrollInLevel = 30;
+    public const float AmbientScrollInBuffer = 3000;
+    public static float AmbientScroll;
     
     private static List<Entity> _entities = new();
     private static List<GUI> _guiElements = new();
     private static List<Entity> _spawnQueue = new();
-    private static List<(List<char> c, int timer)> _currentLevel = new();
-    private static float _waveTimer = -1f;
-    private static int _currentWave = -1;
+   
     // background is continuous throughout the game so is not added to _entities;
     private static Background _background;
-
+    private static LevelManager _levelManager;
+    
     /// <summary>
     /// Returns a list of all elements in _entities and _guiElements.
     /// Does not preserve their original position in their respective lists.
@@ -43,36 +43,46 @@ public static class Scene
     
     static Scene()
     {
+        AmbientScroll = AmbientScrollInLevel;
         _background = new Background();
+        _levelManager = new LevelManager();
+        LevelCounter = 0;
         LoadNextLevel = true;
-        LevelCounter = -1;
     }
     
-    public static void LoadLevel()
+    public static void StartLevel(int level)
     {
-        Clear();
-        LevelManager.Load(LevelCounter, ref _currentLevel);
-        _currentWave = 0;
-        _waveTimer = _currentLevel[_currentWave].timer;
-        
-        Player player = new();
-        player.Position = new Vector2f(
-            (Program.ScreenWidth - player.Bounds.Width) / 2,
-            Program.ScreenHeight - 72);
-        QueueSpawn(player);
-        
-        LoadLevelGUI();
+        // Clear();
+        _levelManager.StartLevel(level);
+
+        if (FindByType(out Player? player))
+        {
+            player?.Reset();
+        }
+        else
+        {
+            Player p = new();
+            p.Position = new Vector2f(
+                (Program.ScreenWidth - p.Bounds.Width) / 2,
+                Program.ScreenHeight - 72);
+            QueueSpawn(p);
+            LoadLevelGUI();
+        }
     }
 
     private static void LoadLevelGUI()
     {  
         QueueSpawn(new HealthGUI());
     }
-    
-    public static void QueueSpawn(Entity entity)
+
+    public static void NextLevel()
     {
-        _spawnQueue.Add(entity);
+        LevelCounter++;
+        LoadNextLevel = true;
     }
+    
+    public static void QueueSpawn(Entity entity) { _spawnQueue.Add(entity); }
+    public static void QueueSpawn(List<Entity> entities) { _spawnQueue.AddRange(entities); }
 
     private static void ProcessSpawnQueue()
     {
@@ -123,17 +133,21 @@ public static class Scene
     
     public static void UpdateAll(float deltaTime)
     {
-        _background.Update(deltaTime);
+        // these level managing statements should probably be in level manangers update method
+        _levelManager.ProgressLevelBuffer(deltaTime);
+        
         if (LoadNextLevel)
         {
-            LevelCounter++;
-            LoadLevel();
+            StartLevel(LevelCounter);
             LoadNextLevel = false;
         }
         
-        ProcessSpawnQueue();
+        _background.Update(deltaTime);
+        _levelManager.Update(deltaTime);
         
-        SpawnNextEnemyWave(deltaTime);
+        
+        QueueSpawn(_levelManager.GetNewEntities());
+        ProcessSpawnQueue();
 
         foreach (Entity entity in _allEntities)
         {
@@ -153,40 +167,7 @@ public static class Scene
             if(!entity.Dead) entity.Render(target);
         }
     }
-
-    private static void SpawnNextEnemyWave(float deltaTime)
-    {
-        if (_currentWave >= 0)
-        {
-            if (_waveTimer >= _currentLevel[_currentWave].timer)
-            {
-                List<char> enemies = _currentLevel[_currentWave].c;
-                while (enemies.Count > 0)
-                {
-                    int randomIndex = new Random().Next(0, enemies.Count);
-                    AbstractEnemy enemy = LevelManager.Constructors[enemies[randomIndex]](_currentWave);
-                    enemy.Position = new Vector2f(
-                        new Random().Next(MarginSide, Program.ScreenWidth - MarginSide - (int)enemy.Bounds.Width),
-                        new Random().Next(-MarginSide - SpawnInterval, -MarginSide));
-                    QueueSpawn(enemy);
-                    enemies.RemoveAt(randomIndex);
-                }
-
-                _currentWave++;
-                _waveTimer = 0f;
-                
-                if (_currentWave == _currentLevel.Count)
-                { // reached last wave
-                    _currentWave = -1;
-                    _waveTimer = -1f;
-                }
-            }
-            else
-            {
-                _waveTimer += deltaTime;
-            }
-        }
-    }
+    
 
     // borrowed from lab project 4
     public static IEnumerable<IntersectResult<T>> FindIntersectingEntities<T>(FloatRect bounds, CollisionLayer layer) where T : Entity
