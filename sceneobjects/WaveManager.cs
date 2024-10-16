@@ -29,21 +29,7 @@ public class WaveManager : SceneObject
         { 'g', () => new Grunt() },
     };
     
-    private static readonly List<List<Wave>> _assaults = new()
-    {
-        new()
-        {
-            { new Wave(0f).AddEnemyGroup('g', 7) },
-            // { new Wave(10f).AddEnemyGroup('g', 10) },
-            // { new Wave(10f).AddEnemyGroup('g', 10) },
-        },
-        // new()
-        // {
-        //     {new Wave(0f).AddEnemyGroup('g', 10)},
-        //     {new Wave(10f).AddEnemyGroup('g', 15)},
-        //     {new Wave(10f).AddEnemyGroup('g', 20)},
-        // }
-    };
+    private readonly List<Assault> _assaults = new();
 
     public WaveManager()
     {
@@ -52,7 +38,6 @@ public class WaveManager : SceneObject
         _currentAssault = -1;
         _inTransition = true;
         _transitionBufferTimer = 0;
-        
         DrawText("defeat the invaders!", new Vector2f(0, -100));
     }
 
@@ -81,25 +66,24 @@ public class WaveManager : SceneObject
         {
             _waveTimer += deltaTime;
             
-            if (_currentWave == _assaults[_currentAssault].Count)
+            if (_currentWave == _assaults[_currentAssault].Waves.Count())
             { // end of assault
                 if (!Scene.FindByType(out AbstractEnemy _))
                 {
-                    if (_currentAssault + 1 == _assaults.Count)
+                    if (_currentAssault == _assaults.Count - 1)
                     {
                         EndLevel();
                         return;
                     }
                     StartTransition();
                 }
-                
             }
             else
             {
-                Wave wave = _assaults[_currentAssault][_currentWave];
-                if (_waveTimer >= wave.timer)
+                Wave wave = _assaults[_currentAssault].Waves[_currentWave];
+                if (_waveTimer >= wave.Timer)
                 {
-                    wave.Spawn();
+                    SpawnWave(wave);
                     _currentWave++;
                     _waveTimer = 0;
                 }
@@ -121,8 +105,8 @@ public class WaveManager : SceneObject
 
             if (_transitionBufferTimer > _transitionBuffer / 2f)
             {
-                if (_currentAssault >= 0) _transitionText.SetText("proceeding to next threat");
-                else _transitionText.SetText("first threat incoming"); 
+                // should avoid out of bounds errors becuase StartTransition is not called after last assault
+                _transitionText.SetText(_assaults[_currentAssault + 1].BeforeAssault); 
                 _transitionText.Position = MiddleOfScreen(_transitionText.Bounds) - new Vector2f(0, 100);
             }
             if (_transitionBufferTimer >= _transitionBuffer)
@@ -134,6 +118,9 @@ public class WaveManager : SceneObject
             }
         }
     }
+
+    public void AddAssault(Assault assault) => _assaults.Add(assault);
+    public void AddAssault(Assault[] assaults) => _assaults.AddRange(assaults);
     
     private void StartTransition()
     {
@@ -143,7 +130,7 @@ public class WaveManager : SceneObject
         _scrollSpedUp = false;
         _scrollSlowedDown = false;
         
-        DrawText($"{numberToOrdinalWord[_currentAssault + 1]} threat cleared", new Vector2f(0, -100));
+        DrawText(_assaults[_currentAssault].AfterAssault, new Vector2f(0, -100));
     }
     
     private void EndLevel()
@@ -178,28 +165,41 @@ public class WaveManager : SceneObject
         Scene.DeferredCall(_transitionText.GetAnimatable().Animator, "PlayAnimation", ["blink", true]);
     }
     
-    private struct Wave(float timer)
+    public void SpawnWave(Wave wave)
     {
-        private Dictionary<char, int> _enemies = new();
-        public float timer = timer;
-
-        public Wave AddEnemyGroup(char enemyType, int number)
+        foreach (KeyValuePair<char,int> group in wave.Enemies)
         {
-            _enemies.Add(enemyType, number);
-            return this;
-        }
-
-        public void Spawn()
-        {
-            foreach (KeyValuePair<char,int> group in _enemies)
+            for (int i = 0; i < group.Value; i++)
             {
-                for (int i = 0; i < group.Value; i++)
-                {
-                    AbstractEnemy enemy = Constructors[group.Key]();
-                    Scene.QueueSpawn(enemy);
-                }
+                AbstractEnemy enemy = Constructors[group.Key]();
+                Scene.QueueSpawn(enemy);
             }
         }
     }
+}
+
+public struct Wave(float timer)
+{
+    private Dictionary<char, int> _enemies = new();
+    public float Timer = timer;
+    public Dictionary<char, int> Enemies => _enemies;
+
+    public Wave AddEnemyGroup(char enemyType, int number)
+    {
+        _enemies.Add(enemyType, number);
+        return this;
+    }
+}
+
+public struct Assault(string[] assaultStrings)
+{
+    private List<Wave> _waves = new();
+    private string[] _assaultStrings = assaultStrings;
+    public string BeforeAssault => _assaultStrings[0];
+    public string AfterAssault => _assaultStrings[1];
+    public List<Wave> Waves => _waves;
+        
+    public void AddWave(Wave wave) => _waves.Add(wave); 
+    public void AddWave(Wave[] waves) => _waves.AddRange(waves); 
 }
 

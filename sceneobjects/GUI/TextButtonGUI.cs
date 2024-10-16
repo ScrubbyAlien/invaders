@@ -5,7 +5,7 @@ namespace invaders.sceneobjects;
 
 public class TextButtonGUI : TextGUI, IClickable
 {
-    public event IClickable.ClickedEvent? Clicked;
+    public event Action? Clicked;
 
     public TextButtonGUI(string buttonText) : base(buttonText) { }
 
@@ -28,7 +28,7 @@ public class TextButtonGUI : TextGUI, IClickable
     
     public void Click()
     {
-        Clicked?.Invoke(this);
+        Clicked?.Invoke();
     }
 
     private Animation.FrameRenderer[] selectedFrames =

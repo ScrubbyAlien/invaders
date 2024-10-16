@@ -7,7 +7,7 @@ namespace invaders.sceneobjects;
 public class MenuManager : SceneObject
 {
     private List<IClickable> _menuButtons = new();
-    private List<IClickable.ClickedEvent> _listeners = new();
+    private List<Action> _listeners = new();
     private int _lastIndex = -1;
     private int _pointerIndex;
     private bool _keyPressed;
@@ -78,7 +78,7 @@ public class MenuManager : SceneObject
         }
     }
     
-    public void AddButton(IClickable button, IClickable.ClickedEvent listener)
+    public void AddButton(IClickable button, Action listener)
     {
         _menuButtons.Add(button);
         button.Clicked += listener;

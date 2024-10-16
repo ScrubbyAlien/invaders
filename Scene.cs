@@ -196,14 +196,14 @@ public static class Scene
         _deferredCalls.Add(new DeferredMethodCall(instance, methodName, arguments));
     }
     
-    public static IClickable.ClickedEvent LoadLevelListener(string level)
+    public static Action LoadLevelListener(string level)
     {
-        return _ => LoadLevel(level);
+        return () => LoadLevel(level);
     }
 
-    public static IClickable.ClickedEvent CloseWindowListener()
+    public static Action CloseWindowListener()
     {
-        return _ => CloseWindow();
+        return () => CloseWindow();
     }
 }
 
