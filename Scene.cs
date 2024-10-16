@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using SFML.Graphics;
 using SFML.System;
 using invaders.enums;
@@ -14,7 +15,7 @@ public static class Scene
     private readonly static List<SceneObject> _destroyQueue = new();
     private readonly static List<DeferredMethodCall> _deferredCalls = new();
     private static string _nextLevel = "";
-    private static RenderWindow _window;
+    private static RenderWindow? _window;
 
     public static void SetWindow(RenderWindow window)
     {
@@ -23,6 +24,7 @@ public static class Scene
 
     public static void CloseWindow()
     {
+        Debug.Assert(_window != null, nameof(_window) + " != null");
         _window.Close();
     }
     
@@ -196,14 +198,14 @@ public static class Scene
         _deferredCalls.Add(new DeferredMethodCall(instance, methodName, arguments));
     }
     
-    public static IClickable.ClickedEvent LoadLevelListener(string level)
+    public static Action LoadLevelListener(string level)
     {
-        return _ => LoadLevel(level);
+        return () => LoadLevel(level);
     }
 
-    public static IClickable.ClickedEvent CloseWindowListener()
+    public static Action CloseWindowListener()
     {
-        return _ => CloseWindow();
+        return () => CloseWindow();
     }
 }
 

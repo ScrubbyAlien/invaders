@@ -75,22 +75,6 @@ public static class Utility
         { "largestStar", new(0, 69, 7, 7) },
         { "title", new(72, 40, 48, 24)}
     };
-
-    public static readonly List<string> numberToOrdinalWord = new()
-    {
-        "zeroeth",
-        "first",
-        "second",
-        "third",
-        "fourth",
-        "fifth",
-        "sixth",
-        "seventh",
-        "eighth",
-        "nineth",
-        "tenth"
-    };
-
 }
 
 public struct IntersectResult<T>(T e, Vector2f diff) 
