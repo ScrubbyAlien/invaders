@@ -5,21 +5,22 @@ namespace invaders.sceneobjects;
 
 public class TextGUI : GUI
 {
-    private Text _text = new();
+    protected Text text = new();
+    
     public override Vector2f Position
     {
-        get => _text.Position;
-        set => _text.Position = value;
+        get => text.Position;
+        set => text.Position = value;
     }
 
-    public override FloatRect Bounds => _text.GetGlobalBounds();
+    public override FloatRect Bounds => text.GetGlobalBounds();
 
     public TextGUI(string text, bool centerAligned = true) : base("invaders", new IntRect(), 1)
     {
-        _text.DisplayedString = text;
-        _text.Font = AssetManager.LoadFont("pixel-font");
-        _text.CharacterSize = 10 * (int)Scale;
-        _text.FillColor = Color.White;
+        this.text.DisplayedString = text;
+        this.text.Font = AssetManager.LoadFont("pixel-font");
+        this.text.CharacterSize = 10 * (int)Scale;
+        this.text.FillColor = Color.White;
         zIndex = 200;
         if (centerAligned) CenterText();
     }
@@ -30,20 +31,31 @@ public class TextGUI : GUI
         animator.AddAnimation(blink);
         base.Initialize();
     }
-
-    public void SetText(string text)
+    
+    public override void Render(RenderTarget target)
     {
-        _text.DisplayedString = text;
+        if (animator.IsAnimated) animator.RenderAnimation(target);
+        else target.Draw(text);
+    }
+
+    public void SetText(string newText)
+    {
+        text.DisplayedString = newText;
+    }
+
+    public void SetFillColor(Color color)
+    {
+        text.FillColor = color;
     }
 
     public override Animatable GetAnimatable()
     {
-        return new Animatable(this, _text, animator);
+        return new Animatable(this, text, animator);
     }
 
     private void CenterText()
     {
-        if (_text.DisplayedString == "") return;
+        if (text.DisplayedString == "") return;
         
         // create dictionary
         Dictionary<char, float> characterToWidth = new()
@@ -51,7 +63,7 @@ public class TextGUI : GUI
             { ' ', 8f } // don't know why 8 is the magic number, it just works
         };
         HashSet<char> charactersInText = new() { ' ' };
-        foreach (char c in _text.DisplayedString)
+        foreach (char c in text.DisplayedString)
         {
             if (charactersInText.Contains(c)) continue;
             charactersInText.Add(c);
@@ -59,10 +71,10 @@ public class TextGUI : GUI
         foreach (char c in charactersInText)
         {
             if (characterToWidth.ContainsKey(c)) continue;
-            characterToWidth.Add(c, _text.Font.GetGlyph(c, _text.CharacterSize, false, 0).Bounds.Width);
+            characterToWidth.Add(c, text.Font.GetGlyph(c, text.CharacterSize, false, 0).Bounds.Width);
         }
         // calculate line lengths
-        List<string> lines = _text.DisplayedString.Split("\n").ToList();
+        List<string> lines = text.DisplayedString.Split("\n").ToList();
         if (lines.Count == 1) return;
         List<float> lineLengths =
             lines.Select(line =>
@@ -83,14 +95,13 @@ public class TextGUI : GUI
             {
                 float spaceWidth = characterToWidth[' '];
                 int paddingSpaces = (int) MathF.Ceiling(padding / spaceWidth); // round up to integer
-                Console.WriteLine($"spaceWidth: {spaceWidth}, padding: {padding}");
                 for (int j = 0; j < paddingSpaces / 2; j++)
                 {
                     lines[i] = " " + lines[i] + " ";
                 }
             }
         }
-        _text.DisplayedString = String.Join("\n", lines);
+        text.DisplayedString = String.Join("\n", lines);
     }
 
     private Animation.FrameRenderer[] blinking =

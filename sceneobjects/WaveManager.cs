@@ -3,7 +3,7 @@ using SFML.System;
 using SFML.Window;
 using static invaders.Utility;
 
-namespace invaders;
+namespace invaders.sceneobjects;
 
 public class WaveManager : SceneObject
 {
@@ -34,15 +34,15 @@ public class WaveManager : SceneObject
         new()
         {
             { new Wave(0f).AddEnemyGroup('g', 7) },
-            { new Wave(10f).AddEnemyGroup('g', 10) },
-            { new Wave(10f).AddEnemyGroup('g', 10) },
+            // { new Wave(10f).AddEnemyGroup('g', 10) },
+            // { new Wave(10f).AddEnemyGroup('g', 10) },
         },
-        new()
-        {
-            {new Wave(0f).AddEnemyGroup('g', 10)},
-            {new Wave(10f).AddEnemyGroup('g', 15)},
-            {new Wave(10f).AddEnemyGroup('g', 20)},
-        }
+        // new()
+        // {
+        //     {new Wave(0f).AddEnemyGroup('g', 10)},
+        //     {new Wave(10f).AddEnemyGroup('g', 15)},
+        //     {new Wave(10f).AddEnemyGroup('g', 20)},
+        // }
     };
 
     public WaveManager()
@@ -56,13 +56,24 @@ public class WaveManager : SceneObject
         DrawText("defeat the invaders!", new Vector2f(0, -100));
     }
 
+    protected override void Initialize()
+    {
+        EventManager.PlayerDeath += PlayerDied;
+    }
+
+    public override void Destroy()
+    {
+        EventManager.PlayerDeath -= PlayerDied;
+    }
+
     public override void Update(float deltaTime)
     {
         if (_inEndLevel)
         {
             if (AreAnyKeysPressed([Keyboard.Key.Space]))
             {
-                // Scene.LoadLevel("mainmenu");
+                EventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInLevel, 1f);
+                Scene.LoadLevel("mainmenu");
             }
             return;
         }
@@ -146,6 +157,16 @@ public class WaveManager : SceneObject
             new Vector2f(0, -100)
         );
         EventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInTransition, 3f);
+    }
+
+    private void PlayerDied()
+    {
+        _inEndLevel = true;
+        DrawText(
+            "You have been defeated!\n" +
+            " \n" +
+            "press space to return to menu",
+            new Vector2f(0, -100));
     }
 
     private void DrawText(string text, Vector2f positionFromMiddle)

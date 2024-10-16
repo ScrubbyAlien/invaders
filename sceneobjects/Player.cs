@@ -106,7 +106,7 @@ public class Player : Actor
             TakeDamage(bullet.Damage);
         }
     }
-
+    
     protected override void TakeDamage(int damage)
     {
         currentHealth -= damage;
@@ -115,7 +115,13 @@ public class Player : Actor
         if (currentHealth <= 0) Die();
         EventManager.PublishPlayerChangeHealth(-damage);
     }
-    
+
+    protected override void Die()
+    {
+        EventManager.PublishPlayerDeath();
+        base.Die();
+    }
+
     protected override void OnOutsideScreen((ScreenState x, ScreenState y) state, Vector2f outsidePos, out Vector2f adjustedPos)
     {
         adjustedPos = outsidePos;

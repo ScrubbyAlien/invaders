@@ -1,6 +1,7 @@
 using SFML.Graphics;
 using SFML.System;
 using invaders.enums;
+using invaders.interfaces;
 using invaders.sceneobjects;
 
 namespace invaders;
@@ -9,9 +10,21 @@ namespace invaders;
 public static class Scene
 {
     private static List<SceneObject> _sceneObjects = new();
-    private static List<SceneObject> _spawnQueue = new();
-    private static List<SceneObject> _destroyQueue = new();
-    private static List<DeferredMethodCall> _deferredCalls = new();
+    private readonly static List<SceneObject> _spawnQueue = new();
+    private readonly static List<SceneObject> _destroyQueue = new();
+    private readonly static List<DeferredMethodCall> _deferredCalls = new();
+    private static string _nextLevel = "";
+    private static RenderWindow _window;
+
+    public static void SetWindow(RenderWindow window)
+    {
+        _window = window;
+    }
+
+    public static void CloseWindow()
+    {
+        _window.Close();
+    }
     
     public static void LoadFirstLevel()
     {
@@ -20,9 +33,18 @@ public static class Scene
     
     public static void LoadLevel(string levelName)
     {
-        Clear();
-        List<SceneObject> initialLevelObjects = LevelManager.LoadLevel(levelName);
-        QueueSpawn(initialLevelObjects);
+        _nextLevel = levelName;
+    }
+
+    private static void ProcessLoadLevel()
+    {
+        if (_nextLevel != "")
+        {
+            Clear();
+            List<SceneObject> initialLevelObjects = LevelManager.LoadLevel(_nextLevel);
+            QueueSpawn(initialLevelObjects);
+            _nextLevel = "";
+        }
     }
     
     public static void QueueSpawn(SceneObject o) { _spawnQueue.Add(o); }
@@ -80,6 +102,7 @@ public static class Scene
     
     public static void UpdateAll(float deltaTime)
     {
+        ProcessLoadLevel();
         ProcessSpawnQueue();
         ProcessDeferredCalls();
         UpdateSceneObjects(deltaTime);
@@ -171,6 +194,16 @@ public static class Scene
     public static void DeferredCall(Object instance, string methodName, object[] arguments)
     {
         _deferredCalls.Add(new DeferredMethodCall(instance, methodName, arguments));
+    }
+    
+    public static IClickable.ClickedEvent LoadLevelListener(string level)
+    {
+        return _ => LoadLevel(level);
+    }
+
+    public static IClickable.ClickedEvent CloseWindowListener()
+    {
+        return _ => CloseWindow();
     }
 }
 

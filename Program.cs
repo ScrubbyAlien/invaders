@@ -19,6 +19,7 @@ internal static class Program
 
             Clock clock = new();
             LevelManager.Instantiate();
+            Scene.SetWindow(window);
             Scene.LoadFirstLevel();
             
             while (window.IsOpen)

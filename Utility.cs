@@ -34,6 +34,13 @@ public static class Utility
             (Program.ScreenHeight - bounds.Height) / 2f
         );
     }
+    public static Vector2f MiddleOfScreen(FloatRect bounds, Vector2f offset)
+    {
+        return new Vector2f(
+            (Program.ScreenWidth - bounds.Width) / 2f,
+            (Program.ScreenHeight - bounds.Height) / 2f
+        ) + offset;
+    }
     
     // Vector2f extension methods borrowed from Collision class from lab project breakout
     public static Vector2f Normalized(this Vector2f v)
@@ -66,6 +73,7 @@ public static class Utility
         { "mediumStar", new(1, 57, 3, 3) },
         { "largeStar", new(0, 62, 5, 5) },
         { "largestStar", new(0, 69, 7, 7) },
+        { "title", new(72, 40, 48, 24)}
     };
 
     public static readonly List<string> numberToOrdinalWord = new()

@@ -17,6 +17,7 @@
     <EmbeddedResource Include="assets/*.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <None Remove="invaders.csproj.DotSettings" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="assets/*.ttf" />

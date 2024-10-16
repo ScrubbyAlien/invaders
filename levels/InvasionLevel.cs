@@ -4,14 +4,14 @@ namespace invaders.levels;
 
 public class InvasionLevel() : Level("invasion")
 {
-    public override void CreateLevel()
+    protected override void LoadObjects()
     {
-        AddInitialObject(new Player());
+        AddObject(new Player());
         if (!Scene.FindByType(out Background _))
         {
-            AddInitialObject(new Background());
+            AddObject(new Background());
         }
-        AddInitialObject(new WaveManager());
-        AddInitialObject(new HealthGUI());
+        AddObject(new WaveManager());
+        AddObject(new HealthGUI());
     }
 }

@@ -12,9 +12,19 @@ public abstract class Level(string name)
         return _initialObjects;
     }
 
-    public void AddInitialObject(SceneObject o) { _initialObjects.Add(o); }
-    public void AddInitialObject(List<SceneObject> o) { _initialObjects.AddRange(o); }
-    public void AddInitialObject(SceneObject[] o) { _initialObjects.AddRange(o); }
+    public void AddObject(SceneObject o) { _initialObjects.Add(o); }
+    public void AddObject(List<SceneObject> o) { _initialObjects.AddRange(o); }
+    public void AddObject(SceneObject[] o) { _initialObjects.AddRange(o); }
 
-    public abstract void CreateLevel();
+    public void CreateLevel()
+    {
+        ClearObjects();
+        LoadObjects();
+    }
+    protected abstract void LoadObjects();
+    
+    protected void ClearObjects()
+    {
+        _initialObjects.Clear();
+    }
 }

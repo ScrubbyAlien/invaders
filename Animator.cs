@@ -45,8 +45,16 @@ public class Animator
 
     public void PauseAnimation() { CurrentAnimation.Pause(); }
 
+    public void StopAnimation()
+    {
+        CurrentAnimation.Reset();
+        _currentAnimation = "";
+        _frameCount = 0;
+    }
+    
     public void AddAnimation(Animation animation)
     {
+        if (_animationSet.ContainsKey(animation.Name)) return;
         animation.AnimationFinished += AnimationFinished;
         animation.FrameFinished += s => _frameCount++;
         _animationSet.Add(animation.Name, animation);
