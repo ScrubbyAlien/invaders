@@ -9,12 +9,18 @@ public abstract class AbstractEnemy : Actor
 {
     protected float horizontalSpeed = 30f;
     private WaveManager? _manager;
+    protected int touchedBottom;
     
     private Dictionary<int, float> _speedByLevel = new()
     {
-        {-1, 30f},
+        {-1, 50f},
         {0, 20f},
-        {1, 25f}
+        {1, 25f},
+        {2, 30f},
+        {3, 30f},
+        {4, 35f},
+        {5, 35f},
+        {6, 40f},
     };
 
     public AbstractEnemy(string textureName, IntRect initRect, float scale) : 
@@ -47,10 +53,6 @@ public abstract class AbstractEnemy : Actor
         {
             Vector2f velocity = new Vector2f(horizontalSpeed, GetVerticalSpeed());
             TryMoveWithinBounds(velocity * deltaTime, Settings.MarginSide, 0);
-            foreach (IntersectResult<AbstractEnemy> intersect in Scene.FindIntersectingEntities<AbstractEnemy>(Bounds, CollisionLayer.Enemy))
-            {
-                Position += intersect.Diff * deltaTime;
-            }
         }
     }
     
@@ -66,7 +68,19 @@ public abstract class AbstractEnemy : Actor
         if (adjustedPos.Y > Program.ScreenHeight + Bounds.Height)
         {
             adjustedPos.Y = -Bounds.Height;
-            // invoke touch bottom event
+            touchedBottom++;
+        }
+        
+        switch (state.x)
+        {
+            case ScreenState.OutSideLeft: 
+                adjustedPos.X = Settings.MarginSide;
+                Reverse();
+                break;
+            case ScreenState.OutSideRight: 
+                adjustedPos.X = Program.ScreenWidth - Bounds.Width - Settings.MarginSide;
+                Reverse();
+                break;
         }
     }
 
@@ -75,11 +89,11 @@ public abstract class AbstractEnemy : Actor
         Debug.Assert(_manager != null, nameof(_manager) + " != null");
         if (_speedByLevel.ContainsKey(_manager.CurrentAssault))
         {
-            return _speedByLevel[_manager.CurrentAssault];
+            return _speedByLevel[_manager.CurrentAssault] + touchedBottom * 3;
         }
         else
         {
-            return _speedByLevel[-1];
+            return _speedByLevel[-1] + touchedBottom * 3;
         }
     }
 }

@@ -7,7 +7,7 @@ public class TextButtonGUI : TextGUI, IClickable
 {
     public event Action? Clicked;
 
-    public TextButtonGUI(string buttonText) : base(buttonText) { }
+    public TextButtonGUI(string buttonDisplayText) : base(buttonDisplayText) { }
 
     protected override void Initialize()
     {

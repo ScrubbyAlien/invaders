@@ -3,5 +3,7 @@ namespace invaders.enums;
 public enum SceneObjectTag
 {
     None,
-    TransitionText
+    TransitionText,
+    ScoreText,
+    MultiplierBar
 }

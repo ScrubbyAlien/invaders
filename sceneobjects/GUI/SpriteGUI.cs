@@ -11,4 +11,13 @@ public class SpriteGUI : GUI
     {
         sprite.Scale = new Vector2f(scale, scale);
     }
+    public void SetScale(Vector2f scale)
+    {
+        sprite.Scale = scale;
+    }
+
+    public void SetColor(Color color)
+    {
+        sprite.Color = color;
+    }
 }

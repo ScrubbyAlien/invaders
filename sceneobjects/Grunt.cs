@@ -49,23 +49,6 @@ public class Grunt : AbstractEnemy
         }
     }
 
-    protected override void OnOutsideScreen((ScreenState x, ScreenState y) state, Vector2f outsidePos, out Vector2f adjustedPos)
-    {
-        base.OnOutsideScreen(state, outsidePos, out adjustedPos);
-        
-        switch (state.x)
-        {
-            case ScreenState.OutSideLeft: 
-                adjustedPos.X = Settings.MarginSide;
-                Reverse();
-                break;
-            case ScreenState.OutSideRight: 
-                adjustedPos.X = Program.ScreenWidth - Bounds.Width - Settings.MarginSide;
-                Reverse();
-                break;
-        }
-    }
-
     public override void HitByBullet(Bullet bullet)
     {
         TakeDamage(bullet.Damage);
@@ -81,11 +64,13 @@ public class Grunt : AbstractEnemy
     {
         base.Die();
         animator.PlayAnimation("death", true);
+        EventManager.PublishEnemyDead(this);
     }
 
     private float GetNewFireTime()
     {
-        return (float)(1 + new Random().NextDouble() * 6);
+        int mod = (int) MathF.Min(touchedBottom, 3);
+        return (float)(1 + new Random().NextDouble() * 6 - mod);
     }
 
     private Animation.FrameRenderer[] idleFrames =

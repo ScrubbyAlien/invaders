@@ -1,14 +1,14 @@
 using SFML.Graphics;
 using SFML.System;
+using static invaders.Utility;
 
 namespace invaders.sceneobjects;
 
 public class HealthGUI : GUI
 {
-    private static readonly IntRect Bar = new(0, 40, 8, 2);
     private int currentHealth;
 
-    public HealthGUI() : base("invaders", Bar, Scale)
+    public HealthGUI() : base("invaders", TextureRects["healthBar"], Scale)
     {
         zIndex = 100;
     }
@@ -31,7 +31,7 @@ public class HealthGUI : GUI
     {
         for (int i = 0; i < currentHealth; i++)
         {
-            Position = new Vector2f(12, 878 - i * Bar.Height * Scale);
+            Position = new Vector2f(12, 878 - i * TextureRects["healthBar"].Height * Scale);
             target.Draw(sprite);
         }
     }

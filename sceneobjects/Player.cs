@@ -113,6 +113,7 @@ public class Player : Actor
         _invincibilityTimer = 0f;
         animator.PlayAnimation("invincible", true);
         if (currentHealth <= 0) Die();
+        EventManager.PublishPlayerHit();
         EventManager.PublishPlayerChangeHealth(-damage);
     }
 

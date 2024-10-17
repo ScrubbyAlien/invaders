@@ -26,19 +26,20 @@ public static class Utility
             action(sceneObject);
         }
     }
-
-    public static Vector2f MiddleOfScreen(FloatRect bounds)
+    
+    public static Vector2f MiddleOfScreen(FloatRect bounds, Vector2f offset = new())
     {
         return new Vector2f(
             (Program.ScreenWidth - bounds.Width) / 2f,
             (Program.ScreenHeight - bounds.Height) / 2f
-        );
+        ) + offset;
     }
-    public static Vector2f MiddleOfScreen(FloatRect bounds, Vector2f offset)
+
+    public static Vector2f BottomRightOfScreen(FloatRect bounds, Vector2f offset = new())
     {
         return new Vector2f(
-            (Program.ScreenWidth - bounds.Width) / 2f,
-            (Program.ScreenHeight - bounds.Height) / 2f
+            Program.ScreenWidth - bounds.Width,
+            Program.ScreenHeight - bounds.Height
         ) + offset;
     }
     
@@ -73,7 +74,9 @@ public static class Utility
         { "mediumStar", new(1, 57, 3, 3) },
         { "largeStar", new(0, 62, 5, 5) },
         { "largestStar", new(0, 69, 7, 7) },
-        { "title", new(72, 40, 48, 24)}
+        { "title", new(72, 40, 48, 24) },
+        { "multiplierBar", new(2, 40, 1, 1) },
+        { "healthBar", new(0, 40, 8, 2) }
     };
 }
 

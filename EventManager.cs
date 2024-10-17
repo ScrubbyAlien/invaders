@@ -1,3 +1,5 @@
+using invaders.sceneobjects;
+
 namespace invaders;
 
 public static class EventManager
@@ -7,6 +9,8 @@ public static class EventManager
         BroadcastPlayerChangeHealth();
         BroadcastBackgroundSetScrollSpeed();
         BroadcastPlayerDeath();
+        BroadcastPlayerHit();
+        BroadcastEnemyDeath();
     }
     
     public delegate void ValueChangeEvent<T>(T diff); // FIX: T should be value type
@@ -43,5 +47,29 @@ public static class EventManager
     {
         if (_broadcastPlayerDeath) PlayerDeath?.Invoke();
         _broadcastPlayerDeath = false;
+    }
+
+    public static event SimpleEvent? PlayerHit;
+    private static bool _broadcastPlayerHit;
+    public static void PublishPlayerHit() { _broadcastPlayerHit = true; }
+    private static void BroadcastPlayerHit()
+    {
+        if (_broadcastPlayerHit) PlayerHit?.Invoke();
+        _broadcastPlayerHit = false;
+    }
+    
+
+    public delegate void EnemyEvent(AbstractEnemy enemy);
+
+    public static event EnemyEvent? EnemyDeath;
+    private static List<AbstractEnemy> _deadEnemies = new();
+    public static void PublishEnemyDead(AbstractEnemy enemy) { _deadEnemies.Add(enemy); }
+    private static void BroadcastEnemyDeath()
+    {
+        foreach (AbstractEnemy enemy in _deadEnemies)
+        {
+            EnemyDeath?.Invoke(enemy);
+        }
+        _deadEnemies.Clear();
     }
 }

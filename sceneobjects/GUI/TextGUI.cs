@@ -6,6 +6,7 @@ namespace invaders.sceneobjects;
 public class TextGUI : GUI
 {
     protected Text text = new();
+    private Alignment _alignment;
     
     public override Vector2f Position
     {
@@ -15,14 +16,15 @@ public class TextGUI : GUI
 
     public override FloatRect Bounds => text.GetGlobalBounds();
 
-    public TextGUI(string text, bool centerAligned = true) : base("invaders", new IntRect(), 1)
+    public TextGUI(string displayText, Alignment alignment = Alignment.Center) : base("invaders", new IntRect(), 1)
     {
-        this.text.DisplayedString = text;
-        this.text.Font = AssetManager.LoadFont("pixel-font");
-        this.text.CharacterSize = 10 * (int)Scale;
-        this.text.FillColor = Color.White;
+        _alignment = alignment;
+        text.DisplayedString = displayText;
+        text.Font = AssetManager.LoadFont("pixel-font");
+        text.CharacterSize = 10 * (int)Scale;
+        text.FillColor = Color.White;
         zIndex = 200;
-        if (centerAligned) CenterText();
+        AlignText();
     }
 
     protected override void Initialize()
@@ -41,6 +43,7 @@ public class TextGUI : GUI
     public void SetText(string newText)
     {
         text.DisplayedString = newText;
+        AlignText();
     }
 
     public void SetFillColor(Color color)
@@ -53,9 +56,10 @@ public class TextGUI : GUI
         return new Animatable(this, text, animator);
     }
 
-    private void CenterText()
+    private void AlignText()
     {
         if (text.DisplayedString == "") return;
+        if (_alignment == Alignment.Left) return;
         
         // create dictionary
         Dictionary<char, float> characterToWidth = new()
@@ -95,9 +99,20 @@ public class TextGUI : GUI
             {
                 float spaceWidth = characterToWidth[' '];
                 int paddingSpaces = (int) MathF.Ceiling(padding / spaceWidth); // round up to integer
-                for (int j = 0; j < paddingSpaces / 2; j++)
+                switch (_alignment)
                 {
-                    lines[i] = " " + lines[i] + " ";
+                    case Alignment.Center:
+                        for (int j = 0; j < paddingSpaces / 2; j++)
+                        {
+                            lines[i] = " " + lines[i] + " ";
+                        }
+                        break;
+                    case Alignment.Right:
+                        for (int j = 0; j < paddingSpaces; j++)
+                        {
+                            lines[i] = " " + lines[i];
+                        }
+                        break;
                 }
             }
         }
@@ -112,4 +127,9 @@ public class TextGUI : GUI
             target.Draw(animatable.Text);
         }
     ];
+
+    public enum Alignment
+    {
+        Left, Center, Right
+    }
 }
