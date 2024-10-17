@@ -124,18 +124,19 @@ public static class Scene
     
 
     // borrowed from lab project 4
-    public static IEnumerable<IntersectResult<T>> FindIntersectingEntities<T>(FloatRect bounds, CollisionLayer layer) where T : RenderObject
+    public static IEnumerable<IntersectResult<T>> FindIntersectingEntities<T>(this RenderObject renderObject, CollisionLayer layer) where T : RenderObject
     {
         int lastEntity = _sceneObjects.Count - 1;
 
         for (int i = lastEntity; i >= 0; i--)
         {
             SceneObject sceneObject = _sceneObjects[i];
+            if (ReferenceEquals(sceneObject, renderObject)) continue;
             if (sceneObject is not RenderObject e) continue;
             if (e is not T t) continue; 
             if (t.Dead) continue;
             if (t.Layer != layer) continue;
-            if (t.Bounds.IntersectsOutDiff(bounds, out Vector2f diff))
+            if (t.Bounds.IntersectsOutDiff(renderObject.Bounds, out Vector2f diff))
             {
                 yield return new IntersectResult<T>(t, diff);
             }

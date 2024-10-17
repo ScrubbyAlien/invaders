@@ -9,8 +9,9 @@ public class FadingTextGUI : TextGUI
     private float _fadeTimer;
     private Vector2f _drift;
     
-    public FadingTextGUI(float fadeTime, string displayText, uint size = 20) : base(displayText, Alignment.Center)
+    public FadingTextGUI(float fadeTime, string displayText, uint size = 20) : base(displayText, size, Alignment.Center)
     {
+        zIndex = 500;
         _fadeTime = fadeTime;
         text.CharacterSize = size;
     }

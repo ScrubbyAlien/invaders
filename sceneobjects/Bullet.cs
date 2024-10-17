@@ -42,12 +42,12 @@ public class Bullet : RenderObject
     public override void Update(float deltaTime)
     {
         Position += _velocity * deltaTime;
-        if (Position.Y > Program.ScreenHeight + Bounds.Height / 2 || Position.Y < 0 - Bounds.Height / 2)
+        if (Position.Y > Program.ScreenHeight + Bounds.Height || Position.Y < Settings.TopGuiHeight - Bounds.Height)
         {
             Dead = true;
         }
         
-        foreach (IntersectResult<Actor> intersect in Scene.FindIntersectingEntities<Actor>(Bounds, EffectiveAgainstLayer))
+        foreach (IntersectResult<Actor> intersect in this.FindIntersectingEntities<Actor>(EffectiveAgainstLayer))
         {
             // prevents enemies in death animation or invincible player to eat bullets
             if (!intersect.IntersectedEntity.WillDie && !intersect.IntersectedEntity.IsInvincible)

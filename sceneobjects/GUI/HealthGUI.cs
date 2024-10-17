@@ -31,7 +31,7 @@ public class HealthGUI : GUI
     {
         for (int i = 0; i < currentHealth; i++)
         {
-            Position = new Vector2f(12, 878 - i * TextureRects["healthBar"].Height * Scale);
+            Position = new Vector2f(12, Program.ScreenHeight - 24 - i * TextureRects["healthBar"].Height * Scale);
             target.Draw(sprite);
         }
     }

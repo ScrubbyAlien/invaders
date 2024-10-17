@@ -16,12 +16,12 @@ public class TextGUI : GUI
 
     public override FloatRect Bounds => text.GetGlobalBounds();
 
-    public TextGUI(string displayText, Alignment alignment = Alignment.Center) : base("invaders", new IntRect(), 1)
+    public TextGUI(string displayText, uint size = 10, Alignment alignment = Alignment.Center) : base("invaders", new IntRect(), 1)
     {
         _alignment = alignment;
         text.DisplayedString = displayText;
         text.Font = AssetManager.LoadFont("pixel-font");
-        text.CharacterSize = 10 * (int)Scale;
+        text.CharacterSize = size * (int)Scale;
         text.FillColor = Color.White;
         zIndex = 200;
         AlignText();
@@ -61,10 +61,11 @@ public class TextGUI : GUI
         if (text.DisplayedString == "") return;
         if (_alignment == Alignment.Left) return;
         
-        // create dictionary
+        // create dictionary of char to character width
         Dictionary<char, float> characterToWidth = new()
         {
-            { ' ', 8f } // don't know why 8 is the magic number, it just works
+            // the width of ' ' when gotten from GetGlyph is 0 so we set it manually
+            { ' ',  7 } // i dont know why it's 7, got it by trial and error
         };
         HashSet<char> charactersInText = new() { ' ' };
         foreach (char c in text.DisplayedString)

@@ -43,6 +43,8 @@ public static class Utility
         ) + offset;
     }
     
+        
+    
     // Vector2f extension methods borrowed from Collision class from lab project breakout
     public static Vector2f Normalized(this Vector2f v)
     {
@@ -77,7 +79,10 @@ public static class Utility
         { "title", new(72, 40, 48, 24) },
         { "multiplierBar", new(2, 40, 1, 1) },
         { "healthBar", new(0, 40, 8, 2) },
-        { "guiBackground", new IntRect(0, 104, 128, 24)}
+        { "guiBackgroundLeft", new (97, 80, 31, 24)},
+        { "guiBackgroundMiddle", new(0, 104, 96, 24)},
+        { "guiBackgroundRight", new(97, 104, 31, 24)},
+        { "blackSquare", new (20, 114, 1, 1)}
     };
 }
 

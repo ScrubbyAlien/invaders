@@ -39,7 +39,7 @@ public class Grunt : AbstractEnemy
 
         if (!WillDie)
         {
-            if (Position.Y > 0) _fireTimer += deltaTime;
+            if (Position.Y > Settings.TopGuiHeight) _fireTimer += deltaTime;
             if (_fireTimer >= _timeUntilFire)
             {
                 Shoot(BulletType.Enemy);
@@ -62,9 +62,8 @@ public class Grunt : AbstractEnemy
 
     protected override void Die()
     {
-        base.Die();
         animator.PlayAnimation("death", true);
-        EventManager.PublishEnemyDead(this);
+        base.Die();
     }
 
     private float GetNewFireTime()

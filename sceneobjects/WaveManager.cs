@@ -162,7 +162,7 @@ public class WaveManager : SceneObject
 
     private void DrawText(string text, Vector2f positionFromMiddle)
     {
-        _transitionText = new TextGUI(text);
+        _transitionText = new TextGUI(text, 8);
         _transitionText.Position = MiddleOfScreen(_transitionText.Bounds) + positionFromMiddle;
         Scene.QueueSpawn(_transitionText);
         // call PlayAnimatio after next ProcessSpawnQueue call so _transitionText's Initialize method can be called first

@@ -8,7 +8,7 @@ public abstract class RenderObject : SceneObject
 {
     protected Sprite sprite = new();
     protected string textureName;
-    protected const float Scale = 3;
+    public const float Scale = 4;
     protected Animator animator;
     public int zIndex;
     private bool _hidden;
@@ -46,6 +46,8 @@ public abstract class RenderObject : SceneObject
 
     public void Hide() { _hidden = true; }
     public void Unhide() { _hidden = false; }
+
+    public void SetZIndex(int index) => zIndex = index;
     
     
     public static int CompareByZIndex(RenderObject? e1, RenderObject? e2)

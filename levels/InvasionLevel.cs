@@ -16,12 +16,27 @@ public class InvasionLevel() : Level("invasion")
             AddObject(new Background());
         }
 
-        SpriteGUI GuiBackground = new SpriteGUI(TextureRects["guiBackground"]);
-        GuiBackground.Position = new Vector2f(0, 0);
-        AddObject(GuiBackground);
+        SpriteGUI guiBackgroundMiddle = new SpriteGUI(TextureRects["guiBackgroundMiddle"]);
+        guiBackgroundMiddle.Position = MiddleOfScreen(
+            guiBackgroundMiddle.Bounds,
+            new Vector2f(0, (-Program.ScreenHeight + guiBackgroundMiddle.Bounds.Height) / 2)
+        );
+        guiBackgroundMiddle.SetZIndex(300);
+        AddObject(guiBackgroundMiddle);
+        
+        
+        
+        SpriteGUI blackBar = new SpriteGUI(TextureRects["blackSquare"]);
+        blackBar.Position = new Vector2f(0, 0);
+        blackBar.SetScale(new Vector2f(Program.ScreenWidth, Settings.TopGuiHeight));
+        blackBar.SetZIndex(290)
+            ;
+        AddObject(blackBar);
+
+        
 
         // Create WaveManager
-        string[] assault1Strings = ["Incoming threat!", "First threat cleared"];
+        string[] assault1Strings = ["Incoming threat!\nTest", "First threat cleared"];
         Assault assault1 = new Assault(assault1Strings);
         assault1.AddWave(new Wave(0f).AddEnemyGroup('g', 7));
         assault1.AddWave(new Wave(10f).AddEnemyGroup('g', 10));
@@ -39,17 +54,14 @@ public class InvasionLevel() : Level("invasion")
         
         
         // create gui and score manager
-        TextGUI scoreText = new TextGUI("x1\n0", TextGUI.Alignment.Right);
+        TextGUI scoreText = new TextGUI("0", 10, TextGUI.Alignment.Right);
         scoreText.SetTag(SceneObjectTag.ScoreText);
-        scoreText.Position = BottomRightOfScreen(scoreText.Bounds, new Vector2f(-24, -24));
+        scoreText.SetZIndex(310);
         AddObject(scoreText);
 
         SpriteGUI multiplierBar = new SpriteGUI(TextureRects["multiplierBar"]);
         multiplierBar.SetTag(SceneObjectTag.MultiplierBar);
         multiplierBar.SetScale(new Vector2f(100, 5));
-        multiplierBar.Position = BottomRightOfScreen(
-            multiplierBar.Bounds,
-            new Vector2f(-24, -24 - scoreText.Bounds.Height - 8));
         AddObject(multiplierBar);
         
         AddObject(new ScoreManager(100, 1.7f));

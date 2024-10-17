@@ -46,9 +46,12 @@ public class ScoreManager : SceneObject
         {
             ResetMultiplier();
         }
-        _scoreText.SetText($"x{_multiplier}\n" +
-                           $"{_currentScore}");
-        _scoreText.Position = BottomRightOfScreen(_scoreText.Bounds, new Vector2f(-24, -24));
+        _scoreText.SetText($"{_currentScore}");
+        _scoreText.Position = MiddleOfScreen(
+            _scoreText.Bounds, 
+            new Vector2f(0, 
+                (-Program.ScreenHeight / 2f) + 32 + (48 - _scoreText.Bounds.Height) / 2)
+            );
         
         if (_multiplier > 1)
         {
@@ -81,7 +84,7 @@ public class ScoreManager : SceneObject
     private void OnEnemyDeath(AbstractEnemy enemy)
     {
         int score = 0;
-        if (enemy is Grunt) score = 100;
+        if (enemy is Grunt) score = 50;
         score *= _multiplier;
         
         CreateFadingScoreText(

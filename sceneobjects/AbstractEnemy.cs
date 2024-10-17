@@ -38,12 +38,16 @@ public abstract class AbstractEnemy : Actor
         {
             _manager = manager;
         }
-        
         horizontalSpeed = new Random().Next(2) == 0 ? horizontalSpeed : -horizontalSpeed;
+        
         Position = new Vector2f(
             new Random().Next(Settings.MarginSide, Program.ScreenWidth - Settings.MarginSide - (int) Bounds.Width),
-            new Random().Next((int) -Bounds.Height - Settings.SpawnInterval, (int) -Bounds.Height)
+            new Random().Next((int) -Bounds.Height - Settings.SpawnInterval, (int) -Bounds.Height +  Settings.TopGuiHeight)
         );
+        foreach (IntersectResult<AbstractEnemy> r in this.FindIntersectingEntities<AbstractEnemy>(CollisionLayer.Enemy))
+        {
+            Position += r.Diff;
+        }
     }
 
     public override void Update(float deltaTime)
@@ -60,7 +64,13 @@ public abstract class AbstractEnemy : Actor
     {
         horizontalSpeed = -horizontalSpeed;
     }
-    
+
+    protected override void Die()
+    {
+        base.Die();
+        EventManager.PublishEnemyDead(this);
+    }
+
     protected override void OnOutsideScreen((ScreenState x, ScreenState y) state, Vector2f outsidePos, out Vector2f adjustedPos)
     {
         adjustedPos = outsidePos;
