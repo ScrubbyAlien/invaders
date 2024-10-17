@@ -121,7 +121,6 @@ public class ScoreManager : SceneObject
     // }
     private void CreateFadingScoreText(float fadeTime, string text, Func<FadingTextGUI, Vector2f> positionFunc, Vector2f drift)
     {
-        Console.WriteLine(text);
         FadingTextGUI fadingScore = new FadingTextGUI(fadeTime, text);
         fadingScore.Position = positionFunc(fadingScore);
         fadingScore.SetDrift(drift);

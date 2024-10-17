@@ -76,7 +76,8 @@ public static class Utility
         { "largestStar", new(0, 69, 7, 7) },
         { "title", new(72, 40, 48, 24) },
         { "multiplierBar", new(2, 40, 1, 1) },
-        { "healthBar", new(0, 40, 8, 2) }
+        { "healthBar", new(0, 40, 8, 2) },
+        { "guiBackground", new IntRect(0, 104, 128, 24)}
     };
 }
 

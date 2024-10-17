@@ -16,6 +16,10 @@ public class InvasionLevel() : Level("invasion")
             AddObject(new Background());
         }
 
+        SpriteGUI GuiBackground = new SpriteGUI(TextureRects["guiBackground"]);
+        GuiBackground.Position = new Vector2f(0, 0);
+        AddObject(GuiBackground);
+
         // Create WaveManager
         string[] assault1Strings = ["Incoming threat!", "First threat cleared"];
         Assault assault1 = new Assault(assault1Strings);
