@@ -4,7 +4,7 @@ namespace invaders;
 
 public static class Settings
 {
-    public const int FrameLimit = 60;
+    public const int FrameLimit = 144;
     public const string StartLevel = "mainmenu";
     public const int MarginSide = 24;
     public const int TopGuiHeight = 23 * (int)RenderObject.Scale;

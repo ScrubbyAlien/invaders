@@ -8,7 +8,7 @@ public class Background : RenderObject
 {
     private const float StarDensity = 0.0002f;
 
-    private Dictionary<Vector2f, IntRect> StarMap =  new();
+    private Dictionary<Vector2f, string> StarMap =  new();
     private int _seed;
     private float _scroll;
     private float _scrollSpeed = Settings.AmbientScrollInLevel;
@@ -58,11 +58,17 @@ public class Background : RenderObject
 
     public override void Render(RenderTarget target)
     {
-        foreach (KeyValuePair<Vector2f,IntRect> star in StarMap)
+        foreach (KeyValuePair<Vector2f,string> star in StarMap)
         {
             float y = (star.Key.Y + _scroll) % Program.ScreenHeight;
             sprite.Position = new Vector2f(star.Key.X, y);
-            sprite.TextureRect = star.Value;
+            bool middleStar = _scrollSpeed > 1000;
+            bool longStar = _scrollSpeed > 2000;
+            string starString = star.Value;
+            if (middleStar) starString = star.Value + "Middle";
+            if (longStar) starString = star.Value + "Long";
+            sprite.TextureRect = TextureRects[starString];
+            sprite.Position += new Vector2f(0, -Bounds.Height - 2);
             target.Draw(sprite);
         }
     }
@@ -81,17 +87,17 @@ public class Background : RenderObject
                 {
                     StarMap[new Vector2f(j, i)] = random.Next(10) switch
                     {
-                        0 => TextureRects["smallStar"],
-                        1 => TextureRects["smallStar"],
-                        2 => TextureRects["smallStar"],
-                        3 => TextureRects["smallStar"],
-                        4 => TextureRects["mediumStar"],
-                        5 => TextureRects["mediumStar"],
-                        6 => TextureRects["mediumStar"],
-                        7 => TextureRects["mediumStar"],
-                        8 => TextureRects["largeStar"],
-                        9 => TextureRects["largestStar"],
-                        _ => TextureRects["smallStar"]
+                        0 => "smallStar",
+                        1 => "smallStar",
+                        2 => "smallStar",
+                        3 => "smallStar",
+                        4 => "mediumStar",
+                        5 => "mediumStar",
+                        6 => "mediumStar",
+                        7 => "mediumStar",
+                        8 => "largeStar",
+                        9 => "largestStar",
+                        _ => "smallStar"
                     };
                 }
             }
