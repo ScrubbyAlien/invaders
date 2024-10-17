@@ -63,15 +63,14 @@ public static class Utility
 
     public static readonly Dictionary<string, IntRect> TextureRects = new()
     {
-        { "player", new(73, 19, 14, 12) },
+        { "player", new(0, 1, 8, 7) },
+        { "playerLeft", new(9, 1, 7, 7) },
+        { "playerRight", new(17, 1, 7, 7) },
         { "grunt1", new(24, 0, 8, 8) },
         { "grunt2", new(24, 8, 8, 8) },
-        { "playerBulletSmall", new (11, 20, 2, 2) },
-        { "playerBulletMedium", new (10, 26, 4, 4) },
-        { "playerBulletLarge", new (8, 32, 8, 8) },
-        { "enemyBulletSmall", new (19, 20, 2, 2) },
-        { "enemyBulletMedium", new (18, 26, 4, 4) },
-        { "enemyBulletLarge", new (16, 32, 8, 8) },
+        { "playerBullet", new (10, 26, 4, 4) },
+        { "enemyBullet", new (18, 26, 4, 4) },
+        { "enemyExplosion", new (16, 32, 8, 8) },
         { "smallStar", new(2, 54, 1, 1) },
         { "mediumStar", new(1, 57, 3, 3) },
         { "largeStar", new(0, 62, 5, 5) },
@@ -84,12 +83,13 @@ public static class Utility
         { "mediumStarMiddle", new(31, 69, 3, 8) },
         { "largeStarMiddle", new(35, 69, 5, 11) },
         { "largestStarMiddle", new(41, 69, 7, 17) },
-        { "title", new(72, 40, 48, 24) },
-        { "multiplierBar", new(2, 40, 1, 1) },
-        { "healthBar", new(0, 40, 8, 2) },
-        { "guiBackgroundLeft", new (97, 80, 31, 24)},
+        { "title", new(40, 40, 59, 11) },
+        { "multiplierBar", new(20, 42, 1, 5) },
+        { "healthBar", new(3, 40, 1, 6) },
+        { "healthBarEnd", new(1, 40, 3, 6) },
+        { "guiBackgroundLeft", new (84, 58, 44, 24)},
+        { "guiBackgroundRight", new(84, 81, 44, 24)},
         { "guiBackgroundMiddle", new(0, 104, 96, 24)},
-        { "guiBackgroundRight", new(97, 104, 31, 24)},
         { "blackSquare", new (20, 114, 1, 1)}
     };
 }

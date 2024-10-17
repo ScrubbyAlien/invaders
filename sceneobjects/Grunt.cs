@@ -88,7 +88,7 @@ public class Grunt : AbstractEnemy
             // draw explosion
             Sprite explosion = new Sprite();
             int frameCount = animatable.Animator.FrameCount;
-            string rectKey = new Random().Next(2) == 0 ? "enemyBulletMedium" : "enemyBulletLarge";
+            string rectKey = new Random().Next(2) == 0 ? "enemyBullet" : "enemyExplosion";
             explosion.Texture = AssetManager.LoadTexture("invaders");
             explosion.TextureRect = TextureRects[rectKey];
             explosion.Scale = new Vector2f(Scale, Scale);

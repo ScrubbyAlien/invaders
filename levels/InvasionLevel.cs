@@ -16,6 +16,13 @@ public class InvasionLevel() : Level("invasion")
             AddObject(new Background());
         }
 
+        // create gui background
+        SpriteGUI blackBar = new SpriteGUI(TextureRects["blackSquare"]);
+        blackBar.Position = new Vector2f(0, 0);
+        blackBar.SetScale(new Vector2f(Program.ScreenWidth, Settings.TopGuiHeight));
+        blackBar.SetZIndex(290);
+        AddObject(blackBar);
+        
         SpriteGUI guiBackgroundMiddle = new SpriteGUI(TextureRects["guiBackgroundMiddle"]);
         guiBackgroundMiddle.Position = MiddleOfScreen(
             guiBackgroundMiddle.Bounds,
@@ -23,20 +30,43 @@ public class InvasionLevel() : Level("invasion")
         );
         guiBackgroundMiddle.SetZIndex(300);
         AddObject(guiBackgroundMiddle);
-        
-        
-        
-        SpriteGUI blackBar = new SpriteGUI(TextureRects["blackSquare"]);
-        blackBar.Position = new Vector2f(0, 0);
-        blackBar.SetScale(new Vector2f(Program.ScreenWidth, Settings.TopGuiHeight));
-        blackBar.SetZIndex(290)
-            ;
-        AddObject(blackBar);
+
+        SpriteGUI guiBackgroundLeft = new SpriteGUI(TextureRects["guiBackgroundLeft"]);
+        guiBackgroundLeft.Position = new Vector2f(0, 0);
+        guiBackgroundLeft.SetZIndex(300);
+        AddObject(guiBackgroundLeft);
+
+        SpriteGUI guiBackgroundRight = new SpriteGUI(TextureRects["guiBackgroundRight"]);
+        guiBackgroundRight.Position = new Vector2f(Program.ScreenWidth - guiBackgroundRight.Bounds.Width, 0);
+        guiBackgroundRight.SetZIndex(300);
+        AddObject(guiBackgroundRight);
 
         
+        // create gui and score manager
+        TextGUI scoreText = new TextGUI("0");
+        scoreText.SetTag(SceneObjectTag.ScoreText);
+        scoreText.SetZIndex(310);
+        AddObject(scoreText);
 
+        TextGUI multiplierText = new TextGUI("x1", 7);
+        multiplierText.SetTag(SceneObjectTag.MultiplierText);
+        multiplierText.SetZIndex(310);
+        AddObject(multiplierText);
+        
+        SpriteGUI multiplierBar = new SpriteGUI(TextureRects["multiplierBar"]);
+        multiplierBar.SetTag(SceneObjectTag.MultiplierBar);
+        multiplierBar.SetScale(new Vector2f(100, 5));
+        multiplierBar.SetZIndex(310);
+        AddObject(multiplierBar);
+        
+        HealthGUI healthBar = new HealthGUI();
+        healthBar.SetZIndex(310);
+        AddObject(healthBar);
+        
+        AddObject(new ScoreManager());
+        
         // Create WaveManager
-        string[] assault1Strings = ["Incoming threat!\nTest", "First threat cleared"];
+        string[] assault1Strings = ["Incoming threat!", "First threat cleared"];
         Assault assault1 = new Assault(assault1Strings);
         assault1.AddWave(new Wave(0f).AddEnemyGroup('g', 7));
         assault1.AddWave(new Wave(10f).AddEnemyGroup('g', 10));
@@ -53,18 +83,5 @@ public class InvasionLevel() : Level("invasion")
         AddObject(manager);
         
         
-        // create gui and score manager
-        TextGUI scoreText = new TextGUI("0", 10, TextGUI.Alignment.Right);
-        scoreText.SetTag(SceneObjectTag.ScoreText);
-        scoreText.SetZIndex(310);
-        AddObject(scoreText);
-
-        SpriteGUI multiplierBar = new SpriteGUI(TextureRects["multiplierBar"]);
-        multiplierBar.SetTag(SceneObjectTag.MultiplierBar);
-        multiplierBar.SetScale(new Vector2f(100, 5));
-        AddObject(multiplierBar);
-        
-        AddObject(new ScoreManager(100, 1.7f));
-        AddObject(new HealthGUI());
     }
 }

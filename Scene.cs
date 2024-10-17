@@ -163,7 +163,7 @@ public static class Scene
         return false;
     }
     
-    public static bool FindByTag<T>(SceneObjectTag tag, out T? typed) where T : SceneObject
+    public static bool FindByTag<T>(SceneObjectTag tag, out T typed) where T : SceneObject
     {
         foreach (SceneObject sceneObject in _sceneObjects)
         {
@@ -173,7 +173,7 @@ public static class Scene
                 return true;
             }
         }
-        typed = null;
+        typed = null!;
         return false;
     }
     

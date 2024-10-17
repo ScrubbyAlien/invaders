@@ -18,22 +18,21 @@ public class Player : Actor
     
     public Player() : base("invaders", TextureRects["player"], Scale)
     {
-        sprite.Scale = new Vector2f(sprite.Scale.X, -sprite.Scale.Y);
-        sprite.Origin = new Vector2f(sprite.Origin.X, 12); // adjust origin after flipping sprite
-        maxHealth = 20;
+        maxHealth = 32;
         bulletDamage = 5;
         
         _invincibilityTimer = _invicibilityWindow;
         zIndex = 10;
     }
 
-    protected override Vector2f bulletOrigin => Position + new Vector2f(25, 25);
+    protected override Vector2f bulletOrigin => Position + new Vector2f(10, 6) * Scale;
 
     public override CollisionLayer Layer => CollisionLayer.Player;
     public override bool IsInvincible => _invincibilityTimer < _invicibilityWindow;
 
     public int CurrentHealth => currentHealth;
 
+    
     protected override void Initialize()
     {
         base.Initialize();
@@ -65,6 +64,10 @@ public class Player : Actor
         if (up) newPos.Y = -1;
         if (down) newPos.Y = 1;
         if (up && down) newPos.Y = 0;
+
+        if (newPos.X > 0) sprite.TextureRect = TextureRects["playerRight"];
+        else if (newPos.X < 0) sprite.TextureRect = TextureRects["playerLeft"];
+        else sprite.TextureRect = TextureRects["player"];
         
         TryMoveWithinBounds(newPos.Normalized() * Speed * deltaTime, Settings.MarginSide, Settings.MarginSide);
 
@@ -150,6 +153,9 @@ public class Player : Actor
     private Animation.FrameRenderer[] blinking =
     [
         BasicFrameRenderer(NoSprite),
-        BasicFrameRenderer(TextureRects["player"]),
+        (animatable, target) =>
+        {
+            target.Draw(animatable.Sprite);
+        },
     ];
 }

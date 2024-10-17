@@ -15,19 +15,11 @@ public class Bullet : RenderObject
     
     private static Dictionary<BulletType, IntRect[]> bulletTypes = new()
     {
-        {BulletType.Player, [
-            TextureRects["playerBulletSmall"],
-            TextureRects["playerBulletMedium"],
-            TextureRects["playerBulletLarge"],
-        ]},
-        { BulletType.Enemy, [
-            TextureRects["enemyBulletSmall"],
-            TextureRects["enemyBulletMedium"],
-            TextureRects["enemyBulletLarge"],
-        ]}
+        { BulletType.Player, [TextureRects["playerBullet"]] },
+        { BulletType.Enemy, [TextureRects["enemyBullet"]] }
     };
 
-    public Bullet(BulletType type, float speed, int damage) : base("invaders", bulletTypes[type][1], Scale)
+    public Bullet(BulletType type, float speed, int damage) : base("invaders", bulletTypes[type][0], Scale)
     {
         Type = type;
         EffectiveAgainstLayer = Type == BulletType.Player ? CollisionLayer.Enemy : CollisionLayer.Player;

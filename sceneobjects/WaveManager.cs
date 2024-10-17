@@ -9,6 +9,7 @@ public class WaveManager : SceneObject
 {
     private bool _inTransition;
     private bool _inEndLevel;
+    private bool _spaceReleased;
     
     private float _waveTimer;
     private int _currentWave;
@@ -57,9 +58,11 @@ public class WaveManager : SceneObject
         {
             if (AreAnyKeysPressed([Keyboard.Key.Space]))
             {
+                if (!_spaceReleased) return;
                 EventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInLevel, 1f);
                 Scene.LoadLevel("mainmenu");
             }
+            else _spaceReleased = true;
             return;
         }
         if (!_inTransition)
@@ -140,10 +143,9 @@ public class WaveManager : SceneObject
         DrawText(
             "Invaders defeated!\n" +
             "Congratulations!\n" +
-            $"Final score: {GetFinalScore()}\n" +
             " \n" +
             "press space to return to menu", 
-            new Vector2f(0, -150)
+            new Vector2f(0, -100)
         );
         EventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInTransition, 3f);
     }
@@ -154,7 +156,6 @@ public class WaveManager : SceneObject
         
         DrawText(
             "You have been defeated!\n" +
-            $"Final score: {GetFinalScore()}\n" +
             " \n" +
             "press space to return to menu",
             new Vector2f(0, -100));
@@ -179,17 +180,6 @@ public class WaveManager : SceneObject
                 Scene.QueueSpawn(enemy);
             }
         }
-    }
-
-    private int GetFinalScore()
-    {
-        int finalScore = 0;
-        if (Scene.FindByType(out ScoreManager? score))
-        {
-            finalScore = score!.CurrentScore;
-        }
-
-        return finalScore;
     }
 }
 

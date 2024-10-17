@@ -21,11 +21,11 @@ public class MainMenuLevel() : Level("mainmenu")
         AddObject(title);
         
         TextButtonGUI playButton = new TextButtonGUI("Play");
-        playButton.Position = MiddleOfScreen(playButton.Bounds, new Vector2f(0, 100));
+        playButton.Position = MiddleOfScreen(playButton.Bounds, new Vector2f(0, 70));
         // endless mode button
         // high score button
         TextButtonGUI quitButton = new TextButtonGUI("Quit");
-        quitButton.Position = MiddleOfScreen(quitButton.Bounds, new Vector2f(0, 250));
+        quitButton.Position = MiddleOfScreen(quitButton.Bounds, new Vector2f(0, 220));
         AddObject(playButton);
         AddObject(quitButton);
 

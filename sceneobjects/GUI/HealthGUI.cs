@@ -4,14 +4,11 @@ using static invaders.Utility;
 
 namespace invaders.sceneobjects;
 
-public class HealthGUI : GUI
+public class HealthGUI : SpriteGUI
 {
     private int currentHealth;
 
-    public HealthGUI() : base("invaders", TextureRects["healthBar"], Scale)
-    {
-        zIndex = 100;
-    }
+    public HealthGUI() : base(TextureRects["healthBar"]) { }
 
     protected override void Initialize()
     {
@@ -31,8 +28,31 @@ public class HealthGUI : GUI
     {
         for (int i = 0; i < currentHealth; i++)
         {
-            Position = new Vector2f(12, Program.ScreenHeight - 24 - i * TextureRects["healthBar"].Height * Scale);
+            if (i == currentHealth - 1)
+            {
+                sprite.TextureRect = TextureRects["healthBarEnd"];
+                Position = new Vector2f(
+                    (TextureRects["guiBackgroundLeft"].Width - 3) * Scale - TextureRects["healthBar"].Width * Scale * i - Scale * 2,
+                    35
+                );
+                target.Draw(sprite);
+                continue;
+            }
+            sprite.TextureRect = TextureRects["healthBar"];
+            Position = new Vector2f(
+                (TextureRects["guiBackgroundLeft"].Width - 3) * Scale - Bounds.Width * i,
+                35
+            );
             target.Draw(sprite);
+             
+                
+                // MiddleOfScreen(
+                // Bounds, 
+                // new Vector2f(
+                // -TextureRects["guiBackgroundMiddle"].Width * Scale / 2f - 2 - Bounds.Width * i, 
+                // -Program.ScreenHeight / 2f + 40
+                // )); 
+            
         }
     }
 
