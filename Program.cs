@@ -16,7 +16,9 @@ internal static class Program
         {
             // ReSharper disable once AccessToDisposedClosure
             window.Closed += (o, e) => window.Close();
-
+            window.SetFramerateLimit(144);
+            
+            
             Clock clock = new();
             LevelManager.Instantiate();
             Scene.SetWindow(window);

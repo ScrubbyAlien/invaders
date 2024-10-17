@@ -10,9 +10,24 @@ public class ScoreManager : SceneObject
     private int _multiplier = 1;
     private float _multiplierTimer;
     private float _multiplierLifeSpan = 2f;
+    private float _passiveScoreTimer;
+    private float _passiveScoreInterval;
+    private int _passiveScore;
+    
     private TextGUI _scoreText = null!;
     private SpriteGUI _multiplierBar = null!;
-    
+
+    public int CurrentScore => _currentScore;
+
+    public ScoreManager()
+    { }
+
+    public ScoreManager(int passiveScore, float interval) : this()
+    {
+        
+        _passiveScore = passiveScore;
+        _passiveScoreInterval = interval;
+    }
     
     protected override void Initialize()
     {
@@ -25,6 +40,7 @@ public class ScoreManager : SceneObject
 
     public override void Update(float deltaTime)
     {
+        
         _multiplierTimer += deltaTime;
         if (_multiplierTimer > _multiplierLifeSpan)
         {
@@ -47,6 +63,18 @@ public class ScoreManager : SceneObject
         {
             _multiplierBar.SetScale(new Vector2f());
         }
+
+        Scene.FindByType(out WaveManager? waveManager);
+        if (_passiveScore > 0 && !waveManager!.InTransition)
+        {
+            _passiveScoreTimer += deltaTime;
+            if (_passiveScoreTimer >= _passiveScoreInterval)
+            {
+                _passiveScoreTimer = 0;
+                GainScore(_passiveScore);
+
+            }
+        }
     }
 
 
@@ -55,10 +83,13 @@ public class ScoreManager : SceneObject
         int score = 0;
         if (enemy is Grunt) score = 100;
         score *= _multiplier;
-        FadingTextGUI fadingScore = new FadingTextGUI(0.5f, $"{score}");
-        fadingScore.Position = enemy.Position + new Vector2f(-2, -16);
-        fadingScore.SetDrift(new Vector2f(0, -1).Normalized() * 30);
-        Scene.QueueSpawn(fadingScore);
+        
+        CreateFadingScoreText(
+            0.5f, 
+            $"{score}",
+            f => enemy.Position + new Vector2f((enemy.Bounds.Width - f.Bounds.Width) / 2, -enemy.Bounds.Height - 5),
+            new Vector2f(0, -1).Normalized() * 30
+            );
         GainScore(score);
         IncrementMultiplier();
     }
@@ -80,7 +111,21 @@ public class ScoreManager : SceneObject
         _multiplier = 1;
         _multiplierTimer = 0f;
     }
-    
-    
+
+    // private void CreateFadingScoreText(float fadeTime, string text, uint size, Func<FadingTextGUI, Vector2f> positionFunc, Vector2f drift)
+    // {
+    //     FadingTextGUI fadingScore = new FadingTextGUI(fadeTime, text, size);
+    //     fadingScore.Position = positionFunc(fadingScore);
+    //     fadingScore.SetDrift(drift);
+    //     Scene.QueueSpawn(fadingScore);
+    // }
+    private void CreateFadingScoreText(float fadeTime, string text, Func<FadingTextGUI, Vector2f> positionFunc, Vector2f drift)
+    {
+        Console.WriteLine(text);
+        FadingTextGUI fadingScore = new FadingTextGUI(fadeTime, text);
+        fadingScore.Position = positionFunc(fadingScore);
+        fadingScore.SetDrift(drift);
+        Scene.QueueSpawn(fadingScore);
+    }
     
 }

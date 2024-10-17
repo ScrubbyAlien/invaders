@@ -48,7 +48,7 @@ public class InvasionLevel() : Level("invasion")
             new Vector2f(-24, -24 - scoreText.Bounds.Height - 8));
         AddObject(multiplierBar);
         
-        AddObject(new ScoreManager());
+        AddObject(new ScoreManager(100, 1.7f));
         AddObject(new HealthGUI());
     }
 }

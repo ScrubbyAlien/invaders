@@ -9,10 +9,10 @@ public class FadingTextGUI : TextGUI
     private float _fadeTimer;
     private Vector2f _drift;
     
-    public FadingTextGUI(float fadeTime, string displayText, Alignment alignment = Alignment.Center) : base(displayText, alignment)
+    public FadingTextGUI(float fadeTime, string displayText, uint size = 20) : base(displayText, Alignment.Center)
     {
         _fadeTime = fadeTime;
-        text.CharacterSize = 20;
+        text.CharacterSize = size;
     }
     
     public override void Update(float deltaTime)

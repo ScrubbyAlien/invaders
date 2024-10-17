@@ -136,21 +136,25 @@ public class WaveManager : SceneObject
     private void EndLevel()
     {
         _inEndLevel = true;
+        
         DrawText(
             "Invaders defeated!\n" +
             "Congratulations!\n" +
+            $"Final score: {GetFinalScore()}\n" +
             " \n" +
             "press space to return to menu", 
-            new Vector2f(0, -100)
+            new Vector2f(0, -150)
         );
         EventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInTransition, 3f);
     }
 
     private void PlayerDied()
     {
-        _inEndLevel = true;
+        _inEndLevel = true; 
+        
         DrawText(
             "You have been defeated!\n" +
+            $"Final score: {GetFinalScore()}\n" +
             " \n" +
             "press space to return to menu",
             new Vector2f(0, -100));
@@ -161,7 +165,7 @@ public class WaveManager : SceneObject
         _transitionText = new TextGUI(text);
         _transitionText.Position = MiddleOfScreen(_transitionText.Bounds) + positionFromMiddle;
         Scene.QueueSpawn(_transitionText);
-        // must call PlayAnimation after next update cycle so _transitionText's Initialize method is called first
+        // call PlayAnimatio after next ProcessSpawnQueue call so _transitionText's Initialize method can be called first
         Scene.DeferredCall(_transitionText.GetAnimatable().Animator, "PlayAnimation", ["blink", true]);
     }
     
@@ -175,6 +179,17 @@ public class WaveManager : SceneObject
                 Scene.QueueSpawn(enemy);
             }
         }
+    }
+
+    private int GetFinalScore()
+    {
+        int finalScore = 0;
+        if (Scene.FindByType(out ScoreManager? score))
+        {
+            finalScore = score!.CurrentScore;
+        }
+
+        return finalScore;
     }
 }
 
