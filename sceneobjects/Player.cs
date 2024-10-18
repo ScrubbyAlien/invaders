@@ -20,8 +20,8 @@ public class Player : Actor
     {
         maxHealth = 32;
         bulletDamage = 5;
-        
         _invincibilityTimer = _invicibilityWindow;
+        deathAnimationLength = 3f;
         zIndex = 10;
     }
 
@@ -38,7 +38,9 @@ public class Player : Actor
         base.Initialize();
         animator.SetDefaultSprite(TextureRects["player"]);
         Animation invincible = new Animation("invincible", true, 25, _invicibilityWindow, blinking);
+        Animation explode = new Animation("explode", true, 2, deathAnimationLength, explodeFrames);
         animator.AddAnimation(invincible);
+        animator.AddAnimation(explode);
         
         Position = new Vector2f(
             (Program.ScreenWidth - Bounds.Width) / 2,
@@ -49,55 +51,58 @@ public class Player : Actor
     public override void Update(float deltaTime)
     {
         base.Update(deltaTime);
-        _fireTimer += deltaTime;
-        _invincibilityTimer += deltaTime;
-        
-        Vector2f newPos = new();
-        bool right = AreAnyKeysPressed([Right, D]);
-        bool left = AreAnyKeysPressed([Left, A]);
-        bool up = AreAnyKeysPressed([Up, W]);
-        bool down = AreAnyKeysPressed([Down, S]);
-        
-        if (right) newPos.X = 1;
-        if (left) newPos.X = -1;
-        if (right && left) newPos.X = 0;
-        if (up) newPos.Y = -1;
-        if (down) newPos.Y = 1;
-        if (up && down) newPos.Y = 0;
-
-        if (newPos.X > 0) sprite.TextureRect = TextureRects["playerRight"];
-        else if (newPos.X < 0) sprite.TextureRect = TextureRects["playerLeft"];
-        else sprite.TextureRect = TextureRects["player"];
-        
-        TryMoveWithinBounds(
-            newPos.Normalized() * Speed * deltaTime, 
-            Settings.MarginSide,
-            Settings.MarginSide,
-            Settings.TopGuiHeight + Settings.MarginSide,
-            Settings.MarginSide);
-
-        Scene.FindByType(out WaveManager? manager);
-        bool inTransition = manager!.InTransition;
-
-        if (!inTransition)
+        if (!WillDie)
         {
-            if (AreAnyKeysPressed([Space]))
-            {
-                if (_burstIndex == 0 && _fireTimer >= _fireRate)
-                {
-                    Shoot(BulletType.Player);
-                    _burstIndex++;
-                    _fireTimer = 0;
-                } 
-                else if (_burstIndex > 0 && _burstIndex < _burstLength && _fireTimer >= _burstRate)
-                {
-                    Shoot(BulletType.Player);
-                    _burstIndex++;
-                    _fireTimer = 0;
-                }
-            }
+            _fireTimer += deltaTime;
+            _invincibilityTimer += deltaTime;
+            
+            Vector2f newPos = new();
+            bool right = AreAnyKeysPressed([Right, D]);
+            bool left = AreAnyKeysPressed([Left, A]);
+            bool up = AreAnyKeysPressed([Up, W]);
+            bool down = AreAnyKeysPressed([Down, S]);
+            
+            if (right) newPos.X = 1;
+            if (left) newPos.X = -1;
+            if (right && left) newPos.X = 0;
+            if (up) newPos.Y = -1;
+            if (down) newPos.Y = 1;
+            if (up && down) newPos.Y = 0;
 
-            if (_fireTimer >= _fireRate) _burstIndex = 0;
+            if (newPos.X > 0) sprite.TextureRect = TextureRects["playerRight"];
+            else if (newPos.X < 0) sprite.TextureRect = TextureRects["playerLeft"];
+            else sprite.TextureRect = TextureRects["player"];
+            
+            TryMoveWithinBounds(
+                newPos.Normalized() * Speed * deltaTime, 
+                Settings.MarginSide,
+                Settings.MarginSide,
+                Settings.TopGuiHeight + Settings.MarginSide,
+                Settings.MarginSide);
+
+            Scene.FindByType(out WaveManager? manager);
+            bool inTransition = manager!.InTransition;
+
+            if (!inTransition)
+            {
+                if (AreAnyKeysPressed([Space]))
+                {
+                    if (_burstIndex == 0 && _fireTimer >= _fireRate)
+                    {
+                        Shoot(BulletType.Player);
+                        _burstIndex++;
+                        _fireTimer = 0;
+                    } 
+                    else if (_burstIndex > 0 && _burstIndex < _burstLength && _fireTimer >= _burstRate)
+                    {
+                        Shoot(BulletType.Player);
+                        _burstIndex++;
+                        _fireTimer = 0;
+                    }
+                }
+
+                if (_fireTimer >= _fireRate) _burstIndex = 0;
+            }
         }
     }
 
@@ -128,6 +133,7 @@ public class Player : Actor
     protected override void Die()
     {
         EventManager.PublishPlayerDeath();
+        animator.PlayAnimation("explode", true);
         base.Die();
     }
 
@@ -163,4 +169,30 @@ public class Player : Actor
             target.Draw(animatable.Sprite);
         },
     ];
+    
+    private Animation.FrameRenderer[] explodeFrames =
+    {
+        (animatable, target) =>
+        { // simulates explosion by randomly placing bullet sprites over the enemy rapidly
+            animatable.SetTextureRect(TextureRects["player"]);
+            target.Draw(animatable.Drawable);
+            
+            // draw explosion
+            Sprite explosion = new Sprite();
+            int frameCount = animatable.Animator.FrameCount;
+            string rectKey = new Random().Next(2) == 0 ? "enemyBullet" : "enemyExplosion";
+            explosion.Texture = AssetManager.LoadTexture("invaders");
+            explosion.TextureRect = TextureRects[rectKey];
+            explosion.Scale = new Vector2f(Scale, Scale);
+            // this function is called every frame so seed needs to be set so fps can be set
+            // otherwise it will render something new every frame no matter what fps is
+            explosion.Position = animatable.Sprite.Position + new Vector2f(
+                (float) new Random((int) animatable.Sprite.Position.X + frameCount).NextDouble() * 
+                animatable.Sprite.TextureRect.Width * Scale - 12,
+                (float) new Random((int) animatable.Sprite.Position.Y * frameCount).NextDouble() * 
+                animatable.Sprite.TextureRect.Height * Scale - 12
+            );
+            target.Draw(explosion);
+        },
+    };
 }
