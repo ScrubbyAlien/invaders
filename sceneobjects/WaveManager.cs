@@ -204,7 +204,12 @@ public struct Assault(string[] assaultStrings)
     public string AfterAssault => _assaultStrings[1];
     public List<Wave> Waves => _waves;
         
-    public void AddWave(Wave wave) => _waves.Add(wave); 
+    public Assault AddWave(Wave wave)
+    {
+        _waves.Add(wave);
+        return this;
+    }
+
     public void AddWave(Wave[] waves) => _waves.AddRange(waves); 
 }
 

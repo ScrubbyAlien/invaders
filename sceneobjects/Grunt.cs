@@ -16,7 +16,7 @@ public class Grunt : AbstractEnemy
         bulletDamage = 5;
     }
 
-    protected override Vector2f bulletOrigin => Position + new Vector2f(Bounds.Width / 2, Bounds.Height);
+    protected override Vector2f bulletOrigin => Position + new Vector2f(32, 40);
     protected override float bulletSpeed => 300f;
 
     protected override void Initialize()

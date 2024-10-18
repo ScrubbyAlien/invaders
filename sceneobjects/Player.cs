@@ -25,7 +25,7 @@ public class Player : Actor
         zIndex = 10;
     }
 
-    protected override Vector2f bulletOrigin => Position + new Vector2f(10, 6) * Scale;
+    protected override Vector2f bulletOrigin => Position + new Vector2f(40, 24);
 
     public override CollisionLayer Layer => CollisionLayer.Player;
     public override bool IsInvincible => _invincibilityTimer < _invicibilityWindow;

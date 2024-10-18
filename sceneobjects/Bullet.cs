@@ -27,8 +27,8 @@ public class Bullet : RenderObject
         Damage = damage;
         
         sprite.Origin = new Vector2f(
-            bulletTypes[Type][0].Width * Scale / 2f,
-            bulletTypes[Type][0].Height * Scale / 2f);
+            sprite.GetGlobalBounds().Width / 2f,
+            sprite.GetGlobalBounds().Height / 2f);
     }
 
     public override void Update(float deltaTime)

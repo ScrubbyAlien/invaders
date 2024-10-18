@@ -65,22 +65,63 @@ public class InvasionLevel() : Level("invasion")
         AddObject(healthBar);
         
         AddObject(new ScoreManager());
-        
-        // Create WaveManager
-        string[] assault1Strings = ["Incoming threat!", "First threat cleared"];
-        Assault assault1 = new Assault(assault1Strings);
-        assault1.AddWave(new Wave(0f).AddEnemyGroup('g', 7));
-        assault1.AddWave(new Wave(10f).AddEnemyGroup('g', 10));
-        assault1.AddWave(new Wave(10f).AddEnemyGroup('g', 10));
-        
-        string[] assault2Strings = ["More incoming!", "Second threat cleared"];
-        Assault assault2 = new Assault(assault2Strings);
-        assault2.AddWave(new Wave(0f).AddEnemyGroup('g', 7));
-        assault2.AddWave(new Wave(10f).AddEnemyGroup('g', 10));
-        assault2.AddWave(new Wave(10f).AddEnemyGroup('g', 10));
 
+        // Create WaveManager
+
+        #region Assualts
+        
+        Assault assault1 = new Assault(["Incoming threat!", "First threat cleared"])
+            .AddWave(new Wave(0f).AddEnemyGroup('g', 7))
+            .AddWave(new Wave(10f).AddEnemyGroup('g', 10))
+            .AddWave(new Wave(10f).AddEnemyGroup('g', 10));
+        
+        Assault assault2 = new Assault(["More incoming!", "Second threat cleared"])
+            .AddWave(new Wave(0f).AddEnemyGroup('g', 10))
+            .AddWave(new Wave(5f).AddEnemyGroup('g', 7))
+            .AddWave(new Wave(5f).AddEnemyGroup('g', 7))
+            .AddWave(new Wave(10f).AddEnemyGroup('g', 15));
+
+        Assault assault3 = new Assault(["Large group closing in!", "Third threat cleared"])
+            .AddWave(new Wave(0f).AddEnemyGroup('g', 30))
+            .AddWave(new Wave(20f).AddEnemyGroup('g', 20));
+        
+        Assault assault4 = new Assault(["They're coming fast!\nBe ready!", "Fourth threat cleared"])
+            .AddWave(new Wave(0f).AddEnemyGroup('g', 5))
+            .AddWave(new Wave(2f).AddEnemyGroup('g', 6))
+            .AddWave(new Wave(2f).AddEnemyGroup('g', 6))
+            .AddWave(new Wave(1f).AddEnemyGroup('g', 7))
+            .AddWave(new Wave(1f).AddEnemyGroup('g', 7))
+            .AddWave(new Wave(1f).AddEnemyGroup('g', 10));
+
+        Assault assault5 = new Assault(["Even more on their way!", "Fifth threat cleared"])
+            .AddWave(new Wave(0f).AddEnemyGroup('g', 12))
+            .AddWave(new Wave(8f).AddEnemyGroup('g', 12))
+            .AddWave(new Wave(8f).AddEnemyGroup('g', 16))
+            .AddWave(new Wave(8f).AddEnemyGroup('g', 20));
+        
+        Assault assault6 = new Assault(["A whole bunch now!", "Sixth threat cleared"])
+            .AddWave(new Wave(0f).AddEnemyGroup('g', 50));
+
+        Assault assault7 = new Assault(["This is the last of them!\nTake them out!", "Well done pilot!"])
+            .AddWave(new Wave(0f).AddEnemyGroup('g', 20))
+            .AddWave(new Wave(10f).AddEnemyGroup('g', 30))
+            .AddWave(new Wave(10f).AddEnemyGroup('g', 40));
+
+        
+        Assault[] assaults =
+        [
+            assault1,
+            assault2,
+            assault3,
+            assault4,
+            assault5,
+            assault6,
+            assault7
+        ];
+        #endregion
+        
         WaveManager manager = new WaveManager();
-        manager.AddAssault([assault1, assault2]);
+        manager.AddAssault(assaults);
         AddObject(manager);
         
         // create pause menu and manager
