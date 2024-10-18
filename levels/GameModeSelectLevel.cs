@@ -4,7 +4,7 @@ using static invaders.Utility;
 
 namespace invaders.levels;
 
-public class GameModeSelectLevel() : Level("gamemode")
+public sealed class GameModeSelectLevel() : Level("gamemode")
 {
     protected override void LoadObjects()
     {

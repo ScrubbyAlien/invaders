@@ -7,7 +7,7 @@ using static invaders.Utility;
 
 namespace invaders.levels;
 
-public class InvasionLevel() : Level("invasion")
+public sealed class InvasionLevel() : Level("invasion")
 {
     protected override void LoadObjects()
     {

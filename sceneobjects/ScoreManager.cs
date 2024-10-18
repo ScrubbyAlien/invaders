@@ -4,7 +4,7 @@ using static invaders.Utility;
 
 namespace invaders.sceneobjects;
 
-public class ScoreManager : SceneObject
+public sealed class ScoreManager : SceneObject
 {
     private int _currentScore;
     private int _multiplier = 1;

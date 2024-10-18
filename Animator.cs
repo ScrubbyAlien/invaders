@@ -3,7 +3,7 @@ using SFML.Graphics;
 
 namespace invaders;
 
-public class Animator
+public sealed class Animator
 {
     private IntRect _defaultSprite;
     private int _frameCount;

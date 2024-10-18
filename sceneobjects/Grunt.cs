@@ -5,7 +5,7 @@ using static invaders.Utility;
 
 namespace invaders.sceneobjects;
 
-public class Grunt : AbstractEnemy
+public sealed class Grunt : AbstractEnemy
 {
     private float _timeUntilFire;
     private float _fireTimer;

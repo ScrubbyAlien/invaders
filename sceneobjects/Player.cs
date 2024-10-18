@@ -5,7 +5,7 @@ using static SFML.Window.Keyboard.Key;
 using static invaders.Utility;
 namespace invaders.sceneobjects;
 
-public class Player : Actor
+public sealed class Player : Actor
 {
     private const float Speed = 200f;
     private float _fireRate = 0.5f;

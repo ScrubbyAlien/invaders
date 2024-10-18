@@ -4,7 +4,7 @@ using static invaders.Utility;
 
 namespace invaders.sceneobjects;
 
-public class PauseManager(Keyboard.Key pauseKey) : SceneObject
+public sealed class PauseManager(Keyboard.Key pauseKey) : SceneObject
 {
     private bool _pressedPause;
     private bool _isPaused;

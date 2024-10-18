@@ -2,7 +2,7 @@ using SFML.Graphics;
 
 namespace invaders;
 
-public class Animation
+public sealed class Animation
 {
     public delegate void AnimationEvent(Animation sender);
     public event AnimationEvent? AnimationFinished;

@@ -1,11 +1,10 @@
-using invaders.sceneobjects;
 using SFML.System;
 using SFML.Window;
 using static invaders.Utility;
 
 namespace invaders.sceneobjects;
 
-public class WaveManager : SceneObject
+public sealed class WaveManager : SceneObject
 {
     private bool _inTransition;
     private bool _inEndLevel;

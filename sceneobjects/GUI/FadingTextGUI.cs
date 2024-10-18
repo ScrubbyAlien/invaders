@@ -3,7 +3,7 @@ using SFML.System;
 
 namespace invaders.sceneobjects;
 
-public class FadingTextGUI : TextGUI
+public sealed class FadingTextGUI : TextGUI
 {
     private float _fadeTime;
     private float _fadeTimer;

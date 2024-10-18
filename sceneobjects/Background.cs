@@ -4,7 +4,7 @@ using static invaders.Utility;
 
 namespace invaders.sceneobjects;
 
-public class Background : RenderObject
+public sealed class Background : RenderObject
 {
     private const float StarDensity = 0.0002f;
 

@@ -3,7 +3,7 @@ using SFML.Graphics;
 
 namespace invaders.sceneobjects;
 
-public class TextButtonGUI : TextGUI, IClickable
+public sealed class TextButtonGUI : TextGUI, IClickable
 {
     public event Action? Clicked;
     private bool _unavailable;

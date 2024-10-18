@@ -4,7 +4,7 @@ using static SFML.Window.Keyboard.Key;
 
 namespace invaders.sceneobjects;
 
-public class MenuManager : SceneObject
+public sealed class MenuManager : SceneObject
 {
     private List<IClickable> _menuButtons = new();
     private List<Action> _listeners = new();

@@ -4,7 +4,7 @@ using static invaders.Utility;
 
 namespace invaders.sceneobjects;
 
-public class HealthGUI : SpriteGUI
+public sealed class HealthGUI : SpriteGUI
 {
     private int currentHealth;
 

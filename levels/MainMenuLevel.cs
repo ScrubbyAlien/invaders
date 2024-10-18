@@ -5,7 +5,7 @@ using static invaders.Utility;
 
 namespace invaders.levels;
 
-public class MainMenuLevel() : Level("mainmenu")
+public sealed class MainMenuLevel() : Level("mainmenu")
 {
     protected override void LoadObjects()
     {
