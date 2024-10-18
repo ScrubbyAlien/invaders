@@ -80,9 +80,13 @@ public class MenuManager : SceneObject
     
     public void AddButton(IClickable button, Action listener)
     {
-        _menuButtons.Add(button);
-        button.Clicked += listener;
-        _listeners.Add(listener); // save listeners on same index for unsubbing in Destroy
+        if (!_menuButtons.Contains(button))
+        {
+            button.Activate();
+            _menuButtons.Add(button);
+            button.Clicked += listener;
+            _listeners.Add(listener); // save listeners on same index for unsubbing in Destroy
+        }
     }
     
 }

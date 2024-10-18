@@ -69,7 +69,12 @@ public class Player : Actor
         else if (newPos.X < 0) sprite.TextureRect = TextureRects["playerLeft"];
         else sprite.TextureRect = TextureRects["player"];
         
-        TryMoveWithinBounds(newPos.Normalized() * Speed * deltaTime, Settings.MarginSide, Settings.MarginSide);
+        TryMoveWithinBounds(
+            newPos.Normalized() * Speed * deltaTime, 
+            Settings.MarginSide,
+            Settings.MarginSide,
+            Settings.TopGuiHeight + Settings.MarginSide,
+            Settings.MarginSide);
 
         Scene.FindByType(out WaveManager? manager);
         bool inTransition = manager!.InTransition;
@@ -145,7 +150,7 @@ public class Player : Actor
                 adjustedPos.Y = Program.ScreenHeight - Bounds.Height - Settings.MarginSide;
                 break;
             case ScreenState.OutSideTop:
-                adjustedPos.Y = Settings.MarginSide;
+                adjustedPos.Y = Settings.MarginSide + Settings.TopGuiHeight;
                 break;
         }
     }

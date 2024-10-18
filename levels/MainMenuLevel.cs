@@ -22,15 +22,16 @@ public class MainMenuLevel() : Level("mainmenu")
         
         TextButtonGUI playButton = new TextButtonGUI("Play");
         playButton.Position = MiddleOfScreen(playButton.Bounds, new Vector2f(0, 70));
-        // endless mode button
-        // high score button
+        TextButtonGUI highScoreButton = new TextButtonGUI("Highscores");
+        highScoreButton.Position = MiddleOfScreen(highScoreButton.Bounds, new Vector2f(0, 140));
         TextButtonGUI quitButton = new TextButtonGUI("Quit");
-        quitButton.Position = MiddleOfScreen(quitButton.Bounds, new Vector2f(0, 220));
+        quitButton.Position = MiddleOfScreen(quitButton.Bounds, new Vector2f(0, 210));
         AddObject(playButton);
+        AddObject(highScoreButton);
         AddObject(quitButton);
 
         MenuManager manager = new MenuManager();
-        manager.AddButton(playButton, Scene.LoadLevelListener("invasion"));
+        manager.AddButton(playButton, Scene.LoadLevelListener("gamemode"));
         manager.AddButton(quitButton, Scene.CloseWindowListener());
         AddObject(manager);
     }

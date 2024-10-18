@@ -6,8 +6,12 @@ namespace invaders.sceneobjects;
 public class TextButtonGUI : TextGUI, IClickable
 {
     public event Action? Clicked;
-
-    public TextButtonGUI(string buttonDisplayText) : base(buttonDisplayText) { }
+    private bool _unavailable;
+    
+    public TextButtonGUI(string buttonDisplayText) : base(buttonDisplayText)
+    {
+        Deactivate();
+    }
 
     protected override void Initialize()
     {
@@ -15,20 +19,21 @@ public class TextButtonGUI : TextGUI, IClickable
         animator.AddAnimation(selected);
     }
 
-    public void Select()
-    {
-        animator.PlayAnimation("selected", true);
-    }
-
+    public void Select() { animator.PlayAnimation("selected", true); }
     public void Unselect()
     {
         animator.StopAnimation();
         text.FillColor = Color.White;
     }
-    
-    public void Click()
+    public void Activate() { _unavailable = false; }
+    public void Deactivate() { _unavailable = true; }
+    public void Click() { Clicked?.Invoke(); }
+
+    public override void Render(RenderTarget target)
     {
-        Clicked?.Invoke();
+        if (_unavailable) text.FillColor = new Color(80, 80, 80, 80);
+        else text.FillColor = Color.White;
+        base.Render(target);
     }
 
     private Animation.FrameRenderer[] selectedFrames =

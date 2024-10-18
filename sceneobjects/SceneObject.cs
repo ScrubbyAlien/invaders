@@ -4,13 +4,19 @@ namespace invaders.sceneobjects;
 
 public abstract class SceneObject
 {
-    private SceneObjectTag _tag = SceneObjectTag.None;
+    private HashSet<SceneObjectTag> _tags = new();
     public bool Dead = false;
     public bool DontDestroyOnClear = false;
     private bool _initialized;
     public bool Initialized => _initialized;
-    public SceneObjectTag Tag => _tag;
-    
+    protected bool paused;
+
+    public virtual bool Paused
+    {
+        get => paused;
+        set => paused = value;
+    }
+
     /// <summary>
     /// Any functionality that requires references to other entities should be called from Initialize,
     /// such as FindByType calls, or event handlers/listerners
@@ -20,15 +26,25 @@ public abstract class SceneObject
     public void FullInitialize()
     {
         Initialize();
+        paused = HasTag(SceneObjectTag.PauseMenuItem);
         _initialized = true;
     }
 
-    public virtual void Destroy() {}
-    
-    public virtual void Update(float deltaTime) { }
-
-    public void SetTag(SceneObjectTag tag)
+    public virtual void Destroy()
     {
-        _tag = tag;
+    }
+
+    public virtual void Update(float deltaTime)
+    {
+    }
+
+    public void AddTag(SceneObjectTag tag)
+    {
+        _tags.Add(tag);
+    }
+
+    public bool HasTag(SceneObjectTag tag)
+    {
+        return _tags.Contains(tag);
     }
 }

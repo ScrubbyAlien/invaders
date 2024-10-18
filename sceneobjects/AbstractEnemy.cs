@@ -77,7 +77,7 @@ public abstract class AbstractEnemy : Actor
 
         if (adjustedPos.Y > Program.ScreenHeight + Bounds.Height)
         {
-            adjustedPos.Y = -Bounds.Height;
+            adjustedPos.Y = Settings.TopGuiHeight - Bounds.Height;
             touchedBottom++;
         }
         

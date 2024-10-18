@@ -76,7 +76,7 @@ public static class Scene
     }
     private static void UpdateSceneObjects(float deltaTime)
     {
-        _sceneObjects.ForEach(o => { if(!o.Dead) o.Update(deltaTime); });
+        _sceneObjects.ForEach(o => { if(!o.Dead && !o.Paused) o.Update(deltaTime); });
     }
     
     public static void Clear()
@@ -167,7 +167,7 @@ public static class Scene
     {
         foreach (SceneObject sceneObject in _sceneObjects)
         {
-            if (sceneObject is T t && sceneObject.Tag == tag)
+            if (sceneObject is T t && sceneObject.HasTag(tag))
             {
                 typed = t;
                 return true;
@@ -182,6 +182,17 @@ public static class Scene
         foreach (SceneObject sceneObject in _sceneObjects)
         {
             if (sceneObject is T t)
+            {
+                yield return t;
+            }
+        }
+    }
+    
+    public static IEnumerable<T> FindAllByTag<T>(SceneObjectTag tag) where T : SceneObject
+    {
+        foreach (SceneObject sceneObject in _sceneObjects)
+        {
+            if (sceneObject is T t && sceneObject.HasTag(tag))
             {
                 yield return t;
             }

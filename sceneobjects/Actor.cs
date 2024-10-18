@@ -37,14 +37,18 @@ public abstract class Actor : RenderObject
     
     protected bool TryMoveWithinBounds(Vector2f velocity, int horizontalMargin, int verticalMargin)
     {
+        return TryMoveWithinBounds(velocity, horizontalMargin, horizontalMargin, verticalMargin, verticalMargin);
+    }
+    protected bool TryMoveWithinBounds(Vector2f velocity, int leftMargin, int rightMargin, int topMargin,int bottomMargin)
+    {
         Vector2f newPos = Position + velocity;
         (ScreenState x, ScreenState y) state = (ScreenState.Inside, ScreenState.Inside);
         
-        if (newPos.X >= Program.ScreenWidth - Bounds.Width - horizontalMargin) state.x = ScreenState.OutSideRight;
-        else if (newPos.X <= horizontalMargin) state.x = ScreenState.OutSideLeft;
+        if (newPos.X >= Program.ScreenWidth - Bounds.Width - rightMargin) state.x = ScreenState.OutSideRight;
+        else if (newPos.X <= leftMargin) state.x = ScreenState.OutSideLeft;
        
-        if (newPos.Y >= Program.ScreenHeight - Bounds.Height - verticalMargin) state.y = ScreenState.OutSideBottom;
-        else if (newPos.Y <= verticalMargin) state.y = ScreenState.OutSideTop;
+        if (newPos.Y >= Program.ScreenHeight - Bounds.Height - bottomMargin) state.y = ScreenState.OutSideBottom;
+        else if (newPos.Y <= topMargin) state.y = ScreenState.OutSideTop;
 
         bool outside = state.x != ScreenState.Inside || state.y != ScreenState.Inside;
         if (outside)

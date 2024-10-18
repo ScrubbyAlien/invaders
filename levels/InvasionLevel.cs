@@ -2,6 +2,7 @@ using invaders.enums;
 using invaders.sceneobjects;
 using SFML.Graphics;
 using SFML.System;
+using SFML.Window;
 using static invaders.Utility;
 
 namespace invaders.levels;
@@ -44,17 +45,17 @@ public class InvasionLevel() : Level("invasion")
         
         // create gui and score manager
         TextGUI scoreText = new TextGUI("0");
-        scoreText.SetTag(SceneObjectTag.ScoreText);
+        scoreText.AddTag(SceneObjectTag.ScoreText);
         scoreText.SetZIndex(310);
         AddObject(scoreText);
 
         TextGUI multiplierText = new TextGUI("x1", 7);
-        multiplierText.SetTag(SceneObjectTag.MultiplierText);
+        multiplierText.AddTag(SceneObjectTag.MultiplierText);
         multiplierText.SetZIndex(310);
         AddObject(multiplierText);
         
         SpriteGUI multiplierBar = new SpriteGUI(TextureRects["multiplierBar"]);
-        multiplierBar.SetTag(SceneObjectTag.MultiplierBar);
+        multiplierBar.AddTag(SceneObjectTag.MultiplierBar);
         multiplierBar.SetScale(new Vector2f(100, 5));
         multiplierBar.SetZIndex(310);
         AddObject(multiplierBar);
@@ -82,6 +83,33 @@ public class InvasionLevel() : Level("invasion")
         manager.AddAssault([assault1, assault2]);
         AddObject(manager);
         
+        // create pause menu and manager
+        AddObject(new PauseManager(Keyboard.Key.Escape));
+        MenuManager pauseMenu = new MenuManager();
+        pauseMenu.AddTag(SceneObjectTag.PauseMenuItem);
+
+        SpriteGUI transparentScreen = new SpriteGUI(TextureRects["blackSquare"]);
+        transparentScreen.AddTag(SceneObjectTag.PauseMenuItem);
+        transparentScreen.Position = new Vector2f(0, 0);
+        transparentScreen.SetScale(new Vector2f(Program.ScreenWidth, Program.ScreenHeight));
+        transparentScreen.SetColor(new Color(0, 0, 0, 100));
+        transparentScreen.SetZIndex(1000);
+        AddObject(transparentScreen);
         
+        TextButtonGUI restartButton = new TextButtonGUI("restart");
+        restartButton.AddTag(SceneObjectTag.PauseMenuItem);
+        restartButton.Position = MiddleOfScreen(restartButton.Bounds, new Vector2f(0, -45));
+        restartButton.SetZIndex(1100);
+        AddObject(restartButton);
+        
+        TextButtonGUI quitButton = new TextButtonGUI("main menu");
+        quitButton.AddTag(SceneObjectTag.PauseMenuItem);
+        quitButton.Position = MiddleOfScreen(quitButton.Bounds, new Vector2f(0, 45));
+        quitButton.SetZIndex(1100);
+        AddObject(quitButton);
+        
+        pauseMenu.AddButton(restartButton, Scene.LoadLevelListener("invasion"));
+        pauseMenu.AddButton(quitButton, Scene.LoadLevelListener("mainmenu"));
+        AddObject(pauseMenu);
     }
 }
