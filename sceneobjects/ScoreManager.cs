@@ -14,22 +14,34 @@ public sealed class ScoreManager : SceneObject
     private float _passiveScoreInterval;
     private int _passiveScore;
 
+    private TextGUI _scoreText = null!;
+    private TextGUI _multiplierText = null!;
+    private SpriteGUI _multiplierBar = null!;
+    private WaveManager _waveManager = null!;
+
     public int CurrentScore => _currentScore;
 
-    public ScoreManager()
-    { }
-
-    public ScoreManager(int passiveScore, float interval) : this()
+    
+    public ScoreManager(int passiveScore = 0, float interval = 1)
     {
-        
         _passiveScore = passiveScore;
         _passiveScoreInterval = interval;
     }
     
     protected override void Initialize()
     {
+        _scoreText = Scene.FindByTag<TextGUI>(SceneObjectTag.ScoreText);
+        _multiplierText = Scene.FindByTag<TextGUI>(SceneObjectTag.MultiplierText);
+        _multiplierBar = Scene.FindByTag<SpriteGUI>(SceneObjectTag.MultiplierBar);
+        _waveManager = Scene.FindByType<WaveManager>();
+        
         EventManager.EnemyDeath += OnEnemyDeath;
         EventManager.PlayerHit += ResetMultiplier;
+    }
+
+    public override void Destroy()
+    {
+        LevelInfo<int>.Create(_currentScore);
     }
 
     public override void Update(float deltaTime)
@@ -41,54 +53,39 @@ public sealed class ScoreManager : SceneObject
             ResetMultiplier();
         }
 
+        _scoreText.SetText($"{_currentScore}");
+        _scoreText.Position = MiddleOfScreen(
+            _scoreText.Bounds, 
+            new Vector2f(0, 
+                -Program.ScreenHeight / 2f + 36 + (48 - _scoreText.Bounds.Height) / 2)
+        );
         
-        // functionality is encapsulated in if statements because ScoreManager will persist between levels
-        if (Scene.FindByTag(SceneObjectTag.ScoreText, out TextGUI scoreText))
+        _multiplierText.SetText($"x{_multiplier}");
+        _multiplierText.Position = new Vector2f(
+            Program.ScreenWidth - (TextureRects["guiBackgroundRight"].Width - 2) * RenderObject.Scale + 8,
+            32f
+        );
+        
+        if (_multiplier > 1)
         {
-            scoreText.SetText($"{_currentScore}");
-            scoreText.Position = MiddleOfScreen(
-                scoreText.Bounds, 
-                new Vector2f(0, 
-                    -Program.ScreenHeight / 2f + 36 + (48 - scoreText.Bounds.Height) / 2)
-                );
-            
+            _multiplierBar.Unhide();
+            float percent = _multiplierTimer / _multiplierLifeSpan;
+            _multiplierBar.SetScale(new Vector2f(80 - 80 * percent, RenderObject.Scale));
+            _multiplierBar.Position = _multiplierText.Position + new Vector2f(_multiplierText.Bounds.Width + 8, 6);
         }
-
-        if (Scene.FindByTag(SceneObjectTag.MultiplierText, out TextGUI multiplierText))
+        else
         {
-            multiplierText.SetText($"x{_multiplier}");
-            multiplierText.Position = new Vector2f(
-                Program.ScreenWidth - (TextureRects["guiBackgroundRight"].Width - 2) * RenderObject.Scale + 8,
-                32f
-            );
-            
-            if (Scene.FindByTag(SceneObjectTag.MultiplierBar, out SpriteGUI bar))
-            {
-                if (_multiplier > 1)
-                {
-                    bar.Unhide();
-                    float percent = _multiplierTimer / _multiplierLifeSpan;
-                    bar.SetScale(new Vector2f(80 - 80 * percent, RenderObject.Scale));
-                    bar.Position = multiplierText.Position + new Vector2f(multiplierText.Bounds.Width + 8, 6);
-                }
-                else
-                {
-                    bar.Hide();
-                }
-            }
+            _multiplierBar.Hide();
         }
         
-        if (Scene.FindByType(out WaveManager? waveManager))
+        if (_passiveScore > 0 && !_waveManager.InTransition)
         {
-            if (_passiveScore > 0 && !waveManager!.InTransition)
+            _passiveScoreTimer += deltaTime;
+            if (_passiveScoreTimer >= _passiveScoreInterval)
             {
-                _passiveScoreTimer += deltaTime;
-                if (_passiveScoreTimer >= _passiveScoreInterval)
-                {
-                    _passiveScoreTimer = 0;
-                    GainScore(_passiveScore);
+                _passiveScoreTimer = 0;
+                GainScore(_passiveScore);
 
-                }
             }
         }
     }

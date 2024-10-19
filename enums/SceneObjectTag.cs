@@ -7,5 +7,6 @@ public enum SceneObjectTag
     ScoreText,
     MultiplierText,
     MultiplierBar,
-    PauseMenuItem
+    PauseMenuItem,
+    Message
 }

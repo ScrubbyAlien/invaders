@@ -65,7 +65,8 @@ public class TextGUI : GUI
         Dictionary<char, float> characterToWidth = new()
         {
             // the width of ' ' when gotten from GetGlyph is 0 so we set it manually
-            { ' ',  7 } // i dont know why it's 7, got it by trial and error
+            // the actual width of the space glyph is 1/3 of the A glyph, according to testing
+            { ' ',  text.Font.GetGlyph('A', text.CharacterSize, false, 0).Bounds.Width / 3f } 
         };
         HashSet<char> charactersInText = new() { ' ' };
         foreach (char c in text.DisplayedString)

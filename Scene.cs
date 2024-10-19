@@ -2,14 +2,16 @@ using System.Diagnostics;
 using SFML.Graphics;
 using SFML.System;
 using invaders.enums;
-using invaders.interfaces;
 using invaders.sceneobjects;
+using SFML.Window;
 
 namespace invaders;
 
 // Scene class mostly the same as in lab project 4
 public static class Scene
 {
+    public static event EventHandler<TextEventArgs>? TextEntered; 
+    
     private static List<SceneObject> _sceneObjects = new();
     private readonly static List<SceneObject> _spawnQueue = new();
     private readonly static List<SceneObject> _destroyQueue = new();
@@ -20,6 +22,9 @@ public static class Scene
     public static void SetWindow(RenderWindow window)
     {
         _window = window;
+        
+        // https://www.sfml-dev.org/documentation/2.6.1/structsf_1_1Event_1_1TextEvent.php
+        window.TextEntered += (o, args) => TextEntered?.Invoke(o, args);
     }
 
     public static void CloseWindow()
@@ -149,7 +154,7 @@ public static class Scene
     /// <param name="typed">Reference to the found T typed entity if it exists, otherwise null</param>
     /// <typeparam name="T">The type to search for.</typeparam>
     /// <returns>Returns the first entity of type T in _entities</returns>
-    public static bool FindByType<T>(out T? typed) where T : SceneObject
+    public static bool FindByType<T>(out T typed) where T : SceneObject
     {
         foreach (SceneObject sceneObject in _sceneObjects)
         {
@@ -159,8 +164,13 @@ public static class Scene
                 return true;
             }
         }
-        typed = null;
+        typed = null!;
         return false;
+    }
+    public static T FindByType<T>() where T : SceneObject
+    {
+        FindByType(out T result);
+        return result;
     }
     
     public static bool FindByTag<T>(SceneObjectTag tag, out T typed) where T : SceneObject
@@ -175,6 +185,11 @@ public static class Scene
         }
         typed = null!;
         return false;
+    }
+    public static T FindByTag<T>(SceneObjectTag tag) where T : SceneObject
+    {
+        FindByTag(tag, out T result);
+        return result;
     }
     
     public static IEnumerable<T> FindAllByType<T>() where T : SceneObject
@@ -208,16 +223,6 @@ public static class Scene
     public static void DeferredCall(Object instance, string methodName, object[] arguments)
     {
         _deferredCalls.Add(new DeferredMethodCall(instance, methodName, arguments));
-    }
-    
-    public static Action LoadLevelListener(string level)
-    {
-        return () => LoadLevel(level);
-    }
-
-    public static Action CloseWindowListener()
-    {
-        return () => CloseWindow();
     }
 }
 

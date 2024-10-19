@@ -19,6 +19,9 @@ public static class LevelManager
         // https://stackoverflow.com/questions/5622519/how-to-create-an-instance-for-a-given-type
         foreach (Type level in levelTypes)
         {
+            // <>c appears when lambda expressions exist in the class definition
+            // it crashes if we try to call it's constructor so we ignore it
+            if (level.Name == "<>c") continue; 
             Level? l = (Level?) level.GetConstructor(Type.EmptyTypes)?.Invoke(new object[0]);
             if (l != null) _levels.Add(l);
         }

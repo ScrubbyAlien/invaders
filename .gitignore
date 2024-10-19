@@ -2,3 +2,4 @@
 /bin/
 Folder.DotSettings.user
 *.DotSettings
+/saves/*.save.json

@@ -9,9 +9,13 @@ public sealed class MainMenuLevel() : Level("mainmenu")
 {
     protected override void LoadObjects()
     {
-        if (!Scene.FindByType(out Background _))
+        if (!Scene.FindByType(out Background background))
         {
             AddObject(new Background());
+        }
+        else
+        {
+            background.Paused = false;
         }
 
         SpriteGUI title = new SpriteGUI(TextureRects["title"]);
@@ -31,8 +35,8 @@ public sealed class MainMenuLevel() : Level("mainmenu")
         AddObject(quitButton);
 
         MenuManager manager = new MenuManager();
-        manager.AddButton(playButton, Scene.LoadLevelListener("gamemode"));
-        manager.AddButton(quitButton, Scene.CloseWindowListener());
+        manager.AddButton(playButton, () => Scene.LoadLevel("gamemodeselect"));
+        manager.AddButton(quitButton, () => Scene.CloseWindow());
         AddObject(manager);
     }
 }

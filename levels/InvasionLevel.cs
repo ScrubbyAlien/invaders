@@ -12,9 +12,13 @@ public sealed class InvasionLevel() : Level("invasion")
     protected override void LoadObjects()
     {
         AddObject(new Player());
-        if (!Scene.FindByType(out Background _))
+        if (!Scene.FindByType(out Background background))
         {
             AddObject(new Background());
+        }
+        else
+        {
+            background.Paused = false;
         }
 
         // create gui background
@@ -108,6 +112,7 @@ public sealed class InvasionLevel() : Level("invasion")
             .AddWave(new Wave(10f).AddEnemyGroup('g', 40));
 
         
+        #endregion
         Assault[] assaults =
         [
             assault1,
@@ -118,7 +123,6 @@ public sealed class InvasionLevel() : Level("invasion")
             assault6,
             assault7
         ];
-        #endregion
         
         WaveManager manager = new WaveManager();
         manager.AddAssault(assaults);
@@ -133,7 +137,7 @@ public sealed class InvasionLevel() : Level("invasion")
         transparentScreen.AddTag(SceneObjectTag.PauseMenuItem);
         transparentScreen.Position = new Vector2f(0, 0);
         transparentScreen.SetScale(new Vector2f(Program.ScreenWidth, Program.ScreenHeight));
-        transparentScreen.SetColor(new Color(0, 0, 0, 100));
+        transparentScreen.SetColor(new Color(0, 0, 0, 170));
         transparentScreen.SetZIndex(1000);
         AddObject(transparentScreen);
         
@@ -149,8 +153,16 @@ public sealed class InvasionLevel() : Level("invasion")
         quitButton.SetZIndex(1100);
         AddObject(quitButton);
         
-        pauseMenu.AddButton(restartButton, Scene.LoadLevelListener("invasion"));
-        pauseMenu.AddButton(quitButton, Scene.LoadLevelListener("mainmenu"));
+        pauseMenu.AddButton(restartButton, () =>
+        {
+            EventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInLevel, 1f);
+            Scene.LoadLevel("invasion");
+        });
+        pauseMenu.AddButton(quitButton, () =>
+        {
+            EventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInLevel, 1f);
+            Scene.LoadLevel("mainmenu");
+        });
         AddObject(pauseMenu);
     }
 }

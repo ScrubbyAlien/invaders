@@ -4,7 +4,7 @@ using static invaders.Utility;
 
 namespace invaders.levels;
 
-public sealed class GameModeSelectLevel() : Level("gamemode")
+public sealed class GameModeSelectLevel() : Level("gamemodeselect")
 {
     protected override void LoadObjects()
     {
@@ -30,8 +30,8 @@ public sealed class GameModeSelectLevel() : Level("gamemode")
         AddObject(backButton);
 
         MenuManager manager = new MenuManager();
-        manager.AddButton(standardButton, Scene.LoadLevelListener("invasion"));
-        manager.AddButton(backButton, Scene.LoadLevelListener("mainmenu"));
+        manager.AddButton(standardButton, () => Scene.LoadLevel("invasion"));
+        manager.AddButton(backButton, () => Scene.LoadLevel("mainmenu"));
         AddObject(manager);
     }
 }

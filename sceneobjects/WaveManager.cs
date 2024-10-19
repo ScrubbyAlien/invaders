@@ -59,7 +59,7 @@ public sealed class WaveManager : SceneObject
             {
                 if (!_spaceReleased) return;
                 EventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInLevel, 1f);
-                Scene.LoadLevel("mainmenu");
+                Scene.LoadLevel("scoresave");
             }
             else _spaceReleased = true;
             return;
@@ -143,7 +143,7 @@ public sealed class WaveManager : SceneObject
             "Invaders defeated!\n" +
             "Congratulations!\n" +
             " \n" +
-            "press space to return to menu", 
+            "press space to continue", 
             new Vector2f(0, -100)
         );
         EventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInTransition, 3f);
@@ -156,7 +156,7 @@ public sealed class WaveManager : SceneObject
         DrawText(
             "You have been defeated!\n" +
             " \n" +
-            "press space to return to menu",
+            "press space to continue",
             new Vector2f(0, -100));
     }
 

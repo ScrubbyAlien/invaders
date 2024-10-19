@@ -30,13 +30,9 @@ public abstract class SceneObject
         _initialized = true;
     }
 
-    public virtual void Destroy()
-    {
-    }
+    public virtual void Destroy() { }
 
-    public virtual void Update(float deltaTime)
-    {
-    }
+    public virtual void Update(float deltaTime) { }
 
     public void AddTag(SceneObjectTag tag)
     {
