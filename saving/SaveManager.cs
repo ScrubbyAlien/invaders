@@ -24,6 +24,7 @@ public static class SaveManager
     public static async Task WriteSave<T>(T save) where T : ISaveObject, new()
     {
         string json = JsonSerializer.Serialize(save);
+        Directory.CreateDirectory(SavePath); // create saves directory if it doesn't exist
         await File.WriteAllTextAsync(SaveFilePath(save.GetSaveFileName()), json);
     }   
 }

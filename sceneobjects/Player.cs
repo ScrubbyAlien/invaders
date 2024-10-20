@@ -50,7 +50,7 @@ public sealed class Player : Actor
 
     public override void Destroy()
     {
-        LevelInfo<bool>.Create(CurrentHealth > 0);
+        Scene.QueueSpawn(new LevelInfo<bool>(CurrentHealth > 0));   
     }
 
     public override void Update(float deltaTime)

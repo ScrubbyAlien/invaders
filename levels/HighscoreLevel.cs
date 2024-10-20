@@ -83,8 +83,12 @@ public class HighscoreLevel() : Level("highscores")
     {
         Scene.QueueDestroy(_loadedScores.Select(t => t as SceneObject).ToList());
         _loadedScores = await LoadScores(endless);
-        Scene.QueueSpawn(_loadedScores.Take(10).Select(t => t as SceneObject).ToList());
+        
+        // we take the first 20 texts so we only display the first 10 entries since each entry has two texts
+        Scene.QueueSpawn(_loadedScores.Take(20).Select(t => t as SceneObject).ToList());
     }
+    
+    // {"Scores":{"greg":10000,"sam":10,"samuel":100,"cony":5000,"hello":1,"pilot":15000},"EndlessScores":{}}
     
     private async Task<List<TextGUI>> LoadScores(bool endless)
     {
@@ -100,7 +104,7 @@ public class HighscoreLevel() : Level("highscores")
         // https://stackoverflow.com/questions/289/how-do-you-sort-a-dictionary-by-value
         Dictionary<string, int> sortedScores = (
             from entry in scores
-            orderby entry.Value ascending 
+            orderby entry.Value descending 
             select entry
             ).ToDictionary();
         

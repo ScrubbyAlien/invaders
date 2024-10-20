@@ -42,7 +42,7 @@ public sealed class ScoreManager : SceneObject
 
     public override void Destroy()
     {
-        LevelInfo<int>.Create(_currentScore);
+        Scene.QueueSpawn(new LevelInfo<int>(_currentScore));
     }
 
     public override void Update(float deltaTime)

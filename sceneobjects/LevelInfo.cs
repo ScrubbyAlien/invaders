@@ -8,16 +8,24 @@ public sealed class LevelInfo<T> : SceneObject
     {
         _info = info;
         DontDestroyOnClear = true;
-        Scene.QueueSpawn(this);
     }
     
     public T Extract() { return _info; }
-    
-    public override void Update(float deltaTime) { Scene.QueueDestroy(this); }
 
-    public static void Create<U>(U info)
+    protected override void Initialize()
     {
-        LevelInfo<U> i = new LevelInfo<U>(info);
-        Scene.QueueSpawn(i);
+        // will be destroyed at the end of the first frame that a new level is loaded
+        Scene.LevelLoaded += DestroyOnLevelLoad;
     }
+
+    public override void Destroy()
+    {
+        Scene.LevelLoaded -= DestroyOnLevelLoad;
+    }
+
+    private void DestroyOnLevelLoad()
+    {
+        Scene.QueueDestroy(this);
+    }
+    
 }

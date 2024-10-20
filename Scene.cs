@@ -19,6 +19,7 @@ public static class Scene
     private static string _nextLevel = "";
     private static RenderWindow? _window;
     public static event Action? GlobalEvents;
+    public static event Action? LevelLoaded;
 
     public static void SetWindow(RenderWindow window)
     {
@@ -51,6 +52,7 @@ public static class Scene
             Clear();
             List<SceneObject> initialLevelObjects = LevelManager.LoadLevel(_nextLevel);
             QueueSpawn(initialLevelObjects);
+            LevelLoaded?.Invoke();
             _nextLevel = "";
         }
     }
@@ -89,7 +91,7 @@ public static class Scene
     {
         _sceneObjects.ForEach(o =>
         {
-            if (!o.DontDestroyOnClear) QueueDestroy(o);
+            if (!o.DontDestroyOnClear) o.Destroy();
         });
         _sceneObjects = _sceneObjects.Where(o => o.DontDestroyOnClear).ToList();
     }

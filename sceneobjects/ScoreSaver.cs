@@ -8,8 +8,8 @@ namespace invaders.sceneobjects;
 
 public sealed class ScoreSaver : SceneObject
 {
-    private int _score = 1000;
-    private bool _won = true;
+    private int _score;
+    private bool _won;
     private TextGUI _message = null!;
     private TextInputGUI _input = null!;
     
@@ -23,23 +23,20 @@ public sealed class ScoreSaver : SceneObject
 
         if (_won)
         {
-            _input.Unpause();
-            _input.Unhide();
             _message.SetText("Final score:\n" +
                              $"{_score}\n" +
                              " \n" +
                              "Well done pilot!\n" +
                              "What is your name?");
             _message.Position = MiddleOfScreen(_message.Bounds, new Vector2f(0, -140));
-
         }
         else
         {
             _message.SetText("Final score:\n" +
                              $"{_score}\n" +
                              " \n" +
-                             "The invaders won\n" +
-                             "Earth is lost");
+                             "Valiant effort pilot!\n" +
+                             "What is your name?");
             _message.Position = MiddleOfScreen(_message.Bounds, new Vector2f(0, -140));
 
         }
@@ -47,12 +44,6 @@ public sealed class ScoreSaver : SceneObject
 
     private void SaveScore(object? _, string name)
     {
-        if (!_won) // don't save score when you lost
-        {
-            Scene.LoadLevel("mainmenu");
-            return;
-        }
-        
         ScoresSaveObject scores = SaveManager.LoadSave<ScoresSaveObject>().Result; // load existing save
         
         if (scores.AddEntry(name.ToLower(), _score)) // write new value
