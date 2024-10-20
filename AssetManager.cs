@@ -9,14 +9,20 @@ public static class AssetManager
     private static readonly Dictionary<string, Font> _fonts = new();
     private static readonly Dictionary<string, Texture> _textures = new();
     private static readonly Dictionary<string, SoundBuffer> _soundBuffers = new();
+    private static readonly Dictionary<string, Music> _musics = new();
 
     static AssetManager()
     {
         // to make more resusable get all file names in AssetPath and add entries dynamically
         _fonts.Add("pixel-font", new Font($"{AssetPath}/pixel-font.ttf"));
         _textures.Add("invaders", new Texture($"{AssetPath}/invaders.png"));
+        
         _soundBuffers.Add("enemy_shot", new SoundBuffer($"{AssetPath}/enemy_shot.wav"));
         _soundBuffers.Add("player_shot", new SoundBuffer($"{AssetPath}/player_shot.wav"));
+        
+        _musics.Add("mainmenu", new Music($"{AssetPath}/mainmenu.wav"));
+        _musics.Add("invasion", new Music($"{AssetPath}/invasion.wav"));
+        _musics.Add("finale", new Music($"{AssetPath}/finale.wav"));
     }
     
     public static Texture LoadTexture(string name)
@@ -33,5 +39,9 @@ public static class AssetManager
     {
         return new Sound(_soundBuffers[name]);
     }
-    
+
+    public static Music OpenMusic(string name)
+    {
+        return _musics[name];
+    }
 }

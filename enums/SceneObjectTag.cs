@@ -8,5 +8,5 @@ public enum SceneObjectTag
     MultiplierText,
     MultiplierBar,
     PauseMenuItem,
-    Message
+    Message,
 }

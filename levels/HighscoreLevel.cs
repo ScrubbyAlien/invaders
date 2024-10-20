@@ -11,6 +11,8 @@ public class HighscoreLevel() : Level("highscores")
     
     protected override void LoadObjects()
     {
+        SetBackgroundMusic("mainmenu");
+        
         if (!Scene.FindByType(out Background background))
         {
             AddObject(new Background());

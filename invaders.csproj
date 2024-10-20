@@ -19,6 +19,9 @@
     </EmbeddedResource>
     <None Remove="invaders.csproj.DotSettings" />
     <None Include="bin\Debug\net8.0\assets\enemy_shot.wav" />
+    <None Include="bin\Debug\net8.0\assets\finale.wav" />
+    <None Include="bin\Debug\net8.0\assets\invasion.wav" />
+    <None Include="bin\Debug\net8.0\assets\mainmenu.wav" />
     <None Include="bin\Debug\net8.0\assets\player_shot.wav" />
   </ItemGroup>
   <ItemGroup>

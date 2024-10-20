@@ -9,6 +9,8 @@ public sealed class MainMenuLevel() : Level("mainmenu")
 {
     protected override void LoadObjects()
     {
+        SetBackgroundMusic("mainmenu");
+        
         if (!Scene.FindByType(out Background background))
         {
             AddObject(new Background());

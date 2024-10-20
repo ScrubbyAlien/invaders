@@ -65,6 +65,7 @@ public sealed class WaveManager : SceneObject
             else _spaceReleased = true;
             return;
         }
+        
         if (!_inTransition)
         {
             _waveTimer += deltaTime;
@@ -78,6 +79,13 @@ public sealed class WaveManager : SceneObject
                         EndLevel();
                         return;
                     }
+
+                    if (_currentAssault == _assaults.Count - 2)
+                    {
+                        Scene.FindByType(out MusicManager bgm);
+                        bgm.ChangeMusic("finale");
+                    }
+                        
                     StartTransition();
                 }
             }

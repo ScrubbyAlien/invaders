@@ -27,4 +27,23 @@ public abstract class Level(string name)
     {
         _initialObjects.Clear();
     }
+
+    protected void SetBackgroundMusic(string music = "")
+    {
+        if (Scene.FindByType(out MusicManager backgroundMusic))
+        {
+            Console.WriteLine($"{music}");
+            if (music == "")
+            {
+                backgroundMusic.StopMusic();
+                return;
+            }
+            backgroundMusic.ChangeMusic(music);
+        }
+        else if (music != "")
+        {
+            backgroundMusic = new MusicManager(music);
+            AddObject(backgroundMusic);
+        }
+    }
 }

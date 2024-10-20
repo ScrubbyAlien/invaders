@@ -12,6 +12,8 @@ public sealed class InvasionLevel() : Level("invasion")
 {
     protected override void LoadObjects()
     {
+        SetBackgroundMusic("invasion");
+        
         AddObject(new Player());
         if (!Scene.FindByType(out Background background))
         {
@@ -118,11 +120,11 @@ public sealed class InvasionLevel() : Level("invasion")
         [
             assault1,
             assault2,
-            assault3,
-            assault4,
-            assault5,
-            assault6,
-            assault7
+            // assault3,
+            // assault4,
+            // assault5,
+            // assault6,
+            // assault7
         ];
         
         WaveManager manager = new WaveManager();

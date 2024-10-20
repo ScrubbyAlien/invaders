@@ -1,3 +1,4 @@
+using invaders.enums;
 using SFML.System;
 using invaders.sceneobjects;
 using invaders.sceneobjects.gui;
@@ -9,6 +10,8 @@ public sealed class GameModeSelectLevel() : Level("gamemodeselect")
 {
     protected override void LoadObjects()
     {
+        SetBackgroundMusic("mainmenu");
+        
         if (!Scene.FindByType(out Background _))
         {
             AddObject(new Background());
@@ -31,7 +34,11 @@ public sealed class GameModeSelectLevel() : Level("gamemodeselect")
         AddObject(backButton);
 
         ButtonNavigator manager = new ButtonNavigator();
-        manager.AddButton(standardButton, () => Scene.LoadLevel("invasion"));
+        manager.AddButton(standardButton, () =>
+        {
+            
+            Scene.LoadLevel("invasion");
+        });
         manager.AddButton(backButton, () => Scene.LoadLevel("mainmenu"));
         AddObject(manager);
     }

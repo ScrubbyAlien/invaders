@@ -1,5 +1,4 @@
 using invaders.enums;
-using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
 using static SFML.Window.Keyboard.Key;
@@ -50,6 +49,7 @@ public sealed class Player : Actor
         
         SetBulletSoundEffect("player_shot");
         bulletSoundEffect.Volume = 25;
+        bulletSoundEffect.PlayingOffset = Time.FromMilliseconds(200);
     }
 
     public override void Destroy()
