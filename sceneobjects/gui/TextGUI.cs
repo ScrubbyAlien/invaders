@@ -1,13 +1,14 @@
 using SFML.Graphics;
 using SFML.System;
 
-namespace invaders.sceneobjects;
+namespace invaders.sceneobjects.gui;
 
-public class TextGUI : GUI
+public class TextGUI : GUI, INavigatable
 {
     protected Text text = new();
     private Alignment _alignment;
-    
+    protected bool unavailable;
+
     public override Vector2f Position
     {
         get => text.Position;
@@ -36,10 +37,23 @@ public class TextGUI : GUI
     
     public override void Render(RenderTarget target)
     {
-        if (animator.IsAnimated) animator.RenderAnimation(target);
+        if (animator.IsAnimated && Active) animator.RenderAnimation(target);
         else target.Draw(text);
     }
 
+    public void Activate()
+    {
+        text.FillColor = Color.White;
+        unavailable = false;
+    }
+
+    public void Deactivate()
+    {
+        animator.StopAnimation();
+        SetFillColor(new Color(80, 80, 80, 140));
+        unavailable = true;
+    }
+    
     public void SetText(string newText)
     {
         text.DisplayedString = newText;

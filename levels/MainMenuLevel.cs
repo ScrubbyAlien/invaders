@@ -1,5 +1,5 @@
-using invaders.interfaces;
 using invaders.sceneobjects;
+using invaders.sceneobjects.gui;
 using SFML.System;
 using static invaders.Utility;
 
@@ -34,8 +34,9 @@ public sealed class MainMenuLevel() : Level("mainmenu")
         AddObject(highScoreButton);
         AddObject(quitButton);
 
-        MenuManager manager = new MenuManager();
+        ButtonNavigator manager = new ButtonNavigator();
         manager.AddButton(playButton, () => Scene.LoadLevel("gamemodeselect"));
+        manager.AddButton(highScoreButton, () => Scene.LoadLevel("highscores"));
         manager.AddButton(quitButton, () => Scene.CloseWindow());
         AddObject(manager);
     }

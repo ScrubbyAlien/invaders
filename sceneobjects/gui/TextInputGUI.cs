@@ -3,10 +3,8 @@ using SFML.System;
 using SFML.Window;
 using static SFML.Window.Keyboard.Key;
 using static invaders.Utility;
-using SFML.System;
-using SFML.Window;
 
-namespace invaders.sceneobjects;
+namespace invaders.sceneobjects.gui;
 
 public sealed class TextInputGUI : TextGUI
 {

@@ -1,5 +1,6 @@
 using SFML.System;
 using invaders.sceneobjects;
+using invaders.sceneobjects.gui;
 using static invaders.Utility;
 
 namespace invaders.levels;
@@ -29,7 +30,7 @@ public sealed class GameModeSelectLevel() : Level("gamemodeselect")
         AddObject(endlessButton);
         AddObject(backButton);
 
-        MenuManager manager = new MenuManager();
+        ButtonNavigator manager = new ButtonNavigator();
         manager.AddButton(standardButton, () => Scene.LoadLevel("invasion"));
         manager.AddButton(backButton, () => Scene.LoadLevel("mainmenu"));
         AddObject(manager);

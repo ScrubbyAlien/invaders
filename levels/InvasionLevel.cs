@@ -1,5 +1,6 @@
 using invaders.enums;
 using invaders.sceneobjects;
+using invaders.sceneobjects.gui;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
@@ -130,7 +131,7 @@ public sealed class InvasionLevel() : Level("invasion")
         
         // create pause menu and manager
         AddObject(new PauseManager(Keyboard.Key.Escape));
-        MenuManager pauseMenu = new MenuManager();
+        ButtonNavigator pauseMenu = new ButtonNavigator();
         pauseMenu.AddTag(SceneObjectTag.PauseMenuItem);
 
         SpriteGUI transparentScreen = new SpriteGUI(TextureRects["blackSquare"]);

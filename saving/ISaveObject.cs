@@ -1,4 +1,4 @@
-namespace invaders.interfaces;
+namespace invaders.saving;
 
 public interface ISaveObject
 {

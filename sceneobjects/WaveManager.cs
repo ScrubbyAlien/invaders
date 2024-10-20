@@ -1,3 +1,4 @@
+using invaders.sceneobjects.gui;
 using SFML.System;
 using SFML.Window;
 using static invaders.Utility;

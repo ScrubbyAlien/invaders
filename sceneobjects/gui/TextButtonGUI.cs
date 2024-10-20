@@ -1,13 +1,11 @@
-using invaders.interfaces;
 using SFML.Graphics;
 
-namespace invaders.sceneobjects;
+namespace invaders.sceneobjects.gui;
 
 public sealed class TextButtonGUI : TextGUI, IClickable
 {
     public event Action? Clicked;
-    private bool _unavailable;
-    
+
     public TextButtonGUI(string buttonDisplayText) : base(buttonDisplayText)
     {
         Deactivate();
@@ -19,22 +17,24 @@ public sealed class TextButtonGUI : TextGUI, IClickable
         animator.AddAnimation(selected);
     }
 
-    public void Select() { animator.PlayAnimation("selected", true); }
-    public void Unselect()
+    public void Select()
+    {
+        animator.PlayAnimation("selected", true);
+    }
+    public void Deselect()
     {
         animator.StopAnimation();
-        text.FillColor = Color.White;
+        SetFillColor(Color.White);
     }
-    public void Activate() { _unavailable = false; }
-    public void Deactivate() { _unavailable = true; }
-    public void Click() { Clicked?.Invoke(); }
-
-    public override void Render(RenderTarget target)
+    
+    public override void SetInactiveSelection()
     {
-        if (_unavailable) text.FillColor = new Color(80, 80, 80, 80);
-        else text.FillColor = Color.White;
-        base.Render(target);
+        base.SetInactiveSelection();
+        Deselect();
     }
+
+
+    public void Click() { Clicked?.Invoke(); }
 
     private Animation.FrameRenderer[] selectedFrames =
     [

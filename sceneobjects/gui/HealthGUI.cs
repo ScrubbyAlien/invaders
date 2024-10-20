@@ -2,7 +2,7 @@ using SFML.Graphics;
 using SFML.System;
 using static invaders.Utility;
 
-namespace invaders.sceneobjects;
+namespace invaders.sceneobjects.gui;
 
 public sealed class HealthGUI : SpriteGUI
 {
