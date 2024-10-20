@@ -147,6 +147,12 @@ public abstract class Navigator(float holdDownTime, bool looping = true, bool ho
         _inActiveSection = false;
     }
 
+    public override void Unpause()
+    {
+        base.Unpause();
+        _firstFrame = true;
+    }
+
     public abstract void EnableNavigator();
     public abstract void DisableNavigator();
 }

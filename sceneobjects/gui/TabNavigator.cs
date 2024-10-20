@@ -46,12 +46,14 @@ public sealed class TabNavigator(bool looping = true, bool horizontal = false) :
     public override void SetActiveSelection()
     {
         base.SetActiveSelection();
+        _tabs.ForEach(t => t.SetActiveSelection());
         EnableNavigator();
     }
 
     public override void SetInactiveSelection()
     {
         base.SetInactiveSelection();
+        _tabs.ForEach(t => t.SetInactiveSelection());
         DisableNavigator();
     }
 

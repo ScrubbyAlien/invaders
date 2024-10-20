@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using invaders.saving;
 using invaders.sceneobjects;
 using invaders.sceneobjects.gui;
@@ -8,7 +7,7 @@ namespace invaders.levels;
 
 public class HighscoreLevel() : Level("highscores")
 {
-    private List<TextGUI> _loadedScores = new List<TextGUI>();
+    private List<TextGUI> _loadedScores = new();
     
     protected override void LoadObjects()
     {
@@ -20,84 +19,82 @@ public class HighscoreLevel() : Level("highscores")
         {
             background.Unpause();
         }
-
-        SectionSelector selector = new SectionSelector();
-        SectionSelector.Section tabs = new SectionSelector.Section("tabs");
-        SectionSelector.Section back = new SectionSelector.Section("back");
         
         TabNavigator scoreBoardSelectTabs = new TabNavigator(false, true);
+        AddObject(scoreBoardSelectTabs);
         
-        TextButtonGUI standardScores = new TextButtonGUI("standard");
-        standardScores.Position = new Vector2f(Settings.MarginSide, Settings.MarginSide);
-        AddObject(standardScores);
+        TextButtonGUI standard = new TextButtonGUI("standard");
+        standard.Position = new Vector2f(Settings.MarginSide, Settings.MarginSide);
+        AddObject(standard);
         
-        TextButtonGUI endlessScores = new TextButtonGUI("endless");
-        endlessScores.Position = new Vector2f(Settings.MarginSide * 2 + standardScores.Bounds.Width, Settings.MarginSide);
-        AddObject(endlessScores);
+        TextButtonGUI endless = new TextButtonGUI("endless");
+        endless.Position = new Vector2f(Settings.MarginSide * 2 + standard.Bounds.Width, Settings.MarginSide);
+        AddObject(endless);
+
+        Dictionary<string, int> standardScores = LoadScores(false).Result;
+        Dictionary<string, int> endlessScores = LoadScores(true).Result;
         
-        
-        scoreBoardSelectTabs.AddTab(standardScores, () => DisplayScores(false).Wait());
-        scoreBoardSelectTabs.AddTab(endlessScores, () => DisplayScores(true).Wait());
+        scoreBoardSelectTabs.AddTab(standard, () => DisplayScores(standardScores));
+        scoreBoardSelectTabs.AddTab(endless, () => DisplayScores(endlessScores));
         
 
-        ButtonNavigator backButtonManager = new ButtonNavigator(false, true);
-        AddObject(backButtonManager);
+        ButtonNavigator bottomButtons = new ButtonNavigator(false, true);
+        AddObject(bottomButtons);
         
         TextButtonGUI backButton = new TextButtonGUI("back");
         backButton.Position = new Vector2f(
             Settings.MarginSide,
-            Program.ScreenHeight - backButton.Bounds.Height - Settings.MarginSide);
+            Program.ScreenHeight - backButton.Bounds.Height - Settings.MarginSide
+        );
         AddObject(backButton);
-        
-        
-        backButtonManager.AddButton(backButton, () => Scene.LoadLevel("mainmenu"));
 
-        scoreBoardSelectTabs.OrthogonalExit += (down) =>
-        {
-            if (down)
-            {
-                selector.ActivateSection("back");
-            }
-        };
-        backButtonManager.OrthogonalExit += (down) =>
-        {
-            if (!down)
-            {
-                selector.ActivateSection("tabs");
-            }
-        };
+        TextButtonGUI resetButton = new TextButtonGUI("reset");
+        resetButton.Position = new Vector2f(
+            Program.ScreenWidth - Settings.MarginSide - resetButton.Bounds.Width,
+            Program.ScreenHeight - Settings.MarginSide - resetButton.Bounds.Height
+        );
+        AddObject(resetButton);
         
-        AddObject(scoreBoardSelectTabs);
+        bottomButtons.AddButton(backButton, () => Scene.LoadLevel("mainmenu"));
+        bottomButtons.AddButton(resetButton, () =>
+        {
+            ConfirmationPrompt p = new(
+                "Reset all scoreboards?",
+                () =>
+                {
+                    SaveManager.WriteSave(new ScoresSaveObject()).Wait();
+                    Scene.LoadLevel("highscores");
+                },
+                () => { }
+                );
+            p.Prompt();
+        });
+        
+        // create section selector to change between tabs and buttons
+        SectionSelector selector = new SectionSelector();
+        AddObject(selector);
+        
+        SectionSelector.Section tabs = new SectionSelector.Section("tabs");
+        SectionSelector.Section back = new SectionSelector.Section("back");
+        
+        scoreBoardSelectTabs.OrthogonalExit += (down) => { if (down) selector.ActivateSection("back"); };
+        bottomButtons.OrthogonalExit += (down) => { if (!down) selector.ActivateSection("tabs"); };
         
         // navigators handle enabling and disabling of their INavigatables
         tabs.AddSectionObject(scoreBoardSelectTabs);
-        back.AddSectionObject(backButtonManager);
+        back.AddSectionObject(bottomButtons);
         
         selector.AddSection(tabs);
         selector.AddSection(back);
         selector.ActivateSection("tabs");
-        AddObject(selector);
+       
     }
 
-    private async Task DisplayScores(bool endless)
+    private void DisplayScores(Dictionary<string, int> scores)
     {
         Scene.QueueDestroy(_loadedScores.Select(t => t as SceneObject).ToList());
-        _loadedScores = await LoadScores(endless);
+        _loadedScores.Clear();
         
-        // we take the first 20 texts so we only display the first 10 entries since each entry has two texts
-        Scene.QueueSpawn(_loadedScores.Take(20).Select(t => t as SceneObject).ToList());
-    }
-    
-    // {"Scores":{"greg":10000,"sam":10,"samuel":100,"cony":5000,"hello":1,"pilot":15000},"EndlessScores":{}}
-    
-    private async Task<List<TextGUI>> LoadScores(bool endless)
-    {
-        List<TextGUI> scoreTexts = new();
-        
-        ScoresSaveObject s = await SaveManager.LoadSave<ScoresSaveObject>();
-        Dictionary<string, int> scores = endless ? s.EndlessScores : s.Scores;
-
-        float nextEntryYPosition = new TextGUI("A").Bounds.Height + Settings.MarginSide * 3;
         
         // LINQ queries taken from these resources
         // https://learn.microsoft.com/en-us/dotnet/csharp/linq/get-started/introduction-to-linq-queries
@@ -106,7 +103,9 @@ public class HighscoreLevel() : Level("highscores")
             from entry in scores
             orderby entry.Value descending 
             select entry
-            ).ToDictionary();
+        ).ToDictionary();
+        
+        float nextEntryYPosition = new TextGUI("A").Bounds.Height + Settings.MarginSide * 3;
         
         foreach (KeyValuePair<string,int> pair in sortedScores)
         {
@@ -119,13 +118,21 @@ public class HighscoreLevel() : Level("highscores")
                 nextEntryYPosition
             );
             
-           scoreTexts.Add(name);
-           scoreTexts.Add(score);
+            _loadedScores.Add(name);
+            _loadedScores.Add(score);
 
-           nextEntryYPosition += name.Bounds.Height + Settings.MarginSide;
+            nextEntryYPosition += name.Bounds.Height + Settings.MarginSide;
         }
-
-        return scoreTexts;
+        
+        // we take the first 20 texts so we only display the first 10 entries since each entry has two texts
+        Scene.QueueSpawn(_loadedScores.Take(20).Select(t => t as SceneObject).ToList());
+    }
+    
+    private async Task<Dictionary<string, int>> LoadScores(bool endless)
+    {
+        ScoresSaveObject s = await SaveManager.LoadSave<ScoresSaveObject>();
+        Dictionary<string, int> scores = endless ? s.EndlessScores : s.Scores;
+        return scores;
     }
     
 }
