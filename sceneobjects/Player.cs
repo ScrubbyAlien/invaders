@@ -1,4 +1,5 @@
 using invaders.enums;
+using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
 using static SFML.Window.Keyboard.Key;
@@ -46,6 +47,9 @@ public sealed class Player : Actor
             (Program.ScreenWidth - Bounds.Width) / 2,
             (Program.ScreenHeight - 50)
         );
+        
+        SetBulletSoundEffect("player_shot");
+        bulletSoundEffect.Volume = 25;
     }
 
     public override void Destroy()
@@ -85,8 +89,8 @@ public sealed class Player : Actor
                 Settings.TopGuiHeight + Settings.MarginSide,
                 Settings.MarginSide);
 
-            Scene.FindByType(out WaveManager? manager);
-            bool inTransition = manager!.InTransition;
+            Scene.FindByType(out WaveManager manager);
+            bool inTransition = manager.InTransition;
 
             if (!inTransition)
             {
@@ -116,7 +120,7 @@ public sealed class Player : Actor
         GlobalEventManager.PublishPlayerChangeHealth(maxHealth - currentHealth);
         currentHealth = maxHealth;
     }
-    
+
     public override void HitByBullet(Bullet bullet)
     {
         if (!IsInvincible)

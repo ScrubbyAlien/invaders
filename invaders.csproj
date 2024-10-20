@@ -18,6 +18,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <None Remove="invaders.csproj.DotSettings" />
+    <None Include="bin\Debug\net8.0\assets\enemy_shot.wav" />
+    <None Include="bin\Debug\net8.0\assets\player_shot.wav" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="assets/*.ttf" />
@@ -35,6 +37,7 @@
     <Folder Include="saves\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bin\Debug\net8.0\assets\enemy_shot.mp3" />
     <Content Include="bin\Debug\net8.0\saves\scores.save.json" />
   </ItemGroup>
 

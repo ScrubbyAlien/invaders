@@ -1,4 +1,5 @@
 using invaders.enums;
+using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
 
@@ -9,6 +10,8 @@ public abstract class Actor : RenderObject
     protected int maxHealth;
     protected int currentHealth;
     protected int bulletDamage;
+    private Sound _bulletSoundEffect = new Sound();
+    protected Sound bulletSoundEffect => _bulletSoundEffect;
 
     public bool WillDie;
     protected bool inDeathAnimation => timeSinceDeath < deathAnimationLength && WillDie;
@@ -22,6 +25,7 @@ public abstract class Actor : RenderObject
     protected virtual Vector2f bulletOrigin => Position;
     protected virtual float bulletSpeed => 700f;
     public virtual bool IsInvincible => false;
+
 
     protected override void Initialize()
     {
@@ -60,11 +64,12 @@ public abstract class Actor : RenderObject
         return outside;
     }
 
-    public virtual void Shoot(BulletType type)
+    protected virtual void Shoot(BulletType type)
     {
         Bullet bullet = new(type, bulletSpeed, bulletDamage);
         bullet.Position = bulletOrigin;
         Scene.QueueSpawn(bullet);
+        bulletSoundEffect.Play();
     }
 
     public abstract void HitByBullet(Bullet bullet);
@@ -81,4 +86,9 @@ public abstract class Actor : RenderObject
         Vector2f outsidePos, 
         out Vector2f adjustedPos)
     { adjustedPos = outsidePos; }
+
+    protected void SetBulletSoundEffect(string name)
+    {
+        _bulletSoundEffect = AssetManager.LoadSound(name);
+    }
 }
