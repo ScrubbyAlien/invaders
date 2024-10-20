@@ -35,8 +35,8 @@ public sealed class ScoreManager : SceneObject
         _multiplierBar = Scene.FindByTag<SpriteGUI>(SceneObjectTag.MultiplierBar);
         _waveManager = Scene.FindByType<WaveManager>();
         
-        EventManager.EnemyDeath += OnEnemyDeath;
-        EventManager.PlayerHit += ResetMultiplier;
+        GlobalEventManager.EnemyDeath += OnEnemyDeath;
+        GlobalEventManager.PlayerHit += ResetMultiplier;
     }
 
     public override void Destroy()

@@ -30,12 +30,12 @@ public sealed class Background : RenderObject
 
     protected override void Initialize()
     {
-        EventManager.BackgroundSetScrollSpeed += SetNewScrollSpeed;
+        GlobalEventManager.BackgroundSetScrollSpeed += SetNewScrollSpeed;
     }
 
     public override void Destroy()
     {
-        EventManager.BackgroundSetScrollSpeed -= SetNewScrollSpeed;
+        GlobalEventManager.BackgroundSetScrollSpeed -= SetNewScrollSpeed;
     }
 
     public override void Update(float deltaTime)

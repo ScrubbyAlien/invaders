@@ -1,5 +1,4 @@
 using System.Text.Json;
-using invaders.interfaces;
 
 namespace invaders.saving;
 
@@ -9,19 +8,22 @@ public static class SaveManager
     
     private static string SaveFilePath(string name) => $"{Directory.GetCurrentDirectory()}/{SavePath}/{name}.save.json";
     
-    public static void LoadSave<T>(ref T saveObject) where T : ISaveObject, new()
+    // async callbacks learned from here
+    // https://stackoverflow.com/questions/14455293/how-and-when-to-use-async-and-await
+    public static async Task<T> LoadSave<T>() where T : ISaveObject, new()
     {
+        T saveObject = new T();
         // if the file does not exist return false
-        if (!File.Exists(SaveFilePath(saveObject.GetSaveFileName()))) return;
+        if (!File.Exists(SaveFilePath(saveObject.GetSaveFileName()))) return saveObject;
         
         // if it does exist, read it and return true
-        string json = File.ReadAllText(SaveFilePath(saveObject.GetSaveFileName()));
-        saveObject = JsonSerializer.Deserialize<T>(json) ?? new T();
+        string json = await File.ReadAllTextAsync(SaveFilePath(saveObject.GetSaveFileName()));
+        return JsonSerializer.Deserialize<T>(json) ?? new T();
     }
 
-    public static void WriteSave<T>(T save) where T : ISaveObject, new()
+    public static async Task WriteSave<T>(T save) where T : ISaveObject, new()
     {
         string json = JsonSerializer.Serialize(save);
-        File.WriteAllText(SaveFilePath(save.GetSaveFileName()), json);
+        await File.WriteAllTextAsync(SaveFilePath(save.GetSaveFileName()), json);
     }   
 }

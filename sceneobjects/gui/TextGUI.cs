@@ -46,15 +46,9 @@ public class TextGUI : GUI
         AlignText();
     }
 
-    public void SetFillColor(Color color)
-    {
-        text.FillColor = color;
-    }
-
-    public override Animatable GetAnimatable()
-    {
-        return new Animatable(this, text, animator);
-    }
+    public void SetFillColor(Color color) => text.FillColor = color;
+    public void SetStyle(Text.Styles style) => text.Style = style;
+    public override Animatable GetAnimatable() => new Animatable(this, text, animator);
 
     private void AlignText()
     {

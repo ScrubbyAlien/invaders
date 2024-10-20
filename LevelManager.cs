@@ -21,7 +21,7 @@ public static class LevelManager
         {
             // <>c appears when lambda expressions exist in the class definition
             // it crashes if we try to call it's constructor so we ignore it
-            if (level.Name == "<>c") continue; 
+            if (level.Name.Contains("<")) continue; 
             Level? l = (Level?) level.GetConstructor(Type.EmptyTypes)?.Invoke(new object[0]);
             if (l != null) _levels.Add(l);
         }

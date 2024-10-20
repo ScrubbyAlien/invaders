@@ -2,8 +2,13 @@ using invaders.sceneobjects;
 
 namespace invaders;
 
-public static class EventManager
+public static class GlobalEventManager
 {
+    static GlobalEventManager()
+    {
+        Scene.GlobalEvents += BroadcastEvents;
+    }
+    
     public static void BroadcastEvents()
     {
         BroadcastPlayerChangeHealth();

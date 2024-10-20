@@ -68,7 +68,7 @@ public abstract class AbstractEnemy : Actor
     protected override void Die()
     {
         base.Die();
-        EventManager.PublishEnemyDead(this);
+        GlobalEventManager.PublishEnemyDead(this);
     }
 
     protected override void OnOutsideScreen((ScreenState x, ScreenState y) state, Vector2f outsidePos, out Vector2f adjustedPos)

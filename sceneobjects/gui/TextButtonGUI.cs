@@ -44,7 +44,7 @@ public sealed class TextButtonGUI : TextGUI, IClickable
             float white = 255;
             float progress = animatable.Animator.FrameCount / 13f;
             progress %= MathF.PI; // keep value within PI radians
-            byte lerp = (byte) (int) MathF.Round(float.Lerp(white, darkGray, MathF.Sin(progress)));
+            byte lerp = (byte) MathF.Round(float.Lerp(white, darkGray, MathF.Sin(progress)));
             Color lerpedColor = new Color(lerp, lerp, lerp);
             animatable.Text.FillColor = lerpedColor;
             target.Draw(animatable.Text);

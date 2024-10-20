@@ -113,7 +113,7 @@ public sealed class Player : Actor
 
     public void Reset()
     {
-        EventManager.PublishPlayerChangeHealth(maxHealth - currentHealth);
+        GlobalEventManager.PublishPlayerChangeHealth(maxHealth - currentHealth);
         currentHealth = maxHealth;
     }
     
@@ -131,13 +131,13 @@ public sealed class Player : Actor
         _invincibilityTimer = 0f;
         animator.PlayAnimation("invincible", true);
         if (currentHealth <= 0) Die();
-        EventManager.PublishPlayerHit();
-        EventManager.PublishPlayerChangeHealth(-damage);
+        GlobalEventManager.PublishPlayerHit();
+        GlobalEventManager.PublishPlayerChangeHealth(-damage);
     }
 
     protected override void Die()
     {
-        EventManager.PublishPlayerDeath();
+        GlobalEventManager.PublishPlayerDeath();
         animator.PlayAnimation("explode", true);
         base.Die();
     }
@@ -168,7 +168,7 @@ public sealed class Player : Actor
 
     private Animation.FrameRenderer[] blinking =
     [
-        BasicFrameRenderer(NoSprite),
+        (_, _) => { },
         (animatable, target) =>
         {
             target.Draw(animatable.Sprite);

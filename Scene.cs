@@ -18,6 +18,7 @@ public static class Scene
     private readonly static List<DeferredMethodCall> _deferredCalls = new();
     private static string _nextLevel = "";
     private static RenderWindow? _window;
+    public static event Action? GlobalEvents;
 
     public static void SetWindow(RenderWindow window)
     {
@@ -81,14 +82,14 @@ public static class Scene
     }
     private static void UpdateSceneObjects(float deltaTime)
     {
-        _sceneObjects.ForEach(o => { if(!o.Dead && !o.Paused) o.Update(deltaTime); });
+        _sceneObjects.ForEach(o => { if(!o.Dead && o.Active) o.Update(deltaTime); });
     }
     
     public static void Clear()
     {
         _sceneObjects.ForEach(o =>
         {
-            if (!o.DontDestroyOnClear) o.Destroy();
+            if (!o.DontDestroyOnClear) QueueDestroy(o);
         });
         _sceneObjects = _sceneObjects.Where(o => o.DontDestroyOnClear).ToList();
     }
@@ -113,7 +114,7 @@ public static class Scene
         ProcessSpawnQueue();
         ProcessDeferredCalls();
         UpdateSceneObjects(deltaTime);
-        EventManager.BroadcastEvents();
+        GlobalEvents?.Invoke();
         ProcessDestroyQueue();
     }
 

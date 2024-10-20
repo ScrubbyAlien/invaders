@@ -18,7 +18,7 @@ public sealed class InvasionLevel() : Level("invasion")
         }
         else
         {
-            background.Paused = false;
+            background.Unpause();
         }
 
         // create gui background
@@ -155,12 +155,12 @@ public sealed class InvasionLevel() : Level("invasion")
         
         pauseMenu.AddButton(restartButton, () =>
         {
-            EventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInLevel, 1f);
+            GlobalEventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInLevel, 1f);
             Scene.LoadLevel("invasion");
         });
         pauseMenu.AddButton(quitButton, () =>
         {
-            EventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInLevel, 1f);
+            GlobalEventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInLevel, 1f);
             Scene.LoadLevel("mainmenu");
         });
         AddObject(pauseMenu);

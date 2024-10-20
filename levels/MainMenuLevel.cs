@@ -15,7 +15,7 @@ public sealed class MainMenuLevel() : Level("mainmenu")
         }
         else
         {
-            background.Paused = false;
+            background.Unpause();
         }
 
         SpriteGUI title = new SpriteGUI(TextureRects["title"]);

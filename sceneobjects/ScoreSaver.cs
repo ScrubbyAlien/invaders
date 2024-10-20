@@ -22,7 +22,7 @@ public sealed class ScoreSaver : SceneObject
 
         if (_won)
         {
-            _input.Paused = false;
+            _input.Unpause();
             _input.Unhide();
             _message.SetText("Final score:\n" +
                              $"{_score}\n" +
@@ -51,13 +51,13 @@ public sealed class ScoreSaver : SceneObject
             Scene.LoadLevel("mainmenu");
             return;
         }
-
-        ScoresSaveObject scores = new ScoresSaveObject();
-        SaveManager.LoadSave(ref scores); // load existing save
+        
+        ScoresSaveObject scores = SaveManager.LoadSave<ScoresSaveObject>().Result; // load existing save
+        
         if (scores.AddEntry(name.ToLower(), _score)) // write new value
         {
-            SaveManager.WriteSave(scores); // write new save, overwriting old
-            Scene.LoadLevel("mainmenu"); // load high score screen
+            SaveManager.WriteSave(scores).Wait(); // write new save, overwriting old
+            Scene.LoadLevel("highscores"); // load high score screen
             return;
         }
         

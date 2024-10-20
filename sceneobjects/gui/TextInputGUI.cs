@@ -1,4 +1,6 @@
 using SFML.Graphics;
+using SFML.System;
+using SFML.Window;
 using static SFML.Window.Keyboard.Key;
 using static invaders.Utility;
 using SFML.System;
@@ -17,17 +19,18 @@ public sealed class TextInputGUI : TextGUI
     private bool _backspacePressed;
     private bool _enterPressed;
 
-
-    public override bool Paused
+    public override void Pause()
     {
-        get => paused;
-        set 
-        {
-            paused = value;
-            _caret.Paused = value;
-            if (value) _caret.Hide();
-            else _caret.Unhide();
-        }
+        base.Pause();
+        _caret.Pause();
+        _caret.Hide();
+    }
+
+    public override void Unpause()
+    {
+        base.Unpause();
+        _caret.Unpause();
+        _caret.Unhide();
     }
 
     public TextInputGUI(int maxCharacterCount, uint size = 10, Alignment alignment = Alignment.Center) : base("", size, alignment)

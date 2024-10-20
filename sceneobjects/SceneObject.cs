@@ -9,12 +9,11 @@ public abstract class SceneObject
     public bool DontDestroyOnClear = false;
     private bool _initialized;
     public bool Initialized => _initialized;
-    protected bool paused;
+    private bool _paused;
 
-    public virtual bool Paused
+    public virtual bool Active
     {
-        get => paused;
-        set => paused = value;
+        get => !_paused;
     }
 
     /// <summary>
@@ -26,7 +25,7 @@ public abstract class SceneObject
     public void FullInitialize()
     {
         Initialize();
-        paused = HasTag(SceneObjectTag.PauseMenuItem);
+        _paused = HasTag(SceneObjectTag.PauseMenuItem);
         _initialized = true;
     }
 
@@ -43,4 +42,7 @@ public abstract class SceneObject
     {
         return _tags.Contains(tag);
     }
+
+    public virtual void Pause() => _paused = true;
+    public virtual void Unpause() => _paused = false;
 }

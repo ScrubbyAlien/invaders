@@ -1,5 +1,3 @@
-using invaders.interfaces;
-
 namespace invaders.saving;
 
 public class ScoresSaveObject : ISaveObject

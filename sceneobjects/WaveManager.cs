@@ -43,12 +43,12 @@ public sealed class WaveManager : SceneObject
 
     protected override void Initialize()
     {
-        EventManager.PlayerDeath += PlayerDied;
+        GlobalEventManager.PlayerDeath += PlayerDied;
     }
 
     public override void Destroy()
     {
-        EventManager.PlayerDeath -= PlayerDied;
+        GlobalEventManager.PlayerDeath -= PlayerDied;
     }
 
     public override void Update(float deltaTime)
@@ -58,7 +58,7 @@ public sealed class WaveManager : SceneObject
             if (AreAnyKeysPressed([Keyboard.Key.Space]))
             {
                 if (!_spaceReleased) return;
-                EventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInLevel, 1f);
+                GlobalEventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInLevel, 1f);
                 Scene.LoadLevel("scoresave");
             }
             else _spaceReleased = true;
@@ -96,12 +96,12 @@ public sealed class WaveManager : SceneObject
             _transitionBufferTimer += deltaTime;
             if (_transitionBufferTimer > 1 && !_scrollSpedUp)
             {
-                EventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInTransition, 1f);
+                GlobalEventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInTransition, 1f);
                 _scrollSpedUp = true;
             }
             else if (_transitionBufferTimer > _transitionBuffer - 2 && !_scrollSlowedDown)
             {
-                EventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInLevel, 1f);
+                GlobalEventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInLevel, 1f);
                 _scrollSlowedDown = true;
             }
 
@@ -146,7 +146,7 @@ public sealed class WaveManager : SceneObject
             "press space to continue", 
             new Vector2f(0, -100)
         );
-        EventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInTransition, 3f);
+        GlobalEventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInTransition, 3f);
     }
 
     private void PlayerDied()

@@ -12,16 +12,16 @@ public sealed class HealthGUI : SpriteGUI
 
     protected override void Initialize()
     {
-        if (Scene.FindByType(out Player? p))
+        if (Scene.FindByType(out Player p))
         {
-            currentHealth = p!.CurrentHealth;
+            currentHealth = p.CurrentHealth;
         }
-        EventManager.PlayerChangeHealth += OnHealthChange;
+        GlobalEventManager.PlayerChangeHealth += OnHealthChange;
     }
 
     public override void Destroy()
     {
-        EventManager.PlayerChangeHealth -= OnHealthChange;
+        GlobalEventManager.PlayerChangeHealth -= OnHealthChange;
     }
 
     public override void Render(RenderTarget target)
@@ -44,15 +44,7 @@ public sealed class HealthGUI : SpriteGUI
                 35
             );
             target.Draw(sprite);
-             
-                
-                // MiddleOfScreen(
-                // Bounds, 
-                // new Vector2f(
-                // -TextureRects["guiBackgroundMiddle"].Width * Scale / 2f - 2 - Bounds.Width * i, 
-                // -Program.ScreenHeight / 2f + 40
-                // )); 
-            
+
         }
     }
 

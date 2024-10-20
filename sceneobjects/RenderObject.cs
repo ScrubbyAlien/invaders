@@ -18,7 +18,7 @@ public abstract class RenderObject : SceneObject
     {
         animator = new(this);
         this.textureName = textureName;
-        sprite.Texture = AssetManager.LoadTexture(textureName);
+        if (initRect.Width != 0) sprite.Texture = AssetManager.LoadTexture(textureName);
         sprite.TextureRect = initRect;
         sprite.Scale = new Vector2f(scale, scale); // scale is constructor parameter so it can be changed by children
     }
