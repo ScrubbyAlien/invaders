@@ -26,7 +26,7 @@ public sealed class Squid : AbstractEnemy
             new Random().Next((int) -Bounds.Height - Settings.SpawnInterval, (int) -Bounds.Height +  Settings.TopGuiHeight)
         );
     }
-    public override int ScoreValue => 200;
+    public override int ScoreValue => 500;
     
     protected override Vector2f bulletOrigin => Position + new Vector2f(40, 60);
     protected override float bulletSpeed => 150f;
@@ -59,7 +59,7 @@ public sealed class Squid : AbstractEnemy
             if (Position.Y > Settings.TopGuiHeight) _fireTimer += deltaTime;
             if (_fireTimer >= _timeUntilFire)
             {
-                Shoot(BulletType.Squid);
+                Shoot("squid");
                 _fireTimer = 0;
                 _timeUntilFire = GetNewFireTime();
             }
@@ -98,7 +98,7 @@ public sealed class Squid : AbstractEnemy
         };
     }
     
-    protected override void Shoot(BulletType type)
+    protected override void Shoot(string type)
     {
         Bullet leftBullet = new(type, bulletSpeed, bulletDamage, SpecialShoot(true));
         Bullet rightBullet = new(type, bulletSpeed, bulletDamage, SpecialShoot(false));

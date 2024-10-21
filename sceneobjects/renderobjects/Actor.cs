@@ -74,7 +74,7 @@ public abstract class Actor : RenderObject
         return outside;
     }
 
-    protected virtual void Shoot(BulletType type)
+    protected virtual void Shoot(string type)
     {
         Bullet bullet = new(type, bulletSpeed, bulletDamage);
         bullet.Position = bulletOrigin;
@@ -122,7 +122,7 @@ public abstract class Actor : RenderObject
             // draw explosion
             Sprite explosion = new Sprite();
             int frameCount = animatable.Animator.FrameCount;
-            string rectKey = new Random().Next(2) == 0 ? "enemyBullet" : "enemyExplosion";
+            string rectKey = new Random().Next(2) == 0 ? "explosionSmall" : "explosionLarge";
             explosion.Texture = AssetManager.LoadTexture("invaders");
             explosion.TextureRect = TextureRects[rectKey];
             explosion.Scale = new Vector2f(Scale, Scale);

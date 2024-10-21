@@ -8,27 +8,28 @@ namespace invaders.sceneobjects.renderobjects;
 
 public class Bullet : RenderObject
 {
-    public BulletType Type;
+    public string Type;
     public CollisionLayer EffectiveAgainstLayer; // the collision layer that this bullet should collide with
     private Vector2f _velocity;
     public int Damage;
     private Func<float, float, Vector2f, Vector2f> _movement;
     private float _timeAlive;
     
-    private static Dictionary<BulletType, IntRect[]> bulletTypes = new()
+    private static Dictionary<string, IntRect> bulletTypes = new()
     {
-        { BulletType.Player, [TextureRects["playerBullet"]] },
-        { BulletType.Enemy, [TextureRects["enemyBullet"]] },
-        { BulletType.Runner, [TextureRects["runnerBullet"]] },
-        { BulletType.Squid, [TextureRects["squidBullet"]] },
-        
+        { "player", TextureRects["playerBullet"] },
+        { "grunt", TextureRects["gruntBullet"] },
+        { "runner", TextureRects["runnerBullet"] },
+        { "squid", TextureRects["squidBullet"] },
+        { "juggernautLeft", TextureRects["juggernautBullet1"] },
+        { "juggernautRight", TextureRects["juggernautBullet2"] },
     };
 
-    public Bullet(BulletType type, float speed, int damage) : base("invaders", bulletTypes[type][0], Scale)
+    public Bullet(string type, float speed, int damage) : base("invaders", bulletTypes[type], Scale)
     {
         Type = type;
-        EffectiveAgainstLayer = Type == BulletType.Player ? CollisionLayer.Enemy : CollisionLayer.Player;
-        _velocity = new Vector2f(0, speed * (Type == BulletType.Player ? -1 : 1));
+        EffectiveAgainstLayer = Type == "player" ? CollisionLayer.Enemy : CollisionLayer.Player;
+        _velocity = new Vector2f(0, speed * (Type == "player" ? -1 : 1));
         Damage = damage;
         
         sprite.Origin = new Vector2f(
@@ -40,7 +41,7 @@ public class Bullet : RenderObject
         };
     }
 
-    public Bullet(BulletType type, float speed, int damage, Func<float, float, Vector2f, Vector2f> movement) : this(type, speed, damage)
+    public Bullet(string type, float speed, int damage, Func<float, float, Vector2f, Vector2f> movement) : this(type, speed, damage)
     {
         _movement = movement;
     }
@@ -62,11 +63,13 @@ public class Bullet : RenderObject
             {
                 if (!actor.WillDie && !actor.IsInvincible)
                 {
-                    Dead = true;
+                    Evaporate();
                     actor.HitByBullet(this);
                 }
             }
 
+            // squid and juggernaut bullets can block player bullets so they have enemy collision layer
+            // so player bullets actuall collide with them and are destroyed
             if (intersect.IntersectedEntity is Bullet bullet)
             {
                 this.Evaporate();

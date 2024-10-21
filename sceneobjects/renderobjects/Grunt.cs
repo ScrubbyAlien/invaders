@@ -42,7 +42,7 @@ public sealed class Grunt : AbstractEnemy
             if (Position.Y > Settings.TopGuiHeight) _fireTimer += deltaTime;
             if (_fireTimer >= _timeUntilFire)
             {
-                Shoot(BulletType.Enemy);
+                Shoot("grunt");
                 _fireTimer = 0;
                 _timeUntilFire = GetNewFireTime();
             }

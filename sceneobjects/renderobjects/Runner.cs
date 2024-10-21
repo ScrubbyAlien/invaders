@@ -6,7 +6,7 @@ namespace invaders.sceneobjects.renderobjects;
 
 public sealed class Runner : AbstractEnemy
 {
-    public override int ScoreValue => 150;
+    public override int ScoreValue => 250;
     
     private float _timeUntilFire;
     private float _fireTimer;
@@ -45,7 +45,7 @@ public sealed class Runner : AbstractEnemy
             if (Position.Y > Settings.TopGuiHeight) _fireTimer += deltaTime;
             if (_fireTimer >= _timeUntilFire)
             {
-                Shoot(BulletType.Runner);
+                Shoot("runner");
                 _burstIndex++;
                 if (_burstIndex < _burstLength)
                 {
@@ -65,14 +65,7 @@ public sealed class Runner : AbstractEnemy
     {
         return 2f + new Random().NextSingle() * 2;
     }
-
-    protected override void TakeDamage(int damage)
-    {
-        currentHealth -= damage;
-        if (currentHealth > 0) animator.PlayAnimation("blink", true);
-        if (currentHealth <= 0) Die();
-    }
-
+    
     private Animation.FrameRenderer[] idleFrames =
     [
         BasicFrameRenderer(TextureRects["runner1"]),

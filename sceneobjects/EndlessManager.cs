@@ -21,7 +21,8 @@ public class EndlessManager : Invasion
     { // how long until next enemy of type should spawn
         ('g', 0.7f),
         ('r', 0.07f),
-        ('s', 0.03f)
+        ('s', 0.03f),
+        ('j', 0.01f)
     };
     
     private float _timeFromStart;

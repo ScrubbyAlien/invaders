@@ -106,13 +106,13 @@ public sealed class Player : Actor
             {
                 if (_burstIndex == 0 && _fireTimer >= _fireRate)
                 {
-                    Shoot(BulletType.Player);
+                    Shoot("player");
                     _burstIndex++;
                     _fireTimer = 0;
                 } 
                 else if (_burstIndex > 0 && _burstIndex < _burstLength && _fireTimer >= _burstRate)
                 {
-                    Shoot(BulletType.Player);
+                    Shoot("player");
                     _burstIndex++;
                     _fireTimer = 0;
                 }

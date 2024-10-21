@@ -18,7 +18,8 @@ public abstract class Invasion : SceneObject
     {
         { 'g', () => new Grunt() },
         { 'r', () => new Runner() },
-        { 's', () => new Squid()}
+        { 's', () => new Squid() },
+        { 'j', () => new Juggernaut() }
     };
     
     

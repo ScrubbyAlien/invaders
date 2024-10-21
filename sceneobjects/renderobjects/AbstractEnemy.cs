@@ -10,6 +10,7 @@ public abstract class AbstractEnemy : Actor
     protected float horizontalSpeed = 30f;
     private WaveManager? _manager;
     protected int touchedBottom;
+    private bool _blinking;
 
     
     
@@ -67,6 +68,14 @@ public abstract class AbstractEnemy : Actor
     {
         base.Update(deltaTime);
         Move(deltaTime);
+        if (_blinking)
+        {
+            if (animator.CurrentAnimation.Name != "blink")
+            {
+                _blinking = false;
+                animator.PlayAnimation("idle", true);
+            }
+        }
     }
 
     protected virtual void Move(float deltaTime)
@@ -127,7 +136,11 @@ public abstract class AbstractEnemy : Actor
     protected override void TakeDamage(int damage)
     {
         currentHealth -= damage;
-        if (currentHealth > 0) animator.PlayAnimation("blink", true);
+        if (currentHealth > 0)
+        {
+            animator.PlayAnimation("blink", true);
+            _blinking = true;
+        }
         if (currentHealth <= 0) Die();
     }
 
