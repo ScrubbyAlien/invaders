@@ -36,7 +36,6 @@ public class Runner : AbstractEnemy
         bulletSoundEffect.Volume = 25;
         
         base.Initialize();
-        Console.WriteLine(currentHealth);
     }
     
     public override void Update(float deltaTime)

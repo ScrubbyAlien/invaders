@@ -79,12 +79,7 @@ public sealed class TabNavigator(bool looping = true, bool horizontal = false) :
 
     public override void SetIndex(int index)
     {
-        Console.WriteLine(index);
         base.SetIndex(index);
         ActivateTab(index);
-        PointerAction((p) =>
-        {
-            Console.WriteLine(p);
-        });
     }
 }
