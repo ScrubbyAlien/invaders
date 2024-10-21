@@ -2,30 +2,30 @@ using SFML.Audio;
 
 namespace invaders.sceneobjects;
 
-public class MusicManager(string name) : SceneObject
+public static class MusicManager
 {
-    private Music _music = AssetManager.OpenMusic(name);
-    private string _name = name;
+    private static Music? _music;
+    private static string _name = "";
 
-    protected override void Initialize()
+    public static void PlayMusic(string name)
     {
-        DontDestroyOnClear = true;
+        _name = name;
+        _music = AssetManager.OpenMusic(name);
         _music.Loop = true;
         _music.Play();
     }
 
-    public void StopMusic()
+    public static void StopMusic()
     {
-        _music.Stop();
-        DontDestroyOnClear = false;
+        _name = "";
+        _music?.Stop();
+        _music = null;
     }
 
-    public void ChangeMusic(string name)
+    public static void ChangeMusic(string name)
     {
         if (name == _name) return;
-        _name = name;
-        _music.Stop();
-        _music = AssetManager.OpenMusic(name);
-        _music.Play();
+        _music?.Stop();
+        PlayMusic(name);
     }
 }

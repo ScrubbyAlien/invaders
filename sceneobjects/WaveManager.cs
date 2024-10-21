@@ -82,8 +82,7 @@ public sealed class WaveManager : SceneObject
 
                     if (_currentAssault == _assaults.Count - 2)
                     {
-                        Scene.FindByType(out MusicManager bgm);
-                        bgm.ChangeMusic("finale");
+                        MusicManager.ChangeMusic("finale");
                     }
                         
                     StartTransition();

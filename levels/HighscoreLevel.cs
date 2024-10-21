@@ -43,7 +43,7 @@ public class HighscoreLevel() : Level("highscores")
         ButtonNavigator bottomButtons = new ButtonNavigator(false, true);
         AddObject(bottomButtons);
         
-        TextButtonGUI backButton = new TextButtonGUI("back");
+        TextButtonGUI backButton = new TextButtonGUI("Main menu");
         backButton.Position = new Vector2f(
             Settings.MarginSide,
             Program.ScreenHeight - backButton.Bounds.Height - Settings.MarginSide
@@ -108,26 +108,31 @@ public class HighscoreLevel() : Level("highscores")
         ).ToDictionary();
         
         float nextEntryYPosition = new TextGUI("A").Bounds.Height + Settings.MarginSide * 3;
+        int rankNumber = 1;
         
         foreach (KeyValuePair<string,int> pair in sortedScores)
         {
+            TextGUI rank = new TextGUI(rankNumber.ToString());
             TextGUI name = new TextGUI(pair.Key);
             TextGUI score = new TextGUI(pair.Value.ToString());
 
-            name.Position = new Vector2f(Settings.MarginSide, nextEntryYPosition);
+            rank.Position = new Vector2f(Settings.MarginSide, nextEntryYPosition);
+            name.Position = new Vector2f(Settings.MarginSide * 5, nextEntryYPosition);
             score.Position = new Vector2f(
                 Program.ScreenWidth - Settings.MarginSide - score.Bounds.Width,
                 nextEntryYPosition
             );
             
+            _loadedScores.Add(rank);
             _loadedScores.Add(name);
             _loadedScores.Add(score);
 
             nextEntryYPosition += name.Bounds.Height + Settings.MarginSide;
+            rankNumber++;
         }
         
-        // we take the first 20 texts so we only display the first 10 entries since each entry has two texts
-        Scene.QueueSpawn(_loadedScores.Take(20).Select(t => t as SceneObject).ToList());
+        // we take the first 30 texts so we only display the first 10 entries since each entry has three texts
+        Scene.QueueSpawn(_loadedScores.Take(30).Select(t => t as SceneObject).ToList());
     }
     
     private async Task<Dictionary<string, int>> LoadScores(bool endless)
