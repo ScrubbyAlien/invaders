@@ -6,6 +6,8 @@ namespace invaders.sceneobjects;
 
 public class Runner : AbstractEnemy
 {
+    public override int ScoreValue => 150;
+    
     private float _timeUntilFire;
     private float _fireTimer;
     private int _burstIndex;

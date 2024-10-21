@@ -1,6 +1,4 @@
-using System.Diagnostics;
 using invaders.enums;
-using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
 
@@ -8,6 +6,7 @@ namespace invaders.sceneobjects;
 
 public abstract class AbstractEnemy : Actor
 {
+    public abstract int ScoreValue { get; }
     protected float horizontalSpeed = 30f;
     private WaveManager? _manager;
     protected int touchedBottom;

@@ -94,9 +94,7 @@ public sealed class ScoreManager : SceneObject
 
     private void OnEnemyDeath(AbstractEnemy enemy)
     {
-        int score = 0;
-        if (enemy is Grunt) score = 50;
-        score *= _multiplier;
+        int score = enemy.ScoreValue * _multiplier;
         
         CreateFadingScoreText(
             0.5f, 

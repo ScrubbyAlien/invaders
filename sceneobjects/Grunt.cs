@@ -7,6 +7,8 @@ namespace invaders.sceneobjects;
 
 public sealed class Grunt : AbstractEnemy
 {
+    public override int ScoreValue => 50;
+
     private float _timeUntilFire;
     private float _fireTimer;
 
