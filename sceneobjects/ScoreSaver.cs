@@ -10,16 +10,20 @@ public sealed class ScoreSaver : SceneObject
 {
     private int _score;
     private bool _won;
+    private bool _endless;
     private TextGUI _message = null!;
-    private TextInputGUI _input = null!;
     
     protected override void Initialize()
     {
-        if (Scene.FindByType(out LevelInfo<int> finalScore)) _score = finalScore.Extract();
-        if (Scene.FindByType(out LevelInfo<bool> won)) _won = won.Extract();
-        _message = Scene.FindByTag<TextGUI>(SceneObjectTag.Message);
-        _input = Scene.FindByType<TextInputGUI>();
-        _input.InputEntered += SaveScore;
+        _score = LevelInfo<int>.Catch("score", 0);
+        _won = LevelInfo<bool>.Catch("won", false);
+        _endless = LevelInfo<bool>.Catch("endless", false);
+        
+        _message = Scene.FindByTag<TextGUI>(SceneObjectTag.Message)!;
+        if (Scene.FindByType(out TextInputGUI? input))
+        {
+            input!.InputEntered += SaveScore;
+        }
 
         if (_won)
         {
@@ -46,9 +50,10 @@ public sealed class ScoreSaver : SceneObject
     {
         ScoresSaveObject scores = SaveManager.LoadSave<ScoresSaveObject>().Result; // load existing save
         
-        if (scores.AddEntry(name.ToLower(), _score)) // write new value
+        if (scores.AddEntry(name.ToLower(), _score, _endless)) // write new value
         {
             SaveManager.WriteSave(scores).Wait(); // write new save, overwriting old
+            Scene.QueueSpawn(new LevelInfo<bool>(_endless, "endless"));
             Scene.LoadLevel("highscores"); // load high score screen
             return;
         }

@@ -11,14 +11,7 @@ public sealed class MainMenuLevel() : Level("mainmenu")
     {
         SetBackgroundMusic("mainmenu");
         
-        if (!Scene.FindByType(out Background background))
-        {
-            AddObject(new Background());
-        }
-        else
-        {
-            background.Unpause();
-        }
+        SetBackground();
 
         SpriteGUI title = new SpriteGUI(TextureRects["title"]);
         title.SetScale(10);

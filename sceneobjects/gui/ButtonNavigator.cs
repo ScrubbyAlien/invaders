@@ -1,3 +1,4 @@
+using SFML.Audio;
 using SFML.Window;
 using static invaders.Utility;
 using static SFML.Window.Keyboard.Key;
@@ -11,6 +12,9 @@ public sealed class ButtonNavigator(bool looping = true, bool horizontal = false
     
     private Keyboard.Key[] _selectKeys = [Enter, Space];
 
+    private Sound _clickSound = AssetManager.LoadSound("click1");
+
+    
     protected override List<Keyboard.Key> _allKeys
     {
         get
@@ -45,6 +49,7 @@ public sealed class ButtonNavigator(bool looping = true, bool horizontal = false
         {
             PointerAction(pointer =>
             {
+                _clickSound.Play();
                 _buttons[pointer].Click();
             });
         }

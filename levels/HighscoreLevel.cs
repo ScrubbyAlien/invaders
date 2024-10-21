@@ -13,16 +13,9 @@ public class HighscoreLevel() : Level("highscores")
     {
         SetBackgroundMusic("mainmenu");
         
-        if (!Scene.FindByType(out Background background))
-        {
-            AddObject(new Background());
-        }
-        else
-        {
-            background.Unpause();
-        }
+        SetBackground();
         
-        TabNavigator scoreBoardSelectTabs = new TabNavigator(false, true);
+        TabNavigator scoreBoardSelectTabs = new TabNavigator(true, true);
         AddObject(scoreBoardSelectTabs);
         
         TextButtonGUI standard = new TextButtonGUI("standard");
@@ -89,6 +82,11 @@ public class HighscoreLevel() : Level("highscores")
         selector.AddSection(tabs);
         selector.AddSection(back);
         selector.ActivateSection("tabs");
+
+        if (LevelInfo<bool>.Catch("endless", false))
+        {
+            Scene.DeferredCall(scoreBoardSelectTabs, "SetIndex", [1]);
+        }
        
     }
 

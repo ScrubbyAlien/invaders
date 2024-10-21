@@ -1,34 +1,22 @@
-using invaders.sceneobjects.gui;
 using SFML.System;
-using SFML.Window;
 using static invaders.Utility;
 
 namespace invaders.sceneobjects;
 
-public sealed class WaveManager : SceneObject
+public sealed class WaveManager : Invasion
 {
     private bool _inTransition;
-    private bool _inEndLevel;
-    private bool _spaceReleased;
     
     private float _waveTimer;
     private int _currentWave;
     private int _currentAssault;
     public int CurrentAssault => _currentAssault;
-    public bool InTransition => _inTransition || _inEndLevel;
+    public override bool InTransition => _inTransition || inEndLevel;
     
     private float _transitionBuffer = 5f;
     private float _transitionBufferTimer;
     private bool _scrollSpedUp;
     private bool _scrollSlowedDown;
-
-    private TextGUI _transitionText = new("");
-    
-    // entity constructor dictionary system borrowed from lab project 4
-    public static readonly Dictionary<char, Func<AbstractEnemy>> Constructors = new()
-    {
-        { 'g', () => new Grunt() },
-    };
     
     private readonly List<Assault> _assaults = new();
 
@@ -42,27 +30,12 @@ public sealed class WaveManager : SceneObject
         DrawText("defeat the invaders!", new Vector2f(0, -100));
     }
 
-    protected override void Initialize()
-    {
-        GlobalEventManager.PlayerDeath += PlayerDied;
-    }
-
-    public override void Destroy()
-    {
-        GlobalEventManager.PlayerDeath -= PlayerDied;
-    }
-
     public override void Update(float deltaTime)
     {
-        if (_inEndLevel)
+        base.Update(deltaTime);
+        if (inEndLevel)
         {
-            if (AreAnyKeysPressed([Keyboard.Key.Space]))
-            {
-                if (!_spaceReleased) return;
-                GlobalEventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInLevel, 1f);
-                Scene.LoadLevel("scoresave");
-            }
-            else _spaceReleased = true;
+            Scene.QueueSpawn(new LevelInfo<bool>(false, "endless"));
             return;
         }
         
@@ -116,12 +89,12 @@ public sealed class WaveManager : SceneObject
             if (_transitionBufferTimer > _transitionBuffer / 2f)
             {
                 // should avoid out of bounds errors becuase StartTransition is not called after last assault
-                _transitionText.SetText(_assaults[_currentAssault + 1].BeforeAssault); 
-                _transitionText.Position = MiddleOfScreen(_transitionText.Bounds) - new Vector2f(0, 100);
+                _messageText.SetText(_assaults[_currentAssault + 1].BeforeAssault); 
+                _messageText.Position = MiddleOfScreen(_messageText.Bounds) - new Vector2f(0, 100);
             }
             if (_transitionBufferTimer >= _transitionBuffer)
             {
-                Scene.QueueDestroy(_transitionText);
+                Scene.QueueDestroy(_messageText);
                 _inTransition = false;
                 _currentWave = 0;
                 _currentAssault++;
@@ -145,7 +118,7 @@ public sealed class WaveManager : SceneObject
     
     private void EndLevel()
     {
-        _inEndLevel = true;
+        inEndLevel = true;
         
         DrawText(
             "Invaders defeated!\n" +
@@ -156,26 +129,6 @@ public sealed class WaveManager : SceneObject
         );
         GlobalEventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInTransition, 3f);
     }
-
-    private void PlayerDied()
-    {
-        _inEndLevel = true; 
-        
-        DrawText(
-            "You have been defeated!\n" +
-            " \n" +
-            "press space to continue",
-            new Vector2f(0, -100));
-    }
-
-    private void DrawText(string text, Vector2f positionFromMiddle)
-    {
-        _transitionText = new TextGUI(text, 8);
-        _transitionText.Position = MiddleOfScreen(_transitionText.Bounds) + positionFromMiddle;
-        Scene.QueueSpawn(_transitionText);
-        // call PlayAnimatio after next ProcessSpawnQueue call so _transitionText's Initialize method can be called first
-        Scene.DeferredCall(_transitionText.GetAnimatable().Animator, "PlayAnimation", ["blink", true]);
-    }
     
     public void SpawnWave(Wave wave)
     {
@@ -183,7 +136,7 @@ public sealed class WaveManager : SceneObject
         {
             for (int i = 0; i < group.Value; i++)
             {
-                AbstractEnemy enemy = Constructors[group.Key]();
+                AbstractEnemy enemy = Invasion.Constructors[group.Key]();
                 Scene.QueueSpawn(enemy);
             }
         }

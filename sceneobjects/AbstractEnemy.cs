@@ -36,16 +36,18 @@ public abstract class AbstractEnemy : Actor
 
     protected override void Initialize()
     {
-        if (Scene.FindByType(out WaveManager manager))
+        if (Scene.FindByType(out WaveManager? manager))
         {
             _manager = manager;
         }
         horizontalSpeed = new Random().Next(2) == 0 ? horizontalSpeed : -horizontalSpeed;
-        
-        Position = new Vector2f(
+
+        Position = InitPosition ??
+        new Vector2f(
             new Random().Next(Settings.MarginSide, Program.ScreenWidth - Settings.MarginSide - (int) Bounds.Width),
             new Random().Next((int) -Bounds.Height - Settings.SpawnInterval, (int) -Bounds.Height +  Settings.TopGuiHeight)
         );
+        
         foreach (IntersectResult<AbstractEnemy> r in this.FindIntersectingEntities<AbstractEnemy>(CollisionLayer.Enemy))
         {
             Position += r.Diff;
@@ -98,8 +100,7 @@ public abstract class AbstractEnemy : Actor
 
     protected float GetVerticalSpeed()
     {
-        Debug.Assert(_manager != null, nameof(_manager) + " != null");
-        if (_speedByLevel.ContainsKey(_manager.CurrentAssault))
+        if (_manager != null && _speedByLevel.ContainsKey(_manager.CurrentAssault))
         {
             return _speedByLevel[_manager.CurrentAssault] + touchedBottom * 3;
         }

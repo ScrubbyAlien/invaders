@@ -18,7 +18,6 @@ public sealed class ScoreManager : SceneObject
     private TextGUI _scoreText = null!;
     private TextGUI _multiplierText = null!;
     private SpriteGUI _multiplierBar = null!;
-    private WaveManager _waveManager = null!;
 
     public int CurrentScore => _currentScore;
 
@@ -31,10 +30,9 @@ public sealed class ScoreManager : SceneObject
     
     protected override void Initialize()
     {
-        _scoreText = Scene.FindByTag<TextGUI>(SceneObjectTag.ScoreText);
-        _multiplierText = Scene.FindByTag<TextGUI>(SceneObjectTag.MultiplierText);
-        _multiplierBar = Scene.FindByTag<SpriteGUI>(SceneObjectTag.MultiplierBar);
-        _waveManager = Scene.FindByType<WaveManager>();
+        _scoreText = Scene.FindByTag<TextGUI>(SceneObjectTag.ScoreText)!;
+        _multiplierText = Scene.FindByTag<TextGUI>(SceneObjectTag.MultiplierText)!;
+        _multiplierBar = Scene.FindByTag<SpriteGUI>(SceneObjectTag.MultiplierBar)!;
         
         GlobalEventManager.EnemyDeath += OnEnemyDeath;
         GlobalEventManager.PlayerHit += ResetMultiplier;
@@ -42,7 +40,7 @@ public sealed class ScoreManager : SceneObject
 
     public override void Destroy()
     {
-        Scene.QueueSpawn(new LevelInfo<int>(_currentScore));
+        Scene.QueueSpawn(new LevelInfo<int>(_currentScore, "score"));
     }
 
     public override void Update(float deltaTime)
@@ -79,7 +77,9 @@ public sealed class ScoreManager : SceneObject
             _multiplierBar.Hide();
         }
         
-        if (_passiveScore > 0 && !_waveManager.InTransition)
+        
+        Scene.FindByType(out Invasion? invasion);
+        if (_passiveScore > 0 && !invasion!.InTransition)
         {
             _passiveScoreTimer += deltaTime;
             if (_passiveScoreTimer >= _passiveScoreInterval)

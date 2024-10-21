@@ -12,6 +12,7 @@ public sealed class TabNavigator(bool looping = true, bool horizontal = false) :
 
     protected override void Initialize()
     {
+        continuous = true;
         if (Count() > 0)
         {
             _tabs[0].Activate();
@@ -20,12 +21,18 @@ public sealed class TabNavigator(bool looping = true, bool horizontal = false) :
         
     }
 
+    private void ActivateTab(int index)
+    {
+        _tabs.ForEach(t => t.Deactivate());
+        _tabs[index].Activate();
+        _actions[index].Invoke();
+    }
+    
     protected override void SelectNext(int pointer)
     {
         if (Count() > 0)
         {
-            _tabs[pointer].Activate();
-            _actions[pointer].Invoke();
+            ActivateTab(pointer);
         }
     }
 
@@ -59,8 +66,10 @@ public sealed class TabNavigator(bool looping = true, bool horizontal = false) :
 
     public override void EnableNavigator()
     {
-        _tabs[0].Activate();
-        _actions[0].Invoke();
+        PointerAction((pointer) =>
+        {
+            ActivateTab(pointer);
+        });
     }
 
     public override void DisableNavigator()
@@ -68,4 +77,14 @@ public sealed class TabNavigator(bool looping = true, bool horizontal = false) :
         _tabs.ForEach(t => t.Deactivate());
     }
 
+    public override void SetIndex(int index)
+    {
+        Console.WriteLine(index);
+        base.SetIndex(index);
+        ActivateTab(index);
+        PointerAction((p) =>
+        {
+            Console.WriteLine(p);
+        });
+    }
 }

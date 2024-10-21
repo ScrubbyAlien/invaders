@@ -11,11 +11,7 @@ public sealed class ScoreSaveLevel() : Level("scoresave")
     protected override void LoadObjects()
     {
         SetBackgroundMusic("finale");
-        
-        if (!Scene.FindByType(out Background _))
-        {
-            AddObject(new Background());
-        }
+        SetBackground();
 
         TextGUI message = new TextGUI("");
         message.AddTag(SceneObjectTag.Message);

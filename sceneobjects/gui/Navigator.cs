@@ -31,11 +31,12 @@ public abstract class Navigator(float holdDownTime, bool looping = true, bool ho
     private bool _firstFrame = true;
     private bool _inActiveSection = true;
     public override bool Active => base.Active && _inActiveSection;
+    private int _exitIndex;
 
     private Sound _navigateSound = AssetManager.LoadSound("click2");
-    private Sound _clickSound = AssetManager.LoadSound("click1");
     
     protected abstract int Count();
+    protected bool continuous;
     
     protected List<Keyboard.Key> _navigationalKeys
     {
@@ -138,20 +139,19 @@ public abstract class Navigator(float holdDownTime, bool looping = true, bool ho
 
     protected void PointerAction(Action<int> action)
     {
-        _clickSound.Play();
         action(_pointerIndex);
     }
     
     public virtual void SetActiveSelection()
     {
         _navigateSound.Play();
-        _pointerIndex = 0;
-        _lastIndex = 0;
+        SetIndex(continuous ? _exitIndex : 0);
         _inActiveSection = true;
     }
 
     public virtual void SetInactiveSelection()
     {
+        _exitIndex = _pointerIndex;
         _inActiveSection = false;
     }
 
@@ -159,6 +159,23 @@ public abstract class Navigator(float holdDownTime, bool looping = true, bool ho
     {
         base.Unpause();
         _firstFrame = true;
+    }
+
+    public virtual void SetIndex(int index)
+    {
+        _pointerIndex = index;
+        
+        if (index >= Count())
+        {
+            _pointerIndex = Count() - 1;
+            _lastIndex = _pointerIndex;
+        }
+
+        if (index < 0)
+        {
+            _pointerIndex = 0;
+            _lastIndex = _pointerIndex;
+        }
     }
 
     public abstract void EnableNavigator();

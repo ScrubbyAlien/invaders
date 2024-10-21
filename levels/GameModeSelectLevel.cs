@@ -12,10 +12,7 @@ public sealed class GameModeSelectLevel() : Level("gamemodeselect")
     {
         SetBackgroundMusic("mainmenu");
         
-        if (!Scene.FindByType(out Background _))
-        {
-            AddObject(new Background());
-        }
+        SetBackground();
 
         SpriteGUI title = new SpriteGUI(TextureRects["title"]);
         title.SetScale(10);
@@ -34,11 +31,8 @@ public sealed class GameModeSelectLevel() : Level("gamemodeselect")
         AddObject(backButton);
 
         ButtonNavigator manager = new ButtonNavigator();
-        manager.AddButton(standardButton, () =>
-        {
-            
-            Scene.LoadLevel("invasion");
-        });
+        manager.AddButton(standardButton, () => Scene.LoadLevel("invasion"));
+        manager.AddButton(endlessButton, () => Scene.LoadLevel("endless"));
         manager.AddButton(backButton, () => Scene.LoadLevel("mainmenu"));
         AddObject(manager);
     }

@@ -12,9 +12,9 @@ public sealed class HealthGUI : SpriteGUI
 
     protected override void Initialize()
     {
-        if (Scene.FindByType(out Player p))
+        if (Scene.FindByType(out Player? p))
         {
-            currentHealth = p.CurrentHealth;
+            currentHealth = p!.CurrentHealth;
         }
         GlobalEventManager.PlayerChangeHealth += OnHealthChange;
     }

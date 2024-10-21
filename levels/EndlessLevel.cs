@@ -1,22 +1,23 @@
 using invaders.enums;
 using invaders.sceneobjects;
 using invaders.sceneobjects.gui;
+using static invaders.Utility;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
-using static invaders.Utility;
 
 namespace invaders.levels;
 
-public sealed class InvasionLevel() : Level("invasion")
+public sealed class EndlessLevel() : Level("endless")
 {
     protected override void LoadObjects()
     {
         SetBackgroundMusic("invasion");
-        
-        AddObject(new Player());
-        SetBackground();
 
+        Player player = new Player();
+        AddObject(player);
+        SetBackground();
+        
         // create gui background
         SpriteGUI blackBar = new SpriteGUI(TextureRects["blackSquare"]);
         blackBar.Position = new Vector2f(0, 0);
@@ -41,7 +42,6 @@ public sealed class InvasionLevel() : Level("invasion")
         guiBackgroundRight.Position = new Vector2f(Program.ScreenWidth - guiBackgroundRight.Bounds.Width, 0);
         guiBackgroundRight.SetZIndex(300);
         AddObject(guiBackgroundRight);
-
         
         // create gui and score manager
         TextGUI scoreText = new TextGUI("0");
@@ -64,65 +64,8 @@ public sealed class InvasionLevel() : Level("invasion")
         healthBar.SetZIndex(310);
         AddObject(healthBar);
         
-        AddObject(new ScoreManager());
-
-        // Create WaveManager
-
-        #region Assualts
-        
-        Assault assault1 = new Assault(["Incoming threat!", "First threat cleared"])
-            .AddWave(new Wave(0f).AddEnemyGroup('g', 7))
-            .AddWave(new Wave(10f).AddEnemyGroup('g', 10))
-            .AddWave(new Wave(10f).AddEnemyGroup('g', 10));
-        
-        Assault assault2 = new Assault(["More incoming!", "Second threat cleared"])
-            .AddWave(new Wave(0f).AddEnemyGroup('g', 10))
-            .AddWave(new Wave(5f).AddEnemyGroup('g', 7))
-            .AddWave(new Wave(5f).AddEnemyGroup('g', 7))
-            .AddWave(new Wave(10f).AddEnemyGroup('g', 15));
-
-        Assault assault3 = new Assault(["Large group closing in!", "Third threat cleared"])
-            .AddWave(new Wave(0f).AddEnemyGroup('g', 30))
-            .AddWave(new Wave(20f).AddEnemyGroup('g', 20));
-        
-        Assault assault4 = new Assault(["They're coming fast!\nBe ready!", "Fourth threat cleared"])
-            .AddWave(new Wave(0f).AddEnemyGroup('g', 5))
-            .AddWave(new Wave(2f).AddEnemyGroup('g', 6))
-            .AddWave(new Wave(2f).AddEnemyGroup('g', 6))
-            .AddWave(new Wave(1f).AddEnemyGroup('g', 7))
-            .AddWave(new Wave(1f).AddEnemyGroup('g', 7))
-            .AddWave(new Wave(1f).AddEnemyGroup('g', 10));
-
-        Assault assault5 = new Assault(["Even more on their way!", "Fifth threat cleared"])
-            .AddWave(new Wave(0f).AddEnemyGroup('g', 12))
-            .AddWave(new Wave(8f).AddEnemyGroup('g', 12))
-            .AddWave(new Wave(8f).AddEnemyGroup('g', 16))
-            .AddWave(new Wave(8f).AddEnemyGroup('g', 20));
-        
-        Assault assault6 = new Assault(["A whole bunch now!", "Sixth threat cleared"])
-            .AddWave(new Wave(0f).AddEnemyGroup('g', 50));
-
-        Assault assault7 = new Assault(["This is the last of them!\nTake them out!", "Well done pilot!"])
-            .AddWave(new Wave(0f).AddEnemyGroup('g', 20))
-            .AddWave(new Wave(10f).AddEnemyGroup('g', 30))
-            .AddWave(new Wave(10f).AddEnemyGroup('g', 40));
-
-        
-        #endregion
-        Assault[] assaults =
-        [
-            assault1,
-            assault2,
-            assault3,
-            assault4,
-            assault5,
-            assault6,
-            assault7
-        ];
-        
-        WaveManager manager = new WaveManager();
-        manager.AddAssault(assaults);
-        AddObject(manager);
+        AddObject(new ScoreManager(50, 1.3f));
+        AddObject(new EndlessManager());
         
         // create pause menu and manager
         AddObject(new PauseManager(Keyboard.Key.Escape));

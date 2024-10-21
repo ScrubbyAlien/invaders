@@ -3,9 +3,12 @@ namespace invaders.sceneobjects;
 public sealed class LevelInfo<T> : SceneObject
 {
     private T _info;
+    private string _name;
+    public string Name => _name;
     
-    public LevelInfo(T info)
+    public LevelInfo(T info, string name)
     {
+        _name = name;
         _info = info;
         DontDestroyOnClear = true;
     }
@@ -28,4 +31,12 @@ public sealed class LevelInfo<T> : SceneObject
         Scene.QueueDestroy(this);
     }
     
+    public static T Catch(string name, T defaulValue)
+    {
+        Scene.FindByType(out LevelInfo<T>? info);
+        if (info == null) return defaulValue;
+        if (info.Name != name) return defaulValue;
+        return info.Extract();
+    }
+
 }

@@ -37,4 +37,16 @@ public abstract class Level(string name)
         }
         MusicManager.ChangeMusic(music);
     }
+
+    protected void SetBackground()
+    {
+        if (!Scene.FindByType(out Background? background))
+        {
+            AddObject(new Background());
+        }
+        else
+        {
+            background!.Unpause();
+        }
+    }
 }

@@ -7,6 +7,8 @@ namespace invaders.sceneobjects;
 
 public abstract class Actor : RenderObject
 {
+    public Vector2f? InitPosition = null;
+    
     protected int maxHealth;
     protected int currentHealth;
     protected int bulletDamage;
@@ -31,6 +33,7 @@ public abstract class Actor : RenderObject
 
     protected override void Initialize()
     {
+        Position = InitPosition ?? new Vector2f();
         currentHealth = maxHealth;
     }
 

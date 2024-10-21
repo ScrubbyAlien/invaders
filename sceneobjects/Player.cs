@@ -24,6 +24,10 @@ public sealed class Player : Actor
         _invincibilityTimer = _invicibilityWindow;
         deathAnimationLength = 3f;
         zIndex = 10;
+        InitPosition = Position = new Vector2f(
+            (Program.ScreenWidth - Bounds.Width) / 2,
+            (Program.ScreenHeight - 120)
+        );
     }
 
     protected override Vector2f bulletOrigin => Position + new Vector2f(40, 24);
@@ -45,11 +49,6 @@ public sealed class Player : Actor
 
         explosionSound.Volume = 50;
         
-        Position = new Vector2f(
-            (Program.ScreenWidth - Bounds.Width) / 2,
-            (Program.ScreenHeight - 50)
-        );
-        
         SetBulletSoundEffect("player_shot");
         bulletSoundEffect.Volume = 25;
         bulletSoundEffect.PlayingOffset = Time.FromMilliseconds(100);
@@ -57,73 +56,72 @@ public sealed class Player : Actor
 
     public override void Destroy()
     {
-        Scene.QueueSpawn(new LevelInfo<bool>(CurrentHealth > 0));   
+        Scene.QueueSpawn(new LevelInfo<bool>(CurrentHealth > 0, "won"));   
     }
 
     public override void Update(float deltaTime)
     {
         base.Update(deltaTime);
-        if (!WillDie)
-        {
-            _fireTimer += deltaTime;
-            _invincibilityTimer += deltaTime;
-            
-            Vector2f newPos = new();
-            bool right = AreAnyKeysPressed([Right, D]);
-            bool left = AreAnyKeysPressed([Left, A]);
-            bool up = AreAnyKeysPressed([Up, W]);
-            bool down = AreAnyKeysPressed([Down, S]);
-            
-            if (right) newPos.X = 1;
-            if (left) newPos.X = -1;
-            if (right && left) newPos.X = 0;
-            if (up) newPos.Y = -1;
-            if (down) newPos.Y = 1;
-            if (up && down) newPos.Y = 0;
-
-            if (newPos.X > 0) sprite.TextureRect = TextureRects["playerRight"];
-            else if (newPos.X < 0) sprite.TextureRect = TextureRects["playerLeft"];
-            else sprite.TextureRect = TextureRects["player"];
-            
-            TryMoveWithinBounds(
-                newPos.Normalized() * Speed * deltaTime, 
-                Settings.MarginSide,
-                Settings.MarginSide,
-                Settings.TopGuiHeight + Settings.MarginSide,
-                Settings.MarginSide);
-
-            Scene.FindByType(out WaveManager manager);
-            bool inTransition = manager.InTransition;
-
-            if (!inTransition)
-            {
-                if (AreAnyKeysPressed([Space]))
-                {
-                    if (_burstIndex == 0 && _fireTimer >= _fireRate)
-                    {
-                        Shoot(BulletType.Player);
-                        _burstIndex++;
-                        _fireTimer = 0;
-                    } 
-                    else if (_burstIndex > 0 && _burstIndex < _burstLength && _fireTimer >= _burstRate)
-                    {
-                        Shoot(BulletType.Player);
-                        _burstIndex++;
-                        _fireTimer = 0;
-                    }
-                }
-
-                if (_fireTimer >= _fireRate) _burstIndex = 0;
-            }
-        }
-
+        
         if (inDeathAnimation)
         {
             if (MathF.Truncate(timeSinceDeath * 100) % 50 == 0)
             {
                 new Sound(explosionSound).Play();
             }
+
+            return;
         }
+        
+        _fireTimer += deltaTime;
+        _invincibilityTimer += deltaTime;
+        
+        Vector2f newPos = new();
+        bool right = AreAnyKeysPressed([Right, D]);
+        bool left = AreAnyKeysPressed([Left, A]);
+        bool up = AreAnyKeysPressed([Up, W]);
+        bool down = AreAnyKeysPressed([Down, S]);
+        
+        if (right) newPos.X = 1;
+        if (left) newPos.X = -1;
+        if (right && left) newPos.X = 0;
+        if (up) newPos.Y = -1;
+        if (down) newPos.Y = 1;
+        if (up && down) newPos.Y = 0;
+
+        if (newPos.X > 0) sprite.TextureRect = TextureRects["playerRight"];
+        else if (newPos.X < 0) sprite.TextureRect = TextureRects["playerLeft"];
+        else sprite.TextureRect = TextureRects["player"];
+        
+        TryMoveWithinBounds(
+            newPos.Normalized() * Speed * deltaTime, 
+            Settings.MarginSide,
+            Settings.MarginSide,
+            Settings.TopGuiHeight + Settings.MarginSide,
+            Settings.MarginSide);
+
+        Scene.FindByType(out Invasion? invasion);
+        if (!invasion!.InTransition)
+        {
+            if (AreAnyKeysPressed([Space]))
+            {
+                if (_burstIndex == 0 && _fireTimer >= _fireRate)
+                {
+                    Shoot(BulletType.Player);
+                    _burstIndex++;
+                    _fireTimer = 0;
+                } 
+                else if (_burstIndex > 0 && _burstIndex < _burstLength && _fireTimer >= _burstRate)
+                {
+                    Shoot(BulletType.Player);
+                    _burstIndex++;
+                    _fireTimer = 0;
+                }
+            }
+
+            if (_fireTimer >= _fireRate) _burstIndex = 0;
+        }
+        
     }
 
     public void Reset()
