@@ -40,7 +40,11 @@
     <Folder Include="saves\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bin\Debug\net8.0\assets\click1.wav" />
+    <Content Include="bin\Debug\net8.0\assets\click2.wav" />
     <Content Include="bin\Debug\net8.0\assets\enemy_shot.mp3" />
+    <Content Include="bin\Debug\net8.0\assets\explosion.wav" />
+    <Content Include="bin\Debug\net8.0\assets\hitsound.wav" />
     <Content Include="bin\Debug\net8.0\saves\scores.save.json" />
   </ItemGroup>
 

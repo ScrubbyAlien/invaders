@@ -1,4 +1,5 @@
 using invaders.enums;
+using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
 using static SFML.Window.Keyboard.Key;
@@ -41,6 +42,8 @@ public sealed class Player : Actor
         Animation explode = new Animation("explode", true, 2, deathAnimationLength, explodeFrames);
         animator.AddAnimation(invincible);
         animator.AddAnimation(explode);
+
+        explosionSound.Volume = 50;
         
         Position = new Vector2f(
             (Program.ScreenWidth - Bounds.Width) / 2,
@@ -49,7 +52,7 @@ public sealed class Player : Actor
         
         SetBulletSoundEffect("player_shot");
         bulletSoundEffect.Volume = 25;
-        bulletSoundEffect.PlayingOffset = Time.FromMilliseconds(200);
+        bulletSoundEffect.PlayingOffset = Time.FromMilliseconds(100);
     }
 
     public override void Destroy()
@@ -113,6 +116,14 @@ public sealed class Player : Actor
                 if (_fireTimer >= _fireRate) _burstIndex = 0;
             }
         }
+
+        if (inDeathAnimation)
+        {
+            if (MathF.Truncate(timeSinceDeath * 100) % 50 == 0)
+            {
+                new Sound(explosionSound).Play();
+            }
+        }
     }
 
     public void Reset()
@@ -134,6 +145,11 @@ public sealed class Player : Actor
         currentHealth -= damage;
         _invincibilityTimer = 0f;
         animator.PlayAnimation("invincible", true);
+        if (currentHealth > 0)
+        {
+            hitSound.PlayingOffset = Time.FromMilliseconds(350);
+            hitSound.Play();
+        }
         if (currentHealth <= 0) Die();
         GlobalEventManager.PublishPlayerHit();
         GlobalEventManager.PublishPlayerChangeHealth(-damage);

@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using invaders.enums;
+using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
 
@@ -10,7 +11,7 @@ public abstract class AbstractEnemy : Actor
     protected float horizontalSpeed = 30f;
     private WaveManager? _manager;
     protected int touchedBottom;
-    
+
     private Dictionary<int, float> _speedByLevel = new()
     {
         {-1, 50f},
@@ -26,6 +27,7 @@ public abstract class AbstractEnemy : Actor
     public AbstractEnemy(string textureName, IntRect initRect, float scale) : 
            base(textureName, initRect, scale)
     {
+        explosionSound.Volume = 25;
         _manager = null;
         deathAnimationLength = 0.5f;
     }
@@ -34,7 +36,7 @@ public abstract class AbstractEnemy : Actor
 
     protected override void Initialize()
     {
-        if (Scene.FindByType(out WaveManager? manager))
+        if (Scene.FindByType(out WaveManager manager))
         {
             _manager = manager;
         }

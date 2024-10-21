@@ -19,6 +19,10 @@ public static class AssetManager
         
         _soundBuffers.Add("enemy_shot", new SoundBuffer($"{AssetPath}/enemy_shot.wav"));
         _soundBuffers.Add("player_shot", new SoundBuffer($"{AssetPath}/player_shot.wav"));
+        _soundBuffers.Add("click1", new SoundBuffer($"{AssetPath}/click1.wav"));
+        _soundBuffers.Add("click2", new SoundBuffer($"{AssetPath}/click2.wav"));
+        _soundBuffers.Add("explosion", new SoundBuffer($"{AssetPath}/explosion.wav"));
+        _soundBuffers.Add("hit_sound", new SoundBuffer($"{AssetPath}/hitsound.wav"));
         
         _musics.Add("mainmenu", new Music($"{AssetPath}/mainmenu.wav"));
         _musics.Add("invasion", new Music($"{AssetPath}/invasion.wav"));

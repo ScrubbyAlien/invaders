@@ -1,3 +1,4 @@
+using SFML.Audio;
 using SFML.Window;
 using static SFML.Window.Keyboard.Key;
 using static invaders.Utility;
@@ -30,6 +31,9 @@ public abstract class Navigator(float holdDownTime, bool looping = true, bool ho
     private bool _firstFrame = true;
     private bool _inActiveSection = true;
     public override bool Active => base.Active && _inActiveSection;
+
+    private Sound _navigateSound = AssetManager.LoadSound("click2");
+    private Sound _clickSound = AssetManager.LoadSound("click1");
     
     protected abstract int Count();
     
@@ -82,6 +86,7 @@ public abstract class Navigator(float holdDownTime, bool looping = true, bool ho
             // adjust pointerIndex depening on looping
             if (_pointerIndex < 0) { _pointerIndex = _looping ? Count() - 1 : 0; }
             
+            _navigateSound.Play();
             SelectNext(_pointerIndex);
             
             _lastIndex = _pointerIndex; // set new last index
@@ -101,6 +106,7 @@ public abstract class Navigator(float holdDownTime, bool looping = true, bool ho
             // adjust pointerIndex depening on looping
             if (_pointerIndex >= Count()) { _pointerIndex = _looping ? 0 : Count() - 1; }
             
+            _navigateSound.Play();
             SelectNext(_pointerIndex);
             
             _lastIndex = _pointerIndex; // set new last index
@@ -132,11 +138,13 @@ public abstract class Navigator(float holdDownTime, bool looping = true, bool ho
 
     protected void PointerAction(Action<int> action)
     {
+        _clickSound.Play();
         action(_pointerIndex);
     }
     
     public virtual void SetActiveSelection()
     {
+        _navigateSound.Play();
         _pointerIndex = 0;
         _lastIndex = 0;
         _inActiveSection = true;

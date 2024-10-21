@@ -17,7 +17,9 @@ public abstract class Actor : RenderObject
     protected bool inDeathAnimation => timeSinceDeath < deathAnimationLength && WillDie;
     protected float deathAnimationLength = 0f;
     protected float timeSinceDeath;
-    
+    protected Sound explosionSound = AssetManager.LoadSound("explosion");
+    protected Sound hitSound = AssetManager.LoadSound("hit_sound");
+
     protected static readonly IntRect NoSprite = new(0, 0, 0, 0);
 
     public Actor(string textureName, IntRect initRect, float scale) : base(textureName, initRect, scale) { }

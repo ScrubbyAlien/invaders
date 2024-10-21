@@ -1,4 +1,5 @@
 using invaders.enums;
+using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
 using static invaders.Utility;
@@ -65,6 +66,7 @@ public sealed class Grunt : AbstractEnemy
     protected override void Die()
     {
         animator.PlayAnimation("death", true);
+        explosionSound.Play();
         base.Die();
     }
 
