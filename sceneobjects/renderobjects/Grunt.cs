@@ -1,13 +1,12 @@
 using invaders.enums;
-using SFML.Graphics;
 using SFML.System;
 using static invaders.Utility;
 
-namespace invaders.sceneobjects;
+namespace invaders.sceneobjects.renderobjects;
 
 public sealed class Grunt : AbstractEnemy
 {
-    public override int ScoreValue => 50;
+    public override int ScoreValue => 20;
 
     private float _timeUntilFire;
     private float _fireTimer;

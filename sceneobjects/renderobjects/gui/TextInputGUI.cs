@@ -4,7 +4,7 @@ using SFML.Window;
 using static SFML.Window.Keyboard.Key;
 using static invaders.Utility;
 
-namespace invaders.sceneobjects.gui;
+namespace invaders.sceneobjects.renderobjects.gui;
 
 public sealed class TextInputGUI : TextGUI
 {

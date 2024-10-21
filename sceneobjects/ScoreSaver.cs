@@ -2,7 +2,7 @@ using invaders.enums;
 using SFML.System;
 using static invaders.Utility;
 using invaders.saving;
-using invaders.sceneobjects.gui;
+using invaders.sceneobjects.renderobjects.gui;
 
 namespace invaders.sceneobjects;
 

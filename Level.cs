@@ -1,4 +1,5 @@
 using invaders.sceneobjects;
+using invaders.sceneobjects.renderobjects;
 
 namespace invaders;
 

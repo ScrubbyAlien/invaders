@@ -1,10 +1,9 @@
 using invaders.enums;
 using SFML.Audio;
-using SFML.Graphics;
 using SFML.System;
 using static SFML.Window.Keyboard.Key;
 using static invaders.Utility;
-namespace invaders.sceneobjects;
+namespace invaders.sceneobjects.renderobjects;
 
 public sealed class Player : Actor
 {

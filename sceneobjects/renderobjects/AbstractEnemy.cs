@@ -2,7 +2,7 @@ using invaders.enums;
 using SFML.Graphics;
 using SFML.System;
 
-namespace invaders.sceneobjects;
+namespace invaders.sceneobjects.renderobjects;
 
 public abstract class AbstractEnemy : Actor
 {
@@ -10,6 +10,9 @@ public abstract class AbstractEnemy : Actor
     protected float horizontalSpeed = 30f;
     private WaveManager? _manager;
     protected int touchedBottom;
+
+    
+    
 
     private Dictionary<int, float> _speedByLevel = new()
     {
@@ -32,21 +35,20 @@ public abstract class AbstractEnemy : Actor
     }
 
     public override CollisionLayer Layer => CollisionLayer.Enemy;
-
+    
     protected override void Initialize()
     {
+        InitPosition = new Vector2f(
+            new Random().Next(Settings.MarginSide, Program.ScreenWidth - Settings.MarginSide - (int)Bounds.Width),
+            new Random().Next((int) -Bounds.Height - Settings.SpawnInterval, (int) -Bounds.Height +  Settings.TopGuiHeight)
+        );
         base.Initialize();
         if (Scene.FindByType(out WaveManager? manager))
         {
             _manager = manager;
         }
         horizontalSpeed = new Random().Next(2) == 0 ? horizontalSpeed : -horizontalSpeed;
-
-        Position = InitPosition ??
-        new Vector2f(
-            new Random().Next(Settings.MarginSide, Program.ScreenWidth - Settings.MarginSide - (int) Bounds.Width),
-            new Random().Next((int) -Bounds.Height - Settings.SpawnInterval, (int) -Bounds.Height +  Settings.TopGuiHeight)
-        );
+       
         
         foreach (IntersectResult<AbstractEnemy> r in this.FindIntersectingEntities<AbstractEnemy>(CollisionLayer.Enemy))
         {
@@ -54,7 +56,9 @@ public abstract class AbstractEnemy : Actor
         }
         
         Animation death = new Animation("death", true, 18, deathAnimationLength, explosionFrames);
+        Animation blink = new Animation("blink", true, 45, 0.3f, blinkFrames);
         animator.AddAnimation(death);
+        animator.AddAnimation(blink);
         SetBulletSoundEffect("enemy_shot");
         bulletSoundEffect.Volume = 25;
     }
@@ -62,12 +66,18 @@ public abstract class AbstractEnemy : Actor
     public override void Update(float deltaTime)
     {
         base.Update(deltaTime);
+        Move(deltaTime);
+    }
+
+    protected virtual void Move(float deltaTime)
+    {
         if (!WillDie)
         {
             Vector2f velocity = new Vector2f(horizontalSpeed, GetVerticalSpeed());
             TryMoveWithinBounds(velocity * deltaTime, Settings.MarginSide, 0);
         }
     }
+    
     
     protected void Reverse()
     {
@@ -117,6 +127,7 @@ public abstract class AbstractEnemy : Actor
     protected override void TakeDamage(int damage)
     {
         currentHealth -= damage;
+        if (currentHealth > 0) animator.PlayAnimation("blink", true);
         if (currentHealth <= 0) Die();
     }
 

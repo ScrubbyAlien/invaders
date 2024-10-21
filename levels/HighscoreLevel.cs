@@ -1,6 +1,6 @@
 using invaders.saving;
 using invaders.sceneobjects;
-using invaders.sceneobjects.gui;
+using invaders.sceneobjects.renderobjects.gui;
 using SFML.System;
 
 namespace invaders.levels;

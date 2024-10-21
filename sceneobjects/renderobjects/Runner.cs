@@ -2,9 +2,9 @@ using invaders.enums;
 using SFML.System;
 using static invaders.Utility;
 
-namespace invaders.sceneobjects;
+namespace invaders.sceneobjects.renderobjects;
 
-public class Runner : AbstractEnemy
+public sealed class Runner : AbstractEnemy
 {
     public override int ScoreValue => 150;
     
@@ -14,7 +14,7 @@ public class Runner : AbstractEnemy
     private int _burstLength => 3 + touchedBottom;
     
     protected override Vector2f bulletOrigin => Position + new Vector2f(32, 40);
-    protected override float bulletSpeed => 500f;
+    protected override float bulletSpeed => 400f;
     
     public Runner() : base("invaders", TextureRects["runner1"], Scale)
     {
@@ -29,9 +29,7 @@ public class Runner : AbstractEnemy
         
         animator.SetDefaultSprite(TextureRects["runner1"]);
         Animation idle = new Animation("idle", true, 3, 0, idleFrames);
-        Animation blink = new Animation("blink", true, 45, 0.2f, blinkFrames);
         animator.AddAnimation(idle);
-        animator.AddAnimation(blink);
         animator.PlayAnimation("idle", true);
         bulletSoundEffect.Volume = 25;
         
@@ -65,7 +63,7 @@ public class Runner : AbstractEnemy
 
     private float GetNewFireTime()
     {
-        return 2f + new Random().Next(2);
+        return 2f + new Random().NextSingle() * 2;
     }
 
     protected override void TakeDamage(int damage)

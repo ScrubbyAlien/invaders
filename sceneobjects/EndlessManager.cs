@@ -1,5 +1,6 @@
 using System.Globalization;
-using invaders.sceneobjects.gui;
+using invaders.sceneobjects.renderobjects;
+using invaders.sceneobjects.renderobjects.gui;
 using SFML.System;
 using static invaders.Utility;
 
@@ -18,8 +19,9 @@ public class EndlessManager : Invasion
     // the order needs to be defined so we use list of tuples instead of dictionary
     private List<(char, float)> enemyProbabilities = new()
     { // how long until next enemy of type should spawn
-        ('g', 1f),
-        ('r', 0.2f),
+        ('g', 0.7f),
+        ('r', 0.07f),
+        ('s', 0.03f)
     };
     
     private float _timeFromStart;
@@ -71,6 +73,8 @@ public class EndlessManager : Invasion
             if (_timeFromStart >= _enemyRange * 30) _enemyRange++;
             if (_enemyRange > enemyProbabilities.Count())
             {
+                // if all enemies have been added to the pool, we increase their probability of spawning instead
+                enemyProbabilities.ForEach(pair => pair.Item2 *= 1.10f);
                 _enemyRange = enemyProbabilities.Count();
             }
             
@@ -80,7 +84,8 @@ public class EndlessManager : Invasion
                 SpawnEnemy();
                 _spawnTimer = 0;
             }
-            if (_spawnRate > 0.7f) _spawnRate -= 0.1f * deltaTime;
+            // not linear but smooth, faster in the beginning
+            if (_spawnRate > 0.7f) _spawnRate = -0.3f * MathF.Sqrt(_timeFromStart) + 3;
         }
     }
     
@@ -92,10 +97,7 @@ public class EndlessManager : Invasion
             if (random <= pair.prob)
             {
                 AbstractEnemy enemy = Constructors[pair.type]();
-                enemy.InitPosition = new Vector2f(
-                    new Random().Next((int)enemy.Bounds.Width, Program.ScreenWidth - (int)enemy.Bounds.Width),
-                    0
-                );
+                enemy.InitPosition = new Vector2f(enemy.InitPosition.X, 0);
                 Scene.QueueSpawn(enemy);
             }
         }

@@ -1,4 +1,5 @@
-using invaders.sceneobjects.gui;
+using invaders.sceneobjects.renderobjects;
+using invaders.sceneobjects.renderobjects.gui;
 using static invaders.Utility;
 using SFML.System;
 using SFML.Window;
@@ -16,7 +17,8 @@ public abstract class Invasion : SceneObject
     public static readonly Dictionary<char, Func<AbstractEnemy>> Constructors = new()
     {
         { 'g', () => new Grunt() },
-        { 'r', () => new Runner() }
+        { 'r', () => new Runner() },
+        { 's', () => new Squid()}
     };
     
     

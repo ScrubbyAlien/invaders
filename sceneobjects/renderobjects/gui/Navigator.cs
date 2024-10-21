@@ -3,7 +3,7 @@ using SFML.Window;
 using static SFML.Window.Keyboard.Key;
 using static invaders.Utility;
 
-namespace invaders.sceneobjects.gui;
+namespace invaders.sceneobjects.renderobjects.gui;
 
 public abstract class Navigator(float holdDownTime, bool looping = true, bool horizontal = false) : SceneObject, ISectionable
 {

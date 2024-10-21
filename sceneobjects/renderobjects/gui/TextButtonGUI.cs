@@ -1,6 +1,6 @@
 using SFML.Graphics;
 
-namespace invaders.sceneobjects.gui;
+namespace invaders.sceneobjects.renderobjects.gui;
 
 public sealed class TextButtonGUI : TextGUI, IClickable
 {

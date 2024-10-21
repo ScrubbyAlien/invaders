@@ -1,4 +1,5 @@
 using invaders.sceneobjects;
+using invaders.sceneobjects.renderobjects;
 using SFML.Graphics;
 using SFML.System;
 using static SFML.Window.Keyboard;
@@ -68,14 +69,15 @@ public static class Utility
         { "playerRight", new(17, 1, 7, 7) },
         { "grunt1", new(24, 0, 8, 8) },
         { "grunt2", new(24, 8, 8, 8) },
-        { "runner1", new(40, 8, 8, 8) },
+        { "runner1", new(40, 0, 8, 8) },
         { "runner2", new(40, 8, 8, 8) },
-        { "squid1", new(64, 8, 8, 8) },
+        { "squid1", new(64, 0, 8, 8) },
         { "squid2", new(64, 8, 8, 8) },
         { "juggernaut", new(64, 8, 8, 8) },
-        { "playerBullet", new (10, 26, 4, 4) },
+        { "playerBullet", new (8, 26, 4, 4) },
         { "enemyBullet", new (16, 26, 4, 4) },
         { "runnerBullet", new (20, 26, 4, 4) },
+        { "squidBullet", new (12, 26, 4, 4) },
         { "enemyExplosion", new (16, 32, 8, 8) },
         { "smallStar", new(2, 54, 1, 1) },
         { "mediumStar", new(1, 57, 3, 3) },

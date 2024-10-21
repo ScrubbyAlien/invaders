@@ -1,4 +1,4 @@
-namespace invaders.sceneobjects.gui;
+namespace invaders.sceneobjects.renderobjects.gui;
 
 public interface INavigatable : ISectionable
 {

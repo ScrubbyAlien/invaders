@@ -3,7 +3,7 @@ using SFML.Window;
 using static invaders.Utility;
 using static SFML.Window.Keyboard.Key;
 
-namespace invaders.sceneobjects.gui;
+namespace invaders.sceneobjects.renderobjects.gui;
 
 public sealed class ButtonNavigator(bool looping = true, bool horizontal = false) : Navigator(0.2f, looping, horizontal)
 {

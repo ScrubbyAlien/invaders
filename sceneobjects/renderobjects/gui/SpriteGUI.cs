@@ -1,7 +1,7 @@
 using SFML.Graphics;
 using SFML.System;
 
-namespace invaders.sceneobjects.gui;
+namespace invaders.sceneobjects.renderobjects.gui;
 
 public class SpriteGUI : GUI
 {

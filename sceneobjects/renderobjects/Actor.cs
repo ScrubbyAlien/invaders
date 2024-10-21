@@ -1,15 +1,20 @@
 using invaders.enums;
-using static invaders.Utility;
 using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
+using static invaders.Utility;
 
-namespace invaders.sceneobjects;
+namespace invaders.sceneobjects.renderobjects;
 
 public abstract class Actor : RenderObject
 {
-    public Vector2f? InitPosition = null;
-    
+    private Vector2f _initPosition;
+    public virtual Vector2f InitPosition
+    {
+        get => _initPosition;
+        set => _initPosition = value;
+    }
+
     protected int maxHealth;
     protected int currentHealth;
     protected int bulletDamage;
@@ -31,10 +36,9 @@ public abstract class Actor : RenderObject
     protected virtual float bulletSpeed => 700f;
     public virtual bool IsInvincible => false;
 
-
     protected override void Initialize()
     {
-        Position = InitPosition ?? new Vector2f();
+        Position = InitPosition;
         currentHealth = maxHealth;
     }
 

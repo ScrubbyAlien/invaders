@@ -1,4 +1,4 @@
-namespace invaders.sceneobjects.gui;
+namespace invaders.sceneobjects.renderobjects.gui;
 
 public class SectionSelector() : SceneObject
 {

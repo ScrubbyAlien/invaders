@@ -3,6 +3,7 @@ using SFML.Graphics;
 using SFML.System;
 using invaders.enums;
 using invaders.sceneobjects;
+using invaders.sceneobjects.renderobjects;
 using SFML.Window;
 
 namespace invaders;

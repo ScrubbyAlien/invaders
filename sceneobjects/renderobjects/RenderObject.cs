@@ -2,7 +2,7 @@ using invaders.enums;
 using SFML.Graphics;
 using SFML.System;
 
-namespace invaders.sceneobjects;
+namespace invaders.sceneobjects.renderobjects;
 
 public abstract class RenderObject : SceneObject
 {

@@ -1,4 +1,4 @@
-namespace invaders.sceneobjects.gui;
+namespace invaders.sceneobjects.renderobjects.gui;
 
 public sealed class TabNavigator(bool looping = true, bool horizontal = false) : Navigator(0.2f, looping, horizontal)
 {

@@ -1,3 +1,4 @@
+using invaders.sceneobjects.renderobjects;
 using SFML.System;
 using static invaders.Utility;
 
@@ -149,9 +150,9 @@ public struct Wave(float timer)
     public float Timer = timer;
     public Dictionary<char, int> Enemies => _enemies;
 
-    public Wave AddEnemyGroup(char enemyType, int number)
+    public Wave Group(char type, int number)
     {
-        _enemies.Add(enemyType, number);
+        _enemies.Add(type, number);
         return this;
     }
 }

@@ -1,4 +1,5 @@
 using invaders.enums;
+using invaders.sceneobjects.renderobjects;
 using SFML.Window;
 using static invaders.Utility;
 

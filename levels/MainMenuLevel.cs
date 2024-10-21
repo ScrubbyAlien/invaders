@@ -1,5 +1,5 @@
 using invaders.sceneobjects;
-using invaders.sceneobjects.gui;
+using invaders.sceneobjects.renderobjects.gui;
 using SFML.System;
 using static invaders.Utility;
 
