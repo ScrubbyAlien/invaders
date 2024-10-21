@@ -50,4 +50,9 @@ public class Bullet : RenderObject
             }
         }
     }
+
+    public void Evaporate()
+    {
+        Dead = true;
+    }
 }

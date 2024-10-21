@@ -52,6 +52,11 @@ public abstract class AbstractEnemy : Actor
         {
             Position += r.Diff;
         }
+        
+        Animation death = new Animation("death", true, 18, deathAnimationLength, explosionFrames);
+        animator.AddAnimation(death);
+        SetBulletSoundEffect("enemy_shot");
+        bulletSoundEffect.Volume = 25;
     }
 
     public override void Update(float deltaTime)
@@ -67,12 +72,6 @@ public abstract class AbstractEnemy : Actor
     protected void Reverse()
     {
         horizontalSpeed = -horizontalSpeed;
-    }
-
-    protected override void Die()
-    {
-        base.Die();
-        GlobalEventManager.PublishEnemyDead(this);
     }
 
     protected override void OnOutsideScreen((ScreenState x, ScreenState y) state, Vector2f outsidePos, out Vector2f adjustedPos)
@@ -108,5 +107,24 @@ public abstract class AbstractEnemy : Actor
         {
             return _speedByLevel[-1] + touchedBottom * 3;
         }
+    }
+
+    public override void HitByBullet(Bullet bullet)
+    {
+        TakeDamage(bullet.Damage);
+    }
+
+    protected override void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        if (currentHealth <= 0) Die();
+    }
+
+    protected override void Die()
+    {
+        base.Die();
+        GlobalEventManager.PublishEnemyDead(this);
+        animator.PlayAnimation("death", true);
+        explosionSound.Play();
     }
 }

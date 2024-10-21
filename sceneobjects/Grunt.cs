@@ -28,12 +28,8 @@ public sealed class Grunt : AbstractEnemy
         
         animator.SetDefaultSprite(TextureRects["grunt1"]);
         Animation idle = new Animation("idle", true, 3, 0, idleFrames);
-        Animation death = new Animation("death", true, 18, deathAnimationLength, explosionFrames);
         animator.AddAnimation(idle);
-        animator.AddAnimation(death);
         animator.PlayAnimation("idle", true);
-        SetBulletSoundEffect("enemy_shot");
-        bulletSoundEffect.Volume = 25;
         
         base.Initialize();
     }
@@ -52,24 +48,6 @@ public sealed class Grunt : AbstractEnemy
                 _timeUntilFire = GetNewFireTime();
             }
         }
-    }
-
-    public override void HitByBullet(Bullet bullet)
-    {
-        TakeDamage(bullet.Damage);
-    }
-
-    protected override void TakeDamage(int damage)
-    {
-        currentHealth -= damage;
-        if (currentHealth <= 0) Die();
-    }
-
-    protected override void Die()
-    {
-        animator.PlayAnimation("death", true);
-        explosionSound.Play();
-        base.Die();
     }
 
     private float GetNewFireTime()

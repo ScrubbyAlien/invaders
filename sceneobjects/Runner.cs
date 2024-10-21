@@ -11,7 +11,7 @@ public class Runner : AbstractEnemy
     private float _timeUntilFire;
     private float _fireTimer;
     private int _burstIndex;
-    private int _burstLength = 3;
+    private int _burstLength => 3 + touchedBottom;
     
     protected override Vector2f bulletOrigin => Position + new Vector2f(32, 40);
     protected override float bulletSpeed => 500f;
@@ -29,13 +29,10 @@ public class Runner : AbstractEnemy
         
         animator.SetDefaultSprite(TextureRects["runner1"]);
         Animation idle = new Animation("idle", true, 3, 0, idleFrames);
-        Animation death = new Animation("death", true, 18, deathAnimationLength, explosionFrames);
         Animation blink = new Animation("blink", true, 45, 0.2f, blinkFrames);
         animator.AddAnimation(idle);
         animator.AddAnimation(blink);
-        animator.AddAnimation(death);
         animator.PlayAnimation("idle", true);
-        SetBulletSoundEffect("enemy_shot");
         bulletSoundEffect.Volume = 25;
         
         base.Initialize();
@@ -69,27 +66,14 @@ public class Runner : AbstractEnemy
 
     private float GetNewFireTime()
     {
-        return 1f + new Random().Next(2);
+        return 2f + new Random().Next(2);
     }
 
-    public override void HitByBullet(Bullet bullet)
-    {
-        Console.WriteLine(currentHealth);
-        TakeDamage(bullet.Damage);
-    }
-    
     protected override void TakeDamage(int damage)
     {
         currentHealth -= damage;
         if (currentHealth > 0) animator.PlayAnimation("blink", true);
         if (currentHealth <= 0) Die();
-    }
-
-    protected override void Die()
-    {
-        animator.PlayAnimation("death", true);
-        explosionSound.Play();
-        base.Die();
     }
 
     private Animation.FrameRenderer[] idleFrames =
