@@ -16,7 +16,8 @@ public class Bullet : RenderObject
     private static Dictionary<BulletType, IntRect[]> bulletTypes = new()
     {
         { BulletType.Player, [TextureRects["playerBullet"]] },
-        { BulletType.Enemy, [TextureRects["enemyBullet"]] }
+        { BulletType.Enemy, [TextureRects["enemyBullet"]] },
+        { BulletType.Runner, [TextureRects["runnerBullet"]] }
     };
 
     public Bullet(BulletType type, float speed, int damage) : base("invaders", bulletTypes[type][0], Scale)

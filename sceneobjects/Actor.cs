@@ -1,4 +1,5 @@
 using invaders.enums;
+using static invaders.Utility;
 using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
@@ -96,4 +97,40 @@ public abstract class Actor : RenderObject
     {
         _bulletSoundEffect = AssetManager.LoadSound(name);
     }
+
+    protected Animation.FrameRenderer[] blinkFrames =
+    [
+        (_, _) => { },
+        (animatable, target) =>
+        {
+            animatable.SetTextureRect(animatable.Animator.GetDefaultSprite());
+            target.Draw(animatable.Sprite);
+        }
+    ];
+    
+    protected Animation.FrameRenderer[] explosionFrames =
+    {
+        (animatable, target) =>
+        { // simulates explosion by randomly placing bullet sprites over the enemy rapidly
+            animatable.SetTextureRect(animatable.Animator.GetDefaultSprite());
+            target.Draw(animatable.Drawable);
+            
+            // draw explosion
+            Sprite explosion = new Sprite();
+            int frameCount = animatable.Animator.FrameCount;
+            string rectKey = new Random().Next(2) == 0 ? "enemyBullet" : "enemyExplosion";
+            explosion.Texture = AssetManager.LoadTexture("invaders");
+            explosion.TextureRect = TextureRects[rectKey];
+            explosion.Scale = new Vector2f(Scale, Scale);
+            // this function is called every frame so seed needs to be set so fps can be set
+            // otherwise it will render something new every frame no matter what fps is
+            explosion.Position = animatable.Sprite.Position + new Vector2f(
+                new Random((int) animatable.Sprite.Position.X + frameCount).NextSingle() * 
+                animatable.Sprite.TextureRect.Width * Scale - 12,
+                new Random((int) animatable.Sprite.Position.Y * frameCount).NextSingle() * 
+                animatable.Sprite.TextureRect.Height * Scale - 12
+            );
+            target.Draw(explosion);
+        },
+    };
 }

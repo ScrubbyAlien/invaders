@@ -27,6 +27,8 @@ public sealed class Animator
     {
         _defaultSprite = rect;
     }
+
+    public IntRect GetDefaultSprite() => _defaultSprite;
     
     public void PlayAnimation(string animation, bool fromBeginning)
     {

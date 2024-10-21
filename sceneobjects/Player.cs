@@ -43,7 +43,7 @@ public sealed class Player : Actor
         base.Initialize();
         animator.SetDefaultSprite(TextureRects["player"]);
         Animation invincible = new Animation("invincible", true, 25, _invicibilityWindow, blinking);
-        Animation explode = new Animation("explode", true, 2, deathAnimationLength, explodeFrames);
+        Animation explode = new Animation("explode", true, 2, deathAnimationLength, explosionFrames);
         animator.AddAnimation(invincible);
         animator.AddAnimation(explode);
 
@@ -192,30 +192,4 @@ public sealed class Player : Actor
             target.Draw(animatable.Sprite);
         },
     ];
-    
-    private Animation.FrameRenderer[] explodeFrames =
-    {
-        (animatable, target) =>
-        { // simulates explosion by randomly placing bullet sprites over the enemy rapidly
-            animatable.SetTextureRect(TextureRects["player"]);
-            target.Draw(animatable.Drawable);
-            
-            // draw explosion
-            Sprite explosion = new Sprite();
-            int frameCount = animatable.Animator.FrameCount;
-            string rectKey = new Random().Next(2) == 0 ? "enemyBullet" : "enemyExplosion";
-            explosion.Texture = AssetManager.LoadTexture("invaders");
-            explosion.TextureRect = TextureRects[rectKey];
-            explosion.Scale = new Vector2f(Scale, Scale);
-            // this function is called every frame so seed needs to be set so fps can be set
-            // otherwise it will render something new every frame no matter what fps is
-            explosion.Position = animatable.Sprite.Position + new Vector2f(
-                (float) new Random((int) animatable.Sprite.Position.X + frameCount).NextDouble() * 
-                animatable.Sprite.TextureRect.Width * Scale - 12,
-                (float) new Random((int) animatable.Sprite.Position.Y * frameCount).NextDouble() * 
-                animatable.Sprite.TextureRect.Height * Scale - 12
-            );
-            target.Draw(explosion);
-        },
-    };
 }

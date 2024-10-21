@@ -13,8 +13,15 @@ public class EndlessManager : Invasion
     private bool _scrollSlowedDown;
     private int _enemyRange = 1;
     private float _spawnTimer;
-    private float _spawnRate = 5f; // seconds per enemy
+    private float _spawnRate = 3;
 
+    // the order needs to be defined so we use list of tuples instead of dictionary
+    private List<(char, float)> enemyProbabilities = new()
+    { // how long until next enemy of type should spawn
+        ('g', 1f),
+        ('r', 0.2f),
+    };
+    
     private float _timeFromStart;
     private TextGUI _timer = new TextGUI("");
     
@@ -38,7 +45,16 @@ public class EndlessManager : Invasion
 
         if (InTransition)
         {
+            if (_untilStartTimer == 0)
+            {
+                DrawText("Defeat the invaders!", new Vector2f(0, -100));
+            }
             _untilStartTimer += deltaTime;
+            if (_untilStartTimer >= _timeUntilStart / 2f)
+            {
+                messageText.SetText("Don't give up!");
+                messageText.Position = MiddleOfScreen(messageText.Bounds, new Vector2f(0, -100));
+            }
             if (_untilStartTimer >= _timeUntilStart - 2 && !_scrollSlowedDown)
             {        
                 GlobalEventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInLevel, 1f);
@@ -47,10 +63,16 @@ public class EndlessManager : Invasion
         }
         else
         {
+            messageText.SetText("");
+            messageText.Hide();
             _timeFromStart += deltaTime;
             _timer.SetText(GetTimeString(_timeFromStart));
             
-            IncrementEnemyRange(30);
+            if (_timeFromStart >= _enemyRange * 30) _enemyRange++;
+            if (_enemyRange > enemyProbabilities.Count())
+            {
+                _enemyRange = enemyProbabilities.Count();
+            }
             
             _spawnTimer += deltaTime;
             if (_spawnTimer >= _spawnRate)
@@ -58,39 +80,24 @@ public class EndlessManager : Invasion
                 SpawnEnemy();
                 _spawnTimer = 0;
             }
-            if (_spawnRate > 0.7f) _spawnRate -= 0.2f * deltaTime;
+            if (_spawnRate > 0.7f) _spawnRate -= 0.1f * deltaTime;
         }
     }
-
-    private void IncrementEnemyRange(float interval)
-    {
-        if (_timeFromStart >= _enemyRange * interval) _enemyRange++;
-    } 
     
     private void SpawnEnemy()
     {
-        int range = (int) MathF.Min(_enemyRange, Constructors.Count());
-        char[] enemyConstructors = Constructors.Keys.Take(range).ToArray();
-        float[] probabilities = [enemyConstructors.Length];
-        float denominator = TriangularNumber(probabilities.Length);
-        for (int i = 0; i < probabilities.Length; i++)
+        float random = new Random().NextSingle();
+        foreach ((char type, float prob) pair in enemyProbabilities.Take(_enemyRange))
         {
-            probabilities[i] =  i + 1 / denominator;
-        }
-        float random =  new Random().NextSingle();
-        
-        for (int i = probabilities.Length - 1; i >= 0; i--)
-        {
-            if (random < probabilities[i])
+            if (random <= pair.prob)
             {
-                AbstractEnemy enemy = Constructors[enemyConstructors[i]]();
+                AbstractEnemy enemy = Constructors[pair.type]();
                 enemy.InitPosition = new Vector2f(
-                    new Random().Next(Program.ScreenWidth),
-                    Settings.TopGuiHeight - enemy.Bounds.Height
+                    new Random().Next((int)enemy.Bounds.Width, Program.ScreenWidth - (int)enemy.Bounds.Width),
+                    0
                 );
                 Scene.QueueSpawn(enemy);
-                break;
-            }    
+            }
         }
     }
 

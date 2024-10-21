@@ -36,6 +36,7 @@ public abstract class AbstractEnemy : Actor
 
     protected override void Initialize()
     {
+        base.Initialize();
         if (Scene.FindByType(out WaveManager? manager))
         {
             _manager = manager;

@@ -17,12 +17,12 @@
     <EmbeddedResource Include="assets/*.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Remove="invaders.csproj.DotSettings" />
-    <None Include="bin\Debug\net8.0\assets\enemy_shot.wav" />
-    <None Include="bin\Debug\net8.0\assets\finale.wav" />
-    <None Include="bin\Debug\net8.0\assets\invasion.wav" />
-    <None Include="bin\Debug\net8.0\assets\mainmenu.wav" />
-    <None Include="bin\Debug\net8.0\assets\player_shot.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="assets/*.wav" />
+    <EmbeddedResource Include="assets/*.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Remove="assets/*.ttf" />
@@ -35,17 +35,11 @@
     <EmbeddedResource Include="assets/*.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="saves\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="bin\Debug\net8.0\assets\click1.wav" />
-    <Content Include="bin\Debug\net8.0\assets\click2.wav" />
-    <Content Include="bin\Debug\net8.0\assets\enemy_shot.mp3" />
-    <Content Include="bin\Debug\net8.0\assets\explosion.wav" />
-    <Content Include="bin\Debug\net8.0\assets\hitsound.wav" />
-    <Content Include="bin\Debug\net8.0\saves\scores.save.json" />
+  </ItemGroup><ItemGroup>
+    <None Remove="saves/*.json" />
+    <EmbeddedResource Include="saves/*.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
 

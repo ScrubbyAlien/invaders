@@ -95,7 +95,8 @@ public sealed class EndlessLevel() : Level("endless")
         pauseMenu.AddButton(restartButton, () =>
         {
             GlobalEventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInLevel, 1f);
-            Scene.LoadLevel("invasion");
+            Scene.LoadLevel("endless");
+            MusicManager.StopMusic();
         });
         pauseMenu.AddButton(quitButton, () =>
         {

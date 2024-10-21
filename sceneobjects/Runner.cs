@@ -1,41 +1,45 @@
 using invaders.enums;
-using SFML.Graphics;
 using SFML.System;
 using static invaders.Utility;
 
 namespace invaders.sceneobjects;
 
-public sealed class Grunt : AbstractEnemy
+public class Runner : AbstractEnemy
 {
     private float _timeUntilFire;
     private float _fireTimer;
-
-    public Grunt() : base("invaders", TextureRects["grunt1"], Scale)
-    {
-        horizontalSpeed = 45;
-        maxHealth = 5;
-        bulletDamage = 5;
-    }
-
+    private int _burstIndex;
+    private int _burstLength = 3;
+    
     protected override Vector2f bulletOrigin => Position + new Vector2f(32, 40);
-    protected override float bulletSpeed => 300f;
-
+    protected override float bulletSpeed => 500f;
+    
+    public Runner() : base("invaders", TextureRects["runner1"], Scale)
+    {
+        horizontalSpeed = 150;
+        maxHealth = 10;
+        bulletDamage = 3;
+    }
+    
     protected override void Initialize()
     {
         _timeUntilFire = GetNewFireTime();
         
-        animator.SetDefaultSprite(TextureRects["grunt1"]);
+        animator.SetDefaultSprite(TextureRects["runner1"]);
         Animation idle = new Animation("idle", true, 3, 0, idleFrames);
         Animation death = new Animation("death", true, 18, deathAnimationLength, explosionFrames);
+        Animation blink = new Animation("blink", true, 45, 0.2f, blinkFrames);
         animator.AddAnimation(idle);
+        animator.AddAnimation(blink);
         animator.AddAnimation(death);
         animator.PlayAnimation("idle", true);
         SetBulletSoundEffect("enemy_shot");
         bulletSoundEffect.Volume = 25;
         
         base.Initialize();
+        Console.WriteLine(currentHealth);
     }
-
+    
     public override void Update(float deltaTime)
     {
         base.Update(deltaTime);
@@ -45,21 +49,37 @@ public sealed class Grunt : AbstractEnemy
             if (Position.Y > Settings.TopGuiHeight) _fireTimer += deltaTime;
             if (_fireTimer >= _timeUntilFire)
             {
-                Shoot(BulletType.Enemy);
+                Shoot(BulletType.Runner);
+                _burstIndex++;
+                if (_burstIndex < _burstLength)
+                {
+                    _timeUntilFire = 0.2f;
+                }
+                else
+                {
+                    _timeUntilFire = GetNewFireTime();
+                    _burstIndex = 0;
+                }
                 _fireTimer = 0;
-                _timeUntilFire = GetNewFireTime();
             }
         }
     }
 
-    public override void HitByBullet(Bullet bullet)
+    private float GetNewFireTime()
     {
-        TakeDamage(bullet.Damage);
+        return 1f + new Random().Next(2);
     }
 
+    public override void HitByBullet(Bullet bullet)
+    {
+        Console.WriteLine(currentHealth);
+        TakeDamage(bullet.Damage);
+    }
+    
     protected override void TakeDamage(int damage)
     {
         currentHealth -= damage;
+        if (currentHealth > 0) animator.PlayAnimation("blink", true);
         if (currentHealth <= 0) Die();
     }
 
@@ -70,15 +90,9 @@ public sealed class Grunt : AbstractEnemy
         base.Die();
     }
 
-    private float GetNewFireTime()
-    {
-        int mod = (int) MathF.Min(touchedBottom, 3);
-        return (float)(1 + new Random().NextDouble() * 6 - mod);
-    }
-
     private Animation.FrameRenderer[] idleFrames =
     [
-        BasicFrameRenderer(TextureRects["grunt1"]),
-        BasicFrameRenderer(TextureRects["grunt2"]),
+        BasicFrameRenderer(TextureRects["runner1"]),
+        BasicFrameRenderer(TextureRects["runner2"]),
     ];
 }

@@ -2,5 +2,5 @@ namespace invaders.enums;
 
 public enum BulletType
 {
-    Player, Enemy
+    Player, Enemy, Runner, Squid, Juggernaut, Boss
 }

@@ -8,14 +8,15 @@ namespace invaders.sceneobjects;
 public abstract class Invasion : SceneObject
 {
     protected bool inEndLevel;
-    protected TextGUI _messageText = new("");
+    protected TextGUI messageText = new("");
     private bool _spaceReleased;
     public virtual bool InTransition => inEndLevel;
     
     // entity constructor dictionary system borrowed from lab project 4
-    public static readonly SortedDictionary<char, Func<AbstractEnemy>> Constructors = new()
+    public static readonly Dictionary<char, Func<AbstractEnemy>> Constructors = new()
     {
         { 'g', () => new Grunt() },
+        { 'r', () => new Runner() }
     };
     
     
@@ -57,10 +58,11 @@ public abstract class Invasion : SceneObject
     
     protected void DrawText(string text, Vector2f positionFromMiddle)
     {
-        _messageText = new TextGUI(text, 8);
-        _messageText.Position = MiddleOfScreen(_messageText.Bounds) + positionFromMiddle;
-        Scene.QueueSpawn(_messageText);
-        // call PlayAnimatio after next ProcessSpawnQueue call so _messageText's Initialize method can be called first
-        Scene.DeferredCall(_messageText.GetAnimatable().Animator, "PlayAnimation", ["blink", true]);
+        messageText.Unhide();
+        messageText = new TextGUI(text, 8);
+        messageText.Position = MiddleOfScreen(messageText.Bounds) + positionFromMiddle;
+        Scene.QueueSpawn(messageText);
+        // call PlayAnimatio after next ProcessSpawnQueue call so messageText's Initialize method can be called first
+        Scene.DeferredCall(messageText.GetAnimatable().Animator, "PlayAnimation", ["blink", true]);
     }
 }

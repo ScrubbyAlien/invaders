@@ -13,6 +13,7 @@ public abstract class RenderObject : SceneObject
     public int zIndex;
     private bool _hidden;
     public bool Hidden => _hidden;
+    protected CollisionLayer layer = CollisionLayer.None;
 
     public RenderObject(string textureName, IntRect initRect, float scale)
     {
@@ -31,7 +32,11 @@ public abstract class RenderObject : SceneObject
 
     public virtual FloatRect Bounds => sprite.GetGlobalBounds();
 
-    public virtual CollisionLayer Layer => CollisionLayer.None;
+    public virtual CollisionLayer Layer
+    {
+        get => layer;
+        set => layer = value;
+    }
 
     public override void Update(float deltaTime)
     {

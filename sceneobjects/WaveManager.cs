@@ -89,12 +89,12 @@ public sealed class WaveManager : Invasion
             if (_transitionBufferTimer > _transitionBuffer / 2f)
             {
                 // should avoid out of bounds errors becuase StartTransition is not called after last assault
-                _messageText.SetText(_assaults[_currentAssault + 1].BeforeAssault); 
-                _messageText.Position = MiddleOfScreen(_messageText.Bounds) - new Vector2f(0, 100);
+                messageText.SetText(_assaults[_currentAssault + 1].BeforeAssault); 
+                messageText.Position = MiddleOfScreen(messageText.Bounds) - new Vector2f(0, 100);
             }
             if (_transitionBufferTimer >= _transitionBuffer)
             {
-                Scene.QueueDestroy(_messageText);
+                Scene.QueueDestroy(messageText);
                 _inTransition = false;
                 _currentWave = 0;
                 _currentAssault++;

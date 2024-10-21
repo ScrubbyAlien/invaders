@@ -69,7 +69,7 @@ public sealed class InvasionLevel() : Level("invasion")
         // Create WaveManager
 
         #region Assualts
-        
+
         Assault assault1 = new Assault(["Incoming threat!", "First threat cleared"])
             .AddWave(new Wave(0f).AddEnemyGroup('g', 7))
             .AddWave(new Wave(10f).AddEnemyGroup('g', 10))
@@ -77,8 +77,8 @@ public sealed class InvasionLevel() : Level("invasion")
         
         Assault assault2 = new Assault(["More incoming!", "Second threat cleared"])
             .AddWave(new Wave(0f).AddEnemyGroup('g', 10))
-            .AddWave(new Wave(5f).AddEnemyGroup('g', 7))
-            .AddWave(new Wave(5f).AddEnemyGroup('g', 7))
+            .AddWave(new Wave(5f).AddEnemyGroup('g', 7).AddEnemyGroup('r', 3))
+            .AddWave(new Wave(5f).AddEnemyGroup('g', 7).AddEnemyGroup('r', 3))
             .AddWave(new Wave(10f).AddEnemyGroup('g', 15));
 
         Assault assault3 = new Assault(["Large group closing in!", "Third threat cleared"])
@@ -86,12 +86,12 @@ public sealed class InvasionLevel() : Level("invasion")
             .AddWave(new Wave(20f).AddEnemyGroup('g', 20));
         
         Assault assault4 = new Assault(["They're coming fast!\nBe ready!", "Fourth threat cleared"])
-            .AddWave(new Wave(0f).AddEnemyGroup('g', 5))
-            .AddWave(new Wave(2f).AddEnemyGroup('g', 6))
-            .AddWave(new Wave(2f).AddEnemyGroup('g', 6))
-            .AddWave(new Wave(1f).AddEnemyGroup('g', 7))
-            .AddWave(new Wave(1f).AddEnemyGroup('g', 7))
-            .AddWave(new Wave(1f).AddEnemyGroup('g', 10));
+            .AddWave(new Wave(0f).AddEnemyGroup('g', 5).AddEnemyGroup('r', 1))
+            .AddWave(new Wave(1.5f).AddEnemyGroup('g', 6).AddEnemyGroup('r', 1))
+            .AddWave(new Wave(1.5f).AddEnemyGroup('g', 6).AddEnemyGroup('r', 1))
+            .AddWave(new Wave(1f).AddEnemyGroup('g', 7).AddEnemyGroup('r', 1))
+            .AddWave(new Wave(1f).AddEnemyGroup('g', 7).AddEnemyGroup('r', 1))
+            .AddWave(new Wave(1f).AddEnemyGroup('g', 10).AddEnemyGroup('r', 3));
 
         Assault assault5 = new Assault(["Even more on their way!", "Fifth threat cleared"])
             .AddWave(new Wave(0f).AddEnemyGroup('g', 12))
@@ -153,6 +153,7 @@ public sealed class InvasionLevel() : Level("invasion")
         {
             GlobalEventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInLevel, 1f);
             Scene.LoadLevel("invasion");
+            MusicManager.StopMusic();
         });
         pauseMenu.AddButton(quitButton, () =>
         {
