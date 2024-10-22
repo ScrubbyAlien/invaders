@@ -72,9 +72,9 @@ public sealed class InvasionLevel() : Level("invasion")
         #region Assualts
 
         Assault assault1 = new Assault(["Incoming threat!", "First threat cleared"])
-            .AddWave(new Wave(0f).Group('g', 7))
-            .AddWave(new Wave(10f).Group('g', 10))
-            .AddWave(new Wave(10f).Group('g', 10).Group('r', 3));
+            .AddWave(new Wave(0f).Group('g', 3));
+            // .AddWave(new Wave(10f).Group('g', 10))
+            // .AddWave(new Wave(10f).Group('g', 10).Group('r', 3));
         
         Assault assault2 = new Assault(["More incoming!", "Second threat cleared"])
             .AddWave(new Wave(0f).Group('g', 7).Group('r', 1))

@@ -7,13 +7,13 @@ namespace invaders.sceneobjects.renderobjects;
 public abstract class AbstractEnemy : Actor
 {
     public abstract int ScoreValue { get; }
+    protected virtual float powerUpSpawnChance => 0f;
     protected float horizontalSpeed = 30f;
     private WaveManager? _manager;
     protected int touchedBottom;
     private bool _blinking;
 
-    
-    
+    private static List<string> _powerUps = new List<string>();
 
     private Dictionary<int, float> _speedByLevel = new()
     {
@@ -33,6 +33,11 @@ public abstract class AbstractEnemy : Actor
         explosionSound.Volume = 25;
         _manager = null;
         deathAnimationLength = 0.5f;
+
+        foreach (string type in PowerUp.StringToType.Keys)
+        {
+            _powerUps.Add(type);
+        }
     }
 
     public override CollisionLayer Layer => CollisionLayer.Enemy;
@@ -62,6 +67,17 @@ public abstract class AbstractEnemy : Actor
         animator.AddAnimation(blink);
         SetBulletSoundEffect("enemy_shot");
         bulletSoundEffect.Volume = 25;
+    }
+
+    public override void Destroy()
+    {
+        int randomIndex = new Random().Next(_powerUps.Count());
+        string powerUp = _powerUps[randomIndex];
+        
+        if (new Random().NextSingle() < powerUpSpawnChance)
+        {
+            Scene.QueueSpawn(new PowerUp("health", Position));
+        }
     }
 
     public override void Update(float deltaTime)

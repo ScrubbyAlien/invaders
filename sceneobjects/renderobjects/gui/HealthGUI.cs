@@ -8,14 +8,9 @@ public sealed class HealthGUI : SpriteGUI
 {
     private int currentHealth;
 
-    public HealthGUI() : base(TextureRects["healthBar"]) { }
-
-    protected override void Initialize()
+    public HealthGUI() : base(TextureRects["healthBar"])
     {
-        if (Scene.FindByType(out Player? p))
-        {
-            currentHealth = p!.CurrentHealth;
-        }
+        // needs to subscribe before player publishes its full health in it's initialize step
         GlobalEventManager.PlayerChangeHealth += OnHealthChange;
     }
 
@@ -50,6 +45,7 @@ public sealed class HealthGUI : SpriteGUI
 
     private void OnHealthChange(int diff)
     {
+        // if (diff != 0) Console.WriteLine(diff);
         currentHealth += diff;
     }
 }

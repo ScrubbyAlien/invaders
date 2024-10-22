@@ -23,10 +23,17 @@ public static class GlobalEventManager
     
     public static event ValueChangeEvent<int>? PlayerChangeHealth;
     private static int _playerHealthDiff;
-    public static void PublishPlayerChangeHealth(int diff) { _playerHealthDiff += diff; }
+
+    public static void PublishPlayerChangeHealth(int diff)
+    {
+        _playerHealthDiff += diff;
+    }
     private static void BroadcastPlayerChangeHealth()
     {
-        PlayerChangeHealth?.Invoke(_playerHealthDiff);
+        if (_playerHealthDiff != 0)
+        {
+            PlayerChangeHealth?.Invoke(_playerHealthDiff);
+        }
         _playerHealthDiff = 0;
     }
     

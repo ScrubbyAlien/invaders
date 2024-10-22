@@ -1,4 +1,5 @@
 using invaders.enums;
+using invaders.sceneobjects.renderobjects.gui;
 using SFML.Audio;
 using SFML.System;
 using static SFML.Window.Keyboard.Key;
@@ -8,13 +9,20 @@ namespace invaders.sceneobjects.renderobjects;
 public sealed class Player : Actor
 {
     private const float Speed = 200f;
-    private float _fireRate = 0.5f;
+    private const float FireRate = 0.5f;
     private float _fireTimer;
     private int _burstLength = 2;
     private int _burstIndex;
-    private float _burstRate = 0.1f;
+    private const float BurstRate = 0.1f;
     private float _invicibilityWindow = 1f;
     private float _invincibilityTimer;
+    private int _defense;
+
+    private const int HealthRegainAmount = 5;
+    private const int DefenseUpgradeAmount = 1;
+
+    private readonly HashSet<PowerUp.Types> activePowerUps = new();
+    private readonly Dictionary<PowerUp.Types, float> powerUpTimers = new();
     
     public Player() : base("invaders", TextureRects["player"], Scale)
     {
@@ -40,6 +48,7 @@ public sealed class Player : Actor
     protected override void Initialize()
     {
         base.Initialize();
+        GlobalEventManager.PublishPlayerChangeHealth(maxHealth);
         animator.SetDefaultSprite(TextureRects["player"]);
         Animation invincible = new Animation("invincible", true, 25, _invicibilityWindow, blinking);
         Animation explode = new Animation("explode", true, 2, deathAnimationLength, explosionFrames);
@@ -104,13 +113,13 @@ public sealed class Player : Actor
         {
             if (AreAnyKeysPressed([Space]))
             {
-                if (_burstIndex == 0 && _fireTimer >= _fireRate)
+                if (_burstIndex == 0 && _fireTimer >= FireRate)
                 {
                     Shoot("player");
                     _burstIndex++;
                     _fireTimer = 0;
                 } 
-                else if (_burstIndex > 0 && _burstIndex < _burstLength && _fireTimer >= _burstRate)
+                else if (_burstIndex > 0 && _burstIndex < _burstLength && _fireTimer >= BurstRate)
                 {
                     Shoot("player");
                     _burstIndex++;
@@ -118,12 +127,80 @@ public sealed class Player : Actor
                 }
             }
 
-            if (_fireTimer >= _fireRate) _burstIndex = 0;
+            if (_fireTimer >= FireRate) _burstIndex = 0;
+            
         }
         
+        foreach (IntersectResult<PowerUp> intersect in this.FindIntersectingEntities<PowerUp>())
+        {
+            PowerUp.Types intersectedPowerUp = intersect.IntersectedEntity.Absorb();
+            if (activePowerUps.Add(intersectedPowerUp))
+            {
+                GainPowerUp(intersectedPowerUp);
+            }
+            else
+            {
+                Upgrade(intersectedPowerUp);
+                activePowerUps.Remove(intersectedPowerUp);
+            }
+        }
     }
 
-    public void Reset()
+    private void DrawPowerUpText(string message)
+    {
+        int lines = message.Split("\n").Length;
+        FadingTextGUI text = new FadingTextGUI(0.7f * lines, message, 40);
+        text.Position = MiddleOfScreen(text.Bounds, new Vector2f(0, -80));
+        Scene.QueueSpawn(text);
+    }
+    
+    private void GainPowerUp(PowerUp.Types powerUpType)
+    {
+        switch (powerUpType)
+        {
+            case PowerUp.Types.RepairShip:
+                RegainHealth(HealthRegainAmount);
+                DrawPowerUpText("ship repaired");
+                break;
+            default: return;
+        }
+    }
+    
+    private void Upgrade(PowerUp.Types powerUpType)
+    {
+        switch (powerUpType)
+        {
+            case PowerUp.Types.RepairShip:
+                UpgradeDefense(DefenseUpgradeAmount);
+                RegainHealth(HealthRegainAmount);
+                DrawPowerUpText("ship repaired\nhull reinforced");
+                break;
+            // case PowerUp.Types.ThrusterBoost:
+            default: return;
+        }
+
+        activePowerUps.Remove(powerUpType);
+    }
+
+    private void UpgradeDefense(int upgradeAmount)
+    {
+        _defense += upgradeAmount;
+    }
+
+    private void RegainHealth(int regain)
+    {
+        if (currentHealth + regain >= maxHealth)
+        {
+            ResetHealth();
+        }
+        else
+        {
+            currentHealth += regain;
+            GlobalEventManager.PublishPlayerChangeHealth(regain);
+        }
+    }
+
+    public void ResetHealth()
     {
         GlobalEventManager.PublishPlayerChangeHealth(maxHealth - currentHealth);
         currentHealth = maxHealth;
@@ -139,7 +216,9 @@ public sealed class Player : Actor
     
     protected override void TakeDamage(int damage)
     {
-        currentHealth -= damage;
+        // can't take less than one damage even if defense is really high
+        int realDamage = (int) MathF.Max(damage - _defense, 1);
+        currentHealth -= realDamage;
         _invincibilityTimer = 0f;
         animator.PlayAnimation("invincible", true);
         if (currentHealth > 0)
@@ -149,7 +228,7 @@ public sealed class Player : Actor
         }
         if (currentHealth <= 0) Die();
         GlobalEventManager.PublishPlayerHit();
-        GlobalEventManager.PublishPlayerChangeHealth(-damage);
+        GlobalEventManager.PublishPlayerChangeHealth(-realDamage);
     }
 
     protected override void Die()

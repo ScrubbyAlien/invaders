@@ -119,6 +119,7 @@ public static class Scene
         UpdateSceneObjects(deltaTime);
         GlobalEvents?.Invoke();
         ProcessDestroyQueue();
+        Bury();
     }
 
     public static void RenderAll(RenderTarget target)
@@ -133,7 +134,10 @@ public static class Scene
     
 
     // borrowed from lab project 4
-    public static IEnumerable<IntersectResult<T>> FindIntersectingEntities<T>(this RenderObject renderObject, CollisionLayer layer) where T : RenderObject
+    public static IEnumerable<IntersectResult<T>> FindIntersectingEntities<T>(
+        this RenderObject renderObject, 
+        CollisionLayer layer = CollisionLayer.None) 
+        where T : RenderObject
     {
         int lastEntity = _sceneObjects.Count - 1;
 
@@ -144,7 +148,7 @@ public static class Scene
             if (sceneObject is not RenderObject e) continue;
             if (e is not T t) continue; 
             if (t.Dead) continue;
-            if (t.Layer != layer) continue;
+            if (t.Layer != layer && layer != CollisionLayer.None) continue;
             if (t.Bounds.IntersectsOutDiff(renderObject.Bounds, out Vector2f diff))
             {
                 yield return new IntersectResult<T>(t, diff);
@@ -171,10 +175,10 @@ public static class Scene
         typed = null;
         return false;
     }
-    public static T FindByType<T>() where T : SceneObject
+    public static T? FindByType<T>() where T : SceneObject
     {
         FindByType(out T? result);
-        return result!;
+        return result;
     }
     
     public static bool FindByTag<T>(SceneObjectTag tag, out T? typed) where T : SceneObject

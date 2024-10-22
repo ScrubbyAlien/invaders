@@ -109,6 +109,7 @@ public sealed class WaveManager : Invasion
     private void StartTransition()
     {
         Scene.FindAllByType<Bullet>().ForEach(o => Scene.QueueDestroy(o));
+        Scene.FindAllByType<PowerUp>().ForEach(p => Scene.QueueDestroy(p));
         _inTransition = true;
         _transitionBufferTimer = 0;
         _scrollSpedUp = false;
