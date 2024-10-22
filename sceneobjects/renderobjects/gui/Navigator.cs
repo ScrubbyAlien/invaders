@@ -5,7 +5,14 @@ using static invaders.Utility;
 
 namespace invaders.sceneobjects.renderobjects.gui;
 
-public abstract class Navigator(float holdDownTime, bool looping = true, bool horizontal = false) : SceneObject, ISectionable
+/// <summary>
+/// Navigator represents classes that need to navigate between gui elements, such as tabs or menus
+/// </summary>
+/// <param name="holdDownTime">The time it takes before the navigator progresses to the next element when a navigation key is held</param>
+/// <param name="continuous">If the navigator should remember which index it was at after it has left the active selection</param>
+/// <param name="looping">If the index should loop to the other side of the collection when reaching either end</param>
+/// <param name="horizontal">Determines if the navigation keys are aligned horizontally or veritcally</param>
+public abstract class Navigator(float holdDownTime, bool continuous = true, bool looping = true, bool horizontal = false) : SceneObject, ISectionable
 {
     /// <summary>
     /// Invokes when any of the navigational keys parallell to the direction of the navigator are pressed
@@ -18,14 +25,14 @@ public abstract class Navigator(float holdDownTime, bool looping = true, bool ho
     /// Argument is false when that direction is left or up, otherwise its true
     /// </summary>
     public event Action<bool>? OrthogonalExit; 
-    private Keyboard.Key[] increaseIndexKeys = horizontal ? [D, Right] : [S, Down];
-    private Keyboard.Key[] oIncreaseIndexKeys = !horizontal ? [D, Right] : [S, Down];
-    private Keyboard.Key[] decreaseIndexKeys = horizontal ? [A, Left] : [W, Up];
-    private Keyboard.Key[] oDecreaseIndexKeys = !horizontal ? [A, Left] : [W, Up];
-    private bool _looping = looping;
+    private readonly Keyboard.Key[] increaseIndexKeys = horizontal ? [D, Right] : [S, Down];
+    private readonly Keyboard.Key[] oIncreaseIndexKeys = !horizontal ? [D, Right] : [S, Down];
+    private readonly Keyboard.Key[] decreaseIndexKeys = horizontal ? [A, Left] : [W, Up];
+    private readonly Keyboard.Key[] oDecreaseIndexKeys = !horizontal ? [A, Left] : [W, Up];
+    private readonly bool _looping = looping;
     private int _lastIndex;
     private int _pointerIndex;
-    private float _holdDown = holdDownTime;
+    private readonly float _holdDown = holdDownTime;
     private float _holdDownTimer;
     private bool _keyPressed;
     private bool _firstFrame = true;
@@ -33,10 +40,10 @@ public abstract class Navigator(float holdDownTime, bool looping = true, bool ho
     public override bool Active => base.Active && _inActiveSection;
     private int _exitIndex;
 
-    private Sound _navigateSound = AssetManager.LoadSound("click2");
+    private static readonly Sound _navigateSound = AssetManager.LoadSound("click2");
     
     protected abstract int Count();
-    protected bool continuous;
+    protected readonly bool _continuous = continuous;
     
     protected List<Keyboard.Key> _navigationalKeys
     {
@@ -145,7 +152,7 @@ public abstract class Navigator(float holdDownTime, bool looping = true, bool ho
     public virtual void SetActiveSelection()
     {
         _navigateSound.Play();
-        SetIndex(continuous ? _exitIndex : 0);
+        SetIndex(_continuous ? _exitIndex : 0);
         _inActiveSection = true;
     }
 

@@ -10,26 +10,12 @@ public sealed class TextInputGUI : TextGUI
 {
     public event EventHandler<string>? InputEntered;
     
-    private TextGUI _caret;
-    private int _maxCharacterCount;
-    private string _validCharacters = "abcdefghijklmnopqrstuvwxyzåäö1234567890:;()/<>- ";
+    private readonly TextGUI _caret;
+    private readonly int _maxCharacterCount;
+    private const string ValidCharacters = "abcdefghijklmnopqrstuvwxyzåäö1234567890:()/<>- ";
     private Func<RenderObject, Vector2f> _positionCalculator = o => o.Position;
     private bool _backspacePressed;
     private bool _enterPressed;
-
-    public override void Pause()
-    {
-        base.Pause();
-        _caret.Pause();
-        _caret.Hide();
-    }
-
-    public override void Unpause()
-    {
-        base.Unpause();
-        _caret.Unpause();
-        _caret.Unhide();
-    }
 
     public TextInputGUI(int maxCharacterCount, uint size = 10, Alignment alignment = Alignment.Center) : base("", size, alignment)
     {
@@ -82,7 +68,7 @@ public sealed class TextInputGUI : TextGUI
         if (text.DisplayedString.Length < _maxCharacterCount)
         {
             char c = Convert.ToChar(args.Unicode);
-            if (_validCharacters.Contains(c.ToString().ToLower()))
+            if (ValidCharacters.Contains(c.ToString().ToLower()))
             {
                 text.DisplayedString += c;
             }
@@ -96,5 +82,19 @@ public sealed class TextInputGUI : TextGUI
         {
             text.DisplayedString = display.Substring(0, display.Length - 1);
         }
+    }
+    
+    public override void Pause()
+    {
+        base.Pause();
+        _caret.Pause();
+        _caret.Hide();
+    }
+
+    public override void Unpause()
+    {
+        base.Unpause();
+        _caret.Unpause();
+        _caret.Unhide();
     }
 }

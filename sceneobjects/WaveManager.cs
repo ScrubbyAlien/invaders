@@ -14,7 +14,7 @@ public sealed class WaveManager : Invasion
     public int CurrentAssault => _currentAssault;
     public override bool InTransition => _inTransition || inEndLevel;
     
-    private float _transitionBuffer = 5f;
+    private const float _transitionBuffer = 5f;
     private float _transitionBufferTimer;
     private bool _scrollSpedUp;
     private bool _scrollSlowedDown;

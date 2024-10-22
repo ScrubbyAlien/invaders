@@ -141,17 +141,3 @@ public class Animatable(RenderObject i, Drawable d, Animator a)
         Sprite.TextureRect = rect;
     }
 }
-
-// solution for dynamically invoking method on an instance inspired by solution here
-// https://stackoverflow.com/questions/6469027/call-methods-using-names-in-c-sharp
-public class DeferredMethodCall(Object instance, string methodName, object[] arguments)
-{
-    private Object _instance = instance;
-    private string _methodName = methodName;
-    private object[] _arguments = arguments;
-
-    public void Invoke()
-    {
-        _instance.GetType().GetMethod(_methodName)?.Invoke(_instance, _arguments);
-    }
-}

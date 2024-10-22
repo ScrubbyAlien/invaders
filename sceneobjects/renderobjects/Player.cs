@@ -8,13 +8,13 @@ namespace invaders.sceneobjects.renderobjects;
 
 public sealed class Player : Actor
 {
-    private const float Speed = 200f;
-    private const float FireRate = 0.5f;
+    private const float _speed = 200f;
+    private const float _fireRate = 0.5f;
     private float _fireTimer;
     private int _burstLength = 2;
     private int _burstIndex;
-    private const float BurstRate = 0.1f;
-    private float _invicibilityWindow = 1f;
+    private const float _burstRate = 0.1f;
+    private const float _invicibilityWindow = 1f;
     private float _invincibilityTimer;
     private int _defense;
 
@@ -102,7 +102,7 @@ public sealed class Player : Actor
         else sprite.TextureRect = TextureRects["player"];
         
         TryMoveWithinBounds(
-            newPos.Normalized() * Speed * deltaTime, 
+            newPos.Normalized() * _speed * deltaTime, 
             Settings.MarginSide,
             Settings.MarginSide,
             Settings.TopGuiHeight + Settings.MarginSide,
@@ -113,13 +113,13 @@ public sealed class Player : Actor
         {
             if (AreAnyKeysPressed([Space]))
             {
-                if (_burstIndex == 0 && _fireTimer >= FireRate)
+                if (_burstIndex == 0 && _fireTimer >= _fireRate)
                 {
                     Shoot("player");
                     _burstIndex++;
                     _fireTimer = 0;
                 } 
-                else if (_burstIndex > 0 && _burstIndex < _burstLength && _fireTimer >= BurstRate)
+                else if (_burstIndex > 0 && _burstIndex < _burstLength && _fireTimer >= _burstRate)
                 {
                     Shoot("player");
                     _burstIndex++;
@@ -127,7 +127,7 @@ public sealed class Player : Actor
                 }
             }
 
-            if (_fireTimer >= FireRate) _burstIndex = 0;
+            if (_fireTimer >= _fireRate) _burstIndex = 0;
             
         }
         
@@ -150,7 +150,8 @@ public sealed class Player : Actor
     {
         int lines = message.Split("\n").Length;
         FadingTextGUI text = new FadingTextGUI(0.7f * lines, message, 40);
-        text.Position = MiddleOfScreen(text.Bounds, new Vector2f(0, -80));
+        text.SetDrift(new Vector2f(0, -20));
+        text.Position = MiddleOfScreen(text.Bounds, new Vector2f(0, -50));
         Scene.QueueSpawn(text);
     }
     

@@ -5,7 +5,7 @@ namespace invaders;
 
 public static class LevelManager
 {
-    private static List<Level> _levels = new();
+    private readonly static List<Level> _levels = new();
 
     public static void Instantiate()
     {

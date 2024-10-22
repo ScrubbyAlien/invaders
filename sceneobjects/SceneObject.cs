@@ -4,7 +4,7 @@ namespace invaders.sceneobjects;
 
 public abstract class SceneObject
 {
-    private HashSet<SceneObjectTag> _tags = new();
+    private readonly HashSet<SceneObjectTag> _tags = new();
     public bool Dead = false;
     public bool DontDestroyOnClear = false;
     private bool _initialized;

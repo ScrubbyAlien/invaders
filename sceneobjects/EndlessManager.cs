@@ -9,7 +9,7 @@ namespace invaders.sceneobjects;
 public class EndlessManager : Invasion
 {
     public override bool InTransition => inEndLevel || _untilStartTimer < _timeUntilStart;
-    private float _timeUntilStart = 6f;
+    private const float _timeUntilStart = 6f;
     private float _untilStartTimer;
     private bool _scrollSlowedDown;
     private int _enemyRange = 1;

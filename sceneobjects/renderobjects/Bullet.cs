@@ -8,11 +8,11 @@ namespace invaders.sceneobjects.renderobjects;
 
 public class Bullet : RenderObject
 {
-    public string Type;
-    public CollisionLayer EffectiveAgainstLayer; // the collision layer that this bullet should collide with
-    private Vector2f _velocity;
-    public int Damage;
-    private Func<float, float, Vector2f, Vector2f> _movement;
+    public readonly string Type;
+    public readonly CollisionLayer EffectiveAgainstLayer; // the collision layer that this bullet should collide with
+    private readonly Vector2f _velocity;
+    public readonly int Damage;
+    private readonly Func<float, float, Vector2f, Vector2f> _movement;
     private float _timeAlive;
     
     private static Dictionary<string, IntRect> bulletTypes = new()

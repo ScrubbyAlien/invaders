@@ -5,8 +5,8 @@ namespace invaders.sceneobjects.renderobjects.gui;
 
 public class TextGUI : GUI, INavigatable
 {
-    protected Text text = new();
-    private Alignment _alignment;
+    protected readonly Text text = new();
+    private readonly Alignment _alignment;
     protected bool unavailable;
 
     public override Vector2f Position
@@ -57,6 +57,12 @@ public class TextGUI : GUI, INavigatable
     public void SetText(string newText)
     {
         text.DisplayedString = newText;
+        AlignText();
+    }
+
+    public void SetSize(uint size)
+    {
+        text.CharacterSize = size * (int)Scale;
         AlignText();
     }
 

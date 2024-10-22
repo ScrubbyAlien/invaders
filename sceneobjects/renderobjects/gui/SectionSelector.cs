@@ -2,7 +2,7 @@ namespace invaders.sceneobjects.renderobjects.gui;
 
 public class SectionSelector() : SceneObject
 {
-    private List<Section> _sections = new();
+    private readonly List<Section> _sections = new();
 
     public void AddSection(Section section) => _sections.Add(section);
     

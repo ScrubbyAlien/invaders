@@ -9,7 +9,7 @@ namespace invaders.sceneobjects;
 public abstract class Invasion : SceneObject
 {
     protected bool inEndLevel;
-    protected TextGUI messageText = new("");
+    protected readonly TextGUI messageText = new("");
     private bool _spaceReleased;
     public virtual bool InTransition => inEndLevel;
     
@@ -62,7 +62,8 @@ public abstract class Invasion : SceneObject
     protected void DrawText(string text, Vector2f positionFromMiddle)
     {
         messageText.Unhide();
-        messageText = new TextGUI(text, 8);
+        messageText.SetText(text);
+        messageText.SetSize(8);
         messageText.Position = MiddleOfScreen(messageText.Bounds) + positionFromMiddle;
         Scene.QueueSpawn(messageText);
         // call PlayAnimatio after next ProcessSpawnQueue call so messageText's Initialize method can be called first

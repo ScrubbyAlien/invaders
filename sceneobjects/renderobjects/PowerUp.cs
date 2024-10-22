@@ -6,7 +6,7 @@ namespace invaders.sceneobjects.renderobjects;
 
 public sealed class PowerUp : RenderObject
 {
-    private Types _type;
+    private readonly Types _type;
     private Background? _background;
 
     public static Dictionary<string, Types> StringToType = new()

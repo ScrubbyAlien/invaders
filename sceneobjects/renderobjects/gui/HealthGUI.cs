@@ -6,7 +6,7 @@ namespace invaders.sceneobjects.renderobjects.gui;
 
 public sealed class HealthGUI : SpriteGUI
 {
-    private int currentHealth;
+    private int _currentHealth;
 
     public HealthGUI() : base(TextureRects["healthBar"])
     {
@@ -21,9 +21,9 @@ public sealed class HealthGUI : SpriteGUI
 
     public override void Render(RenderTarget target)
     {
-        for (int i = 0; i < currentHealth; i++)
+        for (int i = 0; i < _currentHealth; i++)
         {
-            if (i == currentHealth - 1)
+            if (i == _currentHealth - 1)
             {
                 sprite.TextureRect = TextureRects["healthBarEnd"];
                 Position = new Vector2f(
@@ -46,6 +46,6 @@ public sealed class HealthGUI : SpriteGUI
     private void OnHealthChange(int diff)
     {
         // if (diff != 0) Console.WriteLine(diff);
-        currentHealth += diff;
+        _currentHealth += diff;
     }
 }

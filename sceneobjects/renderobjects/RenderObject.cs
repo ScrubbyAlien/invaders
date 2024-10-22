@@ -6,10 +6,10 @@ namespace invaders.sceneobjects.renderobjects;
 
 public abstract class RenderObject : SceneObject
 {
-    protected Sprite sprite = new();
-    protected string textureName;
+    protected readonly Sprite sprite = new();
+    protected readonly string textureName;
     public const float Scale = 4;
-    protected Animator animator;
+    protected readonly Animator animator;
     public int zIndex;
     private bool _hidden;
     public bool Hidden => _hidden;

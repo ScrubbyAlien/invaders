@@ -8,15 +8,15 @@ public sealed class Animation
     public event AnimationEvent? AnimationFinished;
     public event AnimationEvent? FrameFinished;
     
-    private float _framelength;
-    private float _animationLength; // length 0 means until frames end for non looping or indefinitely for looping
+    private readonly float _framelength;
+    private readonly float _animationLength; // length 0 means until frames end for non looping or indefinitely for looping
     private int _currentFrame;
-    private bool _looping;
+    private readonly bool _looping;
     private bool _playingAnimation;
-    public string Name;
+    public readonly string Name;
 
     public delegate void FrameRenderer(Animatable animatable, RenderTarget target);
-    private List<FrameRenderer> _frameRenderers = new();
+    private readonly List<FrameRenderer> _frameRenderers = new();
     private float _frameTimer;
     private float _animationTimer;
 

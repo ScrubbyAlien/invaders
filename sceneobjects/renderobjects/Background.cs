@@ -8,7 +8,7 @@ public sealed class Background : RenderObject
 {
     private const float StarDensity = 0.0002f;
 
-    private Dictionary<Vector2f, string> StarMap =  new();
+    private readonly Dictionary<Vector2f, string> StarMap =  new();
     private int _seed;
     private float _scroll;
     private float _scrollSpeed = Settings.AmbientScrollInLevel;
@@ -77,7 +77,8 @@ public sealed class Background : RenderObject
     {
         Random random = new Random();
         if (_seed != 0) random = new Random(_seed);
-        StarMap = new();
+        
+        StarMap.Clear();
         
         for (int i = 0; i < Program.ScreenHeight - TextureRects["largestStar"].Height; i++)
         {

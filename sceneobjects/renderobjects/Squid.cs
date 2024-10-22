@@ -9,9 +9,9 @@ public sealed class Squid : AbstractEnemy
     private float _timeUntilFire;
     private float _fireTimer;
     private float _bulletAmplitude => 500f + touchedBottom * 50;
-    private float _movementFrequency = 1f;
+    private const float _movementFrequency = 1f;
     private float _movementPhase;
-    private float _movementAmplitude = 100f;
+    private const float _movementAmplitude = 100f;
     private float _timeAlive;
 
 

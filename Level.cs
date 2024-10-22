@@ -6,7 +6,7 @@ namespace invaders;
 public abstract class Level(string name)
 {
     public readonly string Name = name;
-    private List<SceneObject> _initialObjects = new();
+    private readonly List<SceneObject> _initialObjects = new();
 
     public List<SceneObject> GetInitialObjects()
     {

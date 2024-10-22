@@ -9,6 +9,10 @@ namespace invaders.sceneobjects.renderobjects;
 public abstract class Actor : RenderObject
 {
     private Vector2f _initPosition;
+    /// <summary>
+    /// Position is set to InitPosition when the Actor is Initialized.
+    /// Changing this property after the Actor has been Initialized will not change its Position.
+    /// </summary>
     public virtual Vector2f InitPosition
     {
         get => _initPosition;

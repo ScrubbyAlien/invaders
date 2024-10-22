@@ -15,7 +15,7 @@ public class HighscoreLevel() : Level("highscores")
         
         SetBackground();
         
-        TabNavigator scoreBoardSelectTabs = new TabNavigator(true, true);
+        TabNavigator scoreBoardSelectTabs = new TabNavigator(true,true, true);
         AddObject(scoreBoardSelectTabs);
         
         TextButtonGUI standard = new TextButtonGUI("standard");

@@ -11,17 +11,16 @@ public sealed class ScoreManager : SceneObject
     private int _currentScore;
     private int _multiplier = 1;
     private float _multiplierTimer;
-    private float _multiplierLifeSpan = 2f;
+    private const float _multiplierLifeSpan = 2f;
     private float _passiveScoreTimer;
-    private float _passiveScoreInterval;
-    private int _passiveScore;
+    private readonly float _passiveScoreInterval;
+    private readonly int _passiveScore;
 
     private TextGUI _scoreText = null!;
     private TextGUI _multiplierText = null!;
     private SpriteGUI _multiplierBar = null!;
 
     public int CurrentScore => _currentScore;
-
     
     public ScoreManager(int passiveScore = 0, float interval = 1)
     {
@@ -31,6 +30,8 @@ public sealed class ScoreManager : SceneObject
     
     protected override void Initialize()
     {
+        // could find the guibackground instead and create its own texts
+        // would allow easy movement of gui location by moving guibackground
         _scoreText = Scene.FindByTag<TextGUI>(SceneObjectTag.ScoreText)!;
         _multiplierText = Scene.FindByTag<TextGUI>(SceneObjectTag.MultiplierText)!;
         _multiplierBar = Scene.FindByTag<SpriteGUI>(SceneObjectTag.MultiplierBar)!;

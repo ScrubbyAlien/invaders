@@ -1,9 +1,9 @@
 namespace invaders.sceneobjects.renderobjects.gui;
 
-public sealed class TabNavigator(bool looping = true, bool horizontal = false) : Navigator(0.2f, looping, horizontal)
+public sealed class TabNavigator(bool continuous = true, bool looping = true, bool horizontal = false) : Navigator(0.2f, continuous, looping, horizontal)
 {
-    private List<INavigatable> _tabs = new();
-    private List<Action> _actions = new();
+    private readonly List<INavigatable> _tabs = new();
+    private readonly List<Action> _actions = new();
     
     protected override int Count()
     {
@@ -12,7 +12,6 @@ public sealed class TabNavigator(bool looping = true, bool horizontal = false) :
 
     protected override void Initialize()
     {
-        continuous = true;
         if (Count() > 0)
         {
             _tabs[0].Activate();

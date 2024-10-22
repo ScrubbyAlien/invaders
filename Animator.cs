@@ -13,7 +13,7 @@ public sealed class Animator
     {
         {"" , new Animation("", false, 0, 0, [])}
     };
-    private RenderObject _instance;
+    private readonly RenderObject _instance;
 
     public bool IsAnimated => _currentAnimation != "";
     public Animation CurrentAnimation => _animationSet[_currentAnimation];

@@ -7,10 +7,10 @@ namespace invaders.sceneobjects.renderobjects.gui;
 
 public sealed class ButtonNavigator(bool looping = true, bool horizontal = false) : Navigator(0.2f, looping, horizontal)
 {
-    private List<IClickable> _buttons = new();
-    private List<Action> _listeners = new();
+    private readonly List<IClickable> _buttons = new();
+    private readonly List<Action> _listeners = new();
     
-    private Keyboard.Key[] _selectKeys = [Enter, Space];
+    private static readonly Keyboard.Key[] _selectKeys = [Enter, Space];
 
     private Sound _clickSound = AssetManager.LoadSound("click1");
 

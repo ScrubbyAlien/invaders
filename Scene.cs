@@ -14,9 +14,9 @@ public static class Scene
     public static event EventHandler<TextEventArgs>? TextEntered; 
     
     private static List<SceneObject> _sceneObjects = new();
-    private readonly static List<SceneObject> _spawnQueue = new();
-    private readonly static List<SceneObject> _destroyQueue = new();
-    private readonly static List<DeferredMethodCall> _deferredCalls = new();
+    private static readonly List<SceneObject> _spawnQueue = new();
+    private static readonly List<SceneObject> _destroyQueue = new();
+    private static readonly List<DeferredMethodCall> _deferredCalls = new();
     private static string _nextLevel = "";
     private static RenderWindow? _window;
     public static event Action? GlobalEvents;
@@ -231,6 +231,20 @@ public static class Scene
     public static void DeferredCall(Object instance, string methodName, object[] arguments)
     {
         _deferredCalls.Add(new DeferredMethodCall(instance, methodName, arguments));
+    }
+}
+
+// solution for dynamically invoking method on an instance inspired by solution here
+// https://stackoverflow.com/questions/6469027/call-methods-using-names-in-c-sharp
+public class DeferredMethodCall(Object instance, string methodName, object[] arguments)
+{
+    private Object _instance = instance;
+    private string _methodName = methodName;
+    private object[] _arguments = arguments;
+
+    public void Invoke()
+    {
+        _instance.GetType().GetMethod(_methodName)?.Invoke(_instance, _arguments);
     }
 }
 

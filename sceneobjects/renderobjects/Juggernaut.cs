@@ -12,9 +12,9 @@ public class Juggernaut : AbstractEnemy
     private float _timeUntilFire;
     private float _fireTimer;
     private (bool left, bool right) _availableHands = (true, true);
-    private Sprite _leftHand = new Sprite();
-    private Sprite _rightHand = new Sprite();
-    private float _handRecoveryTime = 1f;
+    private readonly Sprite _leftHand = new Sprite();
+    private readonly Sprite _rightHand = new Sprite();
+    private readonly float _handRecoveryTime = 1f;
     private float _leftHandTimer;
     private float _rightHandTimer;
     private bool _lastShotLeftHand;

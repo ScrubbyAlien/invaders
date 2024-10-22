@@ -9,7 +9,7 @@ public sealed class PauseManager(Keyboard.Key pauseKey) : SceneObject
 {
     private bool _pressedPause;
     private bool _isPaused;
-    private Keyboard.Key _pauseKey = pauseKey;
+    private readonly Keyboard.Key _pauseKey = pauseKey;
 
     public override bool Active
     {

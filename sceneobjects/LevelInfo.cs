@@ -2,8 +2,8 @@ namespace invaders.sceneobjects;
 
 public sealed class LevelInfo<T> : SceneObject
 {
-    private T _info;
-    private string _name;
+    private readonly T _info;
+    private readonly string _name;
     public string Name => _name;
     
     public LevelInfo(T info, string name)
