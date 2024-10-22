@@ -10,7 +10,7 @@ namespace invaders;
 public class ConfirmationPrompt
 {
     
-    private readonly ButtonNavigator _yesOrNoMenu = new ButtonNavigator(true, true);
+    private readonly ButtonNavigator _yesOrNoMenu = new ButtonNavigator(false, false, true);
     private readonly TextButtonGUI _yesButton = new TextButtonGUI("yes");
     private readonly TextButtonGUI _noButton = new TextButtonGUI("no");
     private readonly List<SceneObject> _prompt = new();
@@ -48,12 +48,13 @@ public class ConfirmationPrompt
             ClosePrompt();
             no();
         });
-
+        
         _prompt.Add(background);
         _prompt.Add(messageText);
         _prompt.Add(_yesButton);
         _prompt.Add(_noButton);
         _prompt.Add(_yesOrNoMenu);
+        Scene.DeferredCall(_yesOrNoMenu, "SetIndex", [1]);
     }
 
     private void ClosePrompt()

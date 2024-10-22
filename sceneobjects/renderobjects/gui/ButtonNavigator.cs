@@ -5,7 +5,7 @@ using static SFML.Window.Keyboard.Key;
 
 namespace invaders.sceneobjects.renderobjects.gui;
 
-public sealed class ButtonNavigator(bool looping = true, bool horizontal = false) : Navigator(0.2f, looping, horizontal)
+public sealed class ButtonNavigator(bool continuous = true, bool looping = true, bool horizontal = false) : Navigator(0.2f, continuous, looping, horizontal)
 {
     private readonly List<IClickable> _buttons = new();
     private readonly List<Action> _listeners = new();
@@ -32,7 +32,10 @@ public sealed class ButtonNavigator(bool looping = true, bool horizontal = false
 
     protected override void Initialize()
     {
-        if (Active) Scene.DeferredCall(_buttons[0], "Select", []);
+        if (Active && _buttons.Count() > 0)
+        {
+            PointerAction(p => _buttons[p].Select());
+        }
     }
 
     public override void Destroy()
@@ -68,6 +71,7 @@ public sealed class ButtonNavigator(bool looping = true, bool horizontal = false
 
     public override void SetActiveSelection()
     {
+        
         base.SetActiveSelection();
         EnableNavigator();
     }
@@ -81,7 +85,7 @@ public sealed class ButtonNavigator(bool looping = true, bool horizontal = false
     public override void EnableNavigator()
     {
         _buttons.ForEach(b => b.SetActiveSelection());
-        _buttons[0].Select();
+        PointerAction(p => _buttons[p].Select());
     }
 
     public override void DisableNavigator()
@@ -99,5 +103,15 @@ public sealed class ButtonNavigator(bool looping = true, bool horizontal = false
             button.Clicked += listener;
             _listeners.Add(listener); // save listeners on same index for unsubbing in Destroy
         }
+    }
+
+    public override void SetIndex(int index)
+    {
+        base.SetIndex(index);
+        PointerAction(p =>
+        {
+            _buttons.ForEach(b => b.Deselect());
+            _buttons[p].Select();
+        });
     }
 }

@@ -171,6 +171,7 @@ public abstract class Navigator(float holdDownTime, bool continuous = true, bool
     public virtual void SetIndex(int index)
     {
         _pointerIndex = index;
+        _lastIndex = _pointerIndex;
         
         if (index >= Count())
         {

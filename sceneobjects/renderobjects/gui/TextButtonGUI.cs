@@ -19,6 +19,7 @@ public sealed class TextButtonGUI : TextGUI, IClickable
 
     public void Select()
     {
+        Console.WriteLine($"select: {text.DisplayedString}");
         animator.PlayAnimation("selected", true);
     }
     public void Deselect()
@@ -43,7 +44,7 @@ public sealed class TextButtonGUI : TextGUI, IClickable
             float darkGray = 50;
             float white = 255;
             float progress = animatable.Animator.FrameCount / 13f;
-            progress %= MathF.PI; // keep value within PI radians
+            progress %= MathF.PI; // resulting sin value should always be positive
             byte lerp = (byte) MathF.Round(float.Lerp(white, darkGray, MathF.Sin(progress)));
             Color lerpedColor = new Color(lerp, lerp, lerp);
             animatable.Text.FillColor = lerpedColor;
