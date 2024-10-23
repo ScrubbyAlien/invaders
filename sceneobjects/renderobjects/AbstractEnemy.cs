@@ -164,6 +164,7 @@ public abstract class AbstractEnemy : Actor
     protected override void Die()
     {
         base.Die();
+        animator.StopAnimation();
         GlobalEventManager.PublishEnemyDead(this);
         animator.PlayAnimation("death", true);
         explosionSound.Play();

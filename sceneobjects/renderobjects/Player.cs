@@ -129,13 +129,13 @@ public sealed class Player : Actor
         // XOR: if only one direction is held then move in that direction
         newPos.X = (right ^ left) switch
         {
-            true => 0,
-            false => right ? 1 : -1
+            false => 0,
+            true => right ? 1 : -1
         };
         newPos.Y = (up ^ down) switch
         {
-            true => 0,
-            false => down ? 1 : -1
+            false => 0,
+            true => down ? 1 : -1
         };
 
         if (newPos.X > 0) sprite.TextureRect = TextureRects["playerRight"];
