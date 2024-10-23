@@ -25,10 +25,10 @@ public abstract class Navigator(float holdDownTime, bool continuous = true, bool
     /// Argument is false when that direction is left or up, otherwise its true
     /// </summary>
     public event Action<bool>? OrthogonalExit; 
-    private readonly Keyboard.Key[] increaseIndexKeys = horizontal ? [D, Right] : [S, Down];
-    private readonly Keyboard.Key[] oIncreaseIndexKeys = !horizontal ? [D, Right] : [S, Down];
-    private readonly Keyboard.Key[] decreaseIndexKeys = horizontal ? [A, Left] : [W, Up];
-    private readonly Keyboard.Key[] oDecreaseIndexKeys = !horizontal ? [A, Left] : [W, Up];
+    private readonly Keyboard.Key[] _increaseIndexKeys = horizontal ? [D, Right] : [S, Down];
+    private readonly Keyboard.Key[] _oIncreaseIndexKeys = !horizontal ? [D, Right] : [S, Down];
+    private readonly Keyboard.Key[] _decreaseIndexKeys = horizontal ? [A, Left] : [W, Up];
+    private readonly Keyboard.Key[] _oDecreaseIndexKeys = !horizontal ? [A, Left] : [W, Up];
     private readonly bool _looping = looping;
     private int _lastIndex;
     private int _pointerIndex;
@@ -41,19 +41,19 @@ public abstract class Navigator(float holdDownTime, bool continuous = true, bool
     private int _exitIndex;
 
     private static readonly Sound _navigateSound = AssetManager.LoadSound("click2");
-    
-    protected abstract int Count();
-    protected readonly bool _continuous = continuous;
-    
-    protected List<Keyboard.Key> _navigationalKeys
+
+    protected abstract int Count { get; }
+    private readonly bool _continuous = continuous;
+
+    private List<Keyboard.Key> _navigationalKeys
     {
         get
         {
             List<Keyboard.Key> r = new List<Keyboard.Key>();
-            r.AddRange(increaseIndexKeys);
-            r.AddRange(decreaseIndexKeys);
-            r.AddRange(oIncreaseIndexKeys);
-            r.AddRange(oDecreaseIndexKeys);
+            r.AddRange(_increaseIndexKeys);
+            r.AddRange(_decreaseIndexKeys);
+            r.AddRange(_oIncreaseIndexKeys);
+            r.AddRange(_oDecreaseIndexKeys);
             return r;
         }
     }
@@ -77,10 +77,10 @@ public abstract class Navigator(float holdDownTime, bool continuous = true, bool
         }
         else _firstFrame = false;
         
-        if (AreAnyKeysPressed(oIncreaseIndexKeys) && !_keyPressed) OrthogonalExit?.Invoke(true);
-        if (AreAnyKeysPressed(oDecreaseIndexKeys) && !_keyPressed) OrthogonalExit?.Invoke(false);
+        if (AreAnyKeysPressed(_oIncreaseIndexKeys) && !_keyPressed) OrthogonalExit?.Invoke(true);
+        if (AreAnyKeysPressed(_oDecreaseIndexKeys) && !_keyPressed) OrthogonalExit?.Invoke(false);
         
-        if (AreAnyKeysPressed(decreaseIndexKeys) && !_keyPressed)
+        if (AreAnyKeysPressed(_decreaseIndexKeys) && !_keyPressed)
         {
             // if we are on first element, invoke exit navigator if not looping
             if (_lastIndex == 0 && !_looping)
@@ -92,7 +92,7 @@ public abstract class Navigator(float holdDownTime, bool continuous = true, bool
             
             _pointerIndex--;
             // adjust pointerIndex depening on looping
-            if (_pointerIndex < 0) { _pointerIndex = _looping ? Count() - 1 : 0; }
+            if (_pointerIndex < 0) { _pointerIndex = _looping ? Count - 1 : 0; }
             
             _navigateSound.Play();
             SelectNext(_pointerIndex);
@@ -100,10 +100,10 @@ public abstract class Navigator(float holdDownTime, bool continuous = true, bool
             _lastIndex = _pointerIndex; // set new last index
             _keyPressed = true;
         }
-        else if (AreAnyKeysPressed(increaseIndexKeys) && !_keyPressed)
+        else if (AreAnyKeysPressed(_increaseIndexKeys) && !_keyPressed)
         {
             // if we are on last element, dont do anything unless looping
-            if (_lastIndex == Count() - 1 && !_looping)
+            if (_lastIndex == Count - 1 && !_looping)
             {
                 NavigatorExit?.Invoke(true);
                 return;
@@ -112,7 +112,7 @@ public abstract class Navigator(float holdDownTime, bool continuous = true, bool
             
             _pointerIndex++;
             // adjust pointerIndex depening on looping
-            if (_pointerIndex >= Count()) { _pointerIndex = _looping ? 0 : Count() - 1; }
+            if (_pointerIndex >= Count) { _pointerIndex = _looping ? 0 : Count - 1; }
             
             _navigateSound.Play();
             SelectNext(_pointerIndex);
@@ -173,9 +173,9 @@ public abstract class Navigator(float holdDownTime, bool continuous = true, bool
         _pointerIndex = index;
         _lastIndex = _pointerIndex;
         
-        if (index >= Count())
+        if (index >= Count)
         {
-            _pointerIndex = Count() - 1;
+            _pointerIndex = Count - 1;
             _lastIndex = _pointerIndex;
         }
 

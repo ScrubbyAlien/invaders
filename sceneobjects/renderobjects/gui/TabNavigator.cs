@@ -4,15 +4,12 @@ public sealed class TabNavigator(bool continuous = true, bool looping = true, bo
 {
     private readonly List<INavigatable> _tabs = new();
     private readonly List<Action> _actions = new();
-    
-    protected override int Count()
-    {
-        return _tabs.Count();
-    }
+
+    protected override int Count => _tabs.Count;
 
     protected override void Initialize()
     {
-        if (Count() > 0)
+        if (Count > 0)
         {
             _tabs[0].Activate();
             _actions[0].Invoke();
@@ -29,7 +26,7 @@ public sealed class TabNavigator(bool continuous = true, bool looping = true, bo
     
     protected override void SelectNext(int pointer)
     {
-        if (Count() > 0)
+        if (Count > 0)
         {
             ActivateTab(pointer);
         }
@@ -65,10 +62,7 @@ public sealed class TabNavigator(bool continuous = true, bool looping = true, bo
 
     public override void EnableNavigator()
     {
-        PointerAction((pointer) =>
-        {
-            ActivateTab(pointer);
-        });
+        PointerAction(p => ActivateTab(p));
     }
 
     public override void DisableNavigator()

@@ -49,12 +49,12 @@ public sealed class TextInputGUI : TextGUI
         else _enterPressed = false;
         
         Position = _positionCalculator(this);
-        Vector2f _caretPosition = new Vector2f(Position.X + Bounds.Width + 4, Position.Y - 5);
-        _caret.Position = _caretPosition;
+        Vector2f caretPosition = new Vector2f(Position.X + Bounds.Width + 4, Position.Y - 5);
+        _caret.Position = caretPosition;
         if (text.DisplayedString.Length == 0)
         {
             FloatRect glyphBounds = text.Font.GetGlyph('|', text.CharacterSize, false, 0).Bounds;
-            _caret.Position = _caretPosition + new Vector2f(-glyphBounds.Width / 2f, -glyphBounds.Height / 2f);
+            _caret.Position = caretPosition + new Vector2f(-glyphBounds.Width*Scale / 2f, -glyphBounds.Height / 2f);
         }
     }
 
@@ -80,7 +80,10 @@ public sealed class TextInputGUI : TextGUI
         string display = text.DisplayedString;
         if (display.Length > 0)
         {
-            text.DisplayedString = display.Substring(0, display.Length - 1);
+            // extract the range from index zero up until and including the second to last index
+            // effectively removing the last character from the range
+            // https://learn.microsoft.com/en-us/dotnet/csharp/tutorials/ranges-indexes
+            text.DisplayedString = display[0..^1];
         }
     }
     

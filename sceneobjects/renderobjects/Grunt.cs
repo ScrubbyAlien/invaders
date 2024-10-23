@@ -1,4 +1,3 @@
-using invaders.enums;
 using SFML.System;
 using static invaders.Utility;
 
@@ -38,15 +37,14 @@ public sealed class Grunt : AbstractEnemy
     {
         base.Update(deltaTime);
 
-        if (!WillDie)
+        if (WillDie) return;
+        
+        if (Position.Y > Settings.TopGuiHeight) _fireTimer += deltaTime;
+        if (_fireTimer >= _timeUntilFire)
         {
-            if (Position.Y > Settings.TopGuiHeight) _fireTimer += deltaTime;
-            if (_fireTimer >= _timeUntilFire)
-            {
-                Shoot("grunt");
-                _fireTimer = 0;
-                _timeUntilFire = GetNewFireTime();
-            }
+            Shoot("grunt");
+            _fireTimer = 0;
+            _timeUntilFire = GetNewFireTime();
         }
     }
 
@@ -56,9 +54,9 @@ public sealed class Grunt : AbstractEnemy
         return (float)(1 + new Random().NextDouble() * 6 - mod);
     }
 
-    private Animation.FrameRenderer[] idleFrames =
+    private readonly Animation.FrameRenderer[] idleFrames =
     [
         BasicFrameRenderer(TextureRects["grunt1"]),
-        BasicFrameRenderer(TextureRects["grunt2"]),
+        BasicFrameRenderer(TextureRects["grunt2"])
     ];
 }

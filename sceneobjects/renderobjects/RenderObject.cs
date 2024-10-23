@@ -7,18 +7,15 @@ namespace invaders.sceneobjects.renderobjects;
 public abstract class RenderObject : SceneObject
 {
     protected readonly Sprite sprite = new();
-    protected readonly string textureName;
     public const float Scale = 4;
     protected readonly Animator animator;
-    public int zIndex;
+    protected int zIndex;
     private bool _hidden;
     public bool Hidden => _hidden;
-    protected CollisionLayer layer = CollisionLayer.None;
 
-    public RenderObject(string textureName, IntRect initRect, float scale)
+    protected RenderObject(string textureName, IntRect initRect, float scale)
     {
         animator = new(this);
-        this.textureName = textureName;
         if (initRect.Width != 0) sprite.Texture = AssetManager.LoadTexture(textureName);
         sprite.TextureRect = initRect;
         sprite.Scale = new Vector2f(scale, scale); // scale is constructor parameter so it can be changed by children
@@ -32,11 +29,7 @@ public abstract class RenderObject : SceneObject
 
     public virtual FloatRect Bounds => sprite.GetGlobalBounds();
 
-    public virtual CollisionLayer Layer
-    {
-        get => layer;
-        set => layer = value;
-    }
+    public virtual CollisionLayer Layer { get; set; } = CollisionLayer.None;
 
     public override void Update(float deltaTime)
     {

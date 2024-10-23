@@ -35,14 +35,6 @@ public static class Utility
             (Program.ScreenHeight - bounds.Height) / 2f
         ) + offset;
     }
-
-    public static Vector2f BottomRightOfScreen(FloatRect bounds, Vector2f offset = new())
-    {
-        return new Vector2f(
-            Program.ScreenWidth - bounds.Width,
-            Program.ScreenHeight - bounds.Height
-        ) + offset;
-    }
     
     // Vector2f extension methods borrowed from Collision class from lab project breakout
     public static Vector2f Normalized(this Vector2f v)
@@ -103,7 +95,7 @@ public static class Utility
         { "guiBackgroundRight", new(84, 81, 44, 24)},
         { "guiBackgroundMiddle", new(0, 104, 96, 24)},
         { "blackSquare", new (20, 114, 1, 1)},
-        { "whiteSquare", new (9, 27, 1, 1) },
+        { "whiteSquare", new (9, 27, 1, 1) }
     };
 }
 
@@ -123,7 +115,7 @@ public class Animatable(RenderObject i, Drawable d, Animator a)
         get
         {
             if (Drawable is Sprite sprite) return sprite;
-            else throw new Exception($"animatable of {nameof(Instance)} does not animate Sprite");
+            throw new Exception($"animatable of {nameof(Instance)} does not animate Sprite");
         }
     }
     public Text Text 
@@ -131,7 +123,7 @@ public class Animatable(RenderObject i, Drawable d, Animator a)
         get
         {
             if (Drawable is Text text) return text;
-            else throw new Exception($"animatable of {nameof(Instance)} does not animate Text");
+            throw new Exception($"animatable of {nameof(Instance)} does not animate Text");
         }
     }
 

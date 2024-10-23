@@ -7,14 +7,9 @@ public abstract class SceneObject
     private readonly HashSet<SceneObjectTag> _tags = new();
     public bool Dead = false;
     public bool DontDestroyOnClear = false;
-    private bool _initialized;
-    public bool Initialized => _initialized;
+    public bool Initialized { get; private set; }
     private bool _paused;
-
-    public virtual bool Active
-    {
-        get => !_paused;
-    }
+    public virtual bool Active => !_paused;
 
     /// <summary>
     /// Any functionality that requires references to other entities should be called from Initialize,
@@ -26,7 +21,7 @@ public abstract class SceneObject
     {
         Initialize();
         _paused = HasTag(SceneObjectTag.PauseMenuItem);
-        _initialized = true;
+        Initialized = true;
     }
 
     public virtual void Destroy() { }

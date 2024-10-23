@@ -15,9 +15,8 @@ internal static class Program
         using (RenderWindow window = new RenderWindow(new VideoMode(ScreenWidth, ScreenHeight), "Invaders"))
         {
             // ReSharper disable once AccessToDisposedClosure
-            window.Closed += (o, e) => window.Close();
+            window.Closed += (_, _) => window.Close();
             window.SetFramerateLimit(Settings.FrameLimit);
-            
             
             Clock clock = new();
             LevelManager.Instantiate();

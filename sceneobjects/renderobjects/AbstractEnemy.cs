@@ -13,9 +13,9 @@ public abstract class AbstractEnemy : Actor
     protected int touchedBottom;
     private bool _blinking;
 
-    private static List<string> _powerUps = new List<string>();
+    private static readonly List<string> _powerUps = new();
 
-    private Dictionary<int, float> _speedByLevel = new()
+    private static readonly Dictionary<int, float> _speedByLevel = new()
     {
         {-1, 50f},
         {0, 20f},
@@ -24,10 +24,10 @@ public abstract class AbstractEnemy : Actor
         {3, 30f},
         {4, 35f},
         {5, 35f},
-        {6, 40f},
+        {6, 40f}
     };
 
-    public AbstractEnemy(string textureName, IntRect initRect, float scale) : 
+    protected AbstractEnemy(string textureName, IntRect initRect, float scale) : 
            base(textureName, initRect, scale)
     {
         explosionSound.Volume = 25;
@@ -71,7 +71,7 @@ public abstract class AbstractEnemy : Actor
 
     public override void Destroy()
     {
-        int randomIndex = new Random().Next(_powerUps.Count());
+        int randomIndex = new Random().Next(_powerUps.Count);
         string powerUp = _powerUps[randomIndex];
         
         if (new Random().NextSingle() < powerUpSpawnChance)
@@ -96,15 +96,14 @@ public abstract class AbstractEnemy : Actor
 
     protected virtual void Move(float deltaTime)
     {
-        if (!WillDie)
-        {
-            Vector2f velocity = new Vector2f(horizontalSpeed, GetVerticalSpeed());
-            TryMoveWithinBounds(velocity * deltaTime, Settings.MarginSide, 0);
-        }
+        if (WillDie) return;
+        
+        Vector2f velocity = new Vector2f(horizontalSpeed, GetVerticalSpeed());
+        TryMoveWithinBounds(velocity * deltaTime, Settings.MarginSide, 0);
     }
     
     
-    protected void Reverse()
+    private void Reverse()
     {
         horizontalSpeed = -horizontalSpeed;
     }
@@ -129,19 +128,17 @@ public abstract class AbstractEnemy : Actor
                 adjustedPos.X = Program.ScreenWidth - Bounds.Width - Settings.MarginSide;
                 Reverse();
                 break;
+            default: return;
         }
     }
 
     protected float GetVerticalSpeed()
     {
-        if (_manager != null && _speedByLevel.ContainsKey(_manager.CurrentAssault))
+        if (_manager != null && _speedByLevel.TryGetValue(_manager.CurrentAssault, out float speed))
         {
-            return _speedByLevel[_manager.CurrentAssault] + touchedBottom * 3;
+            return speed + touchedBottom * 3;
         }
-        else
-        {
-            return _speedByLevel[-1] + touchedBottom * 3;
-        }
+        return _speedByLevel[-1] + touchedBottom * 3;
     }
 
     public override void HitByBullet(Bullet bullet)
@@ -152,12 +149,16 @@ public abstract class AbstractEnemy : Actor
     protected override void TakeDamage(int damage)
     {
         currentHealth -= damage;
-        if (currentHealth > 0)
+        switch (currentHealth)
         {
-            animator.PlayAnimation("blink", true);
-            _blinking = true;
+            case > 0:
+                animator.PlayAnimation("blink", true);
+                _blinking = true;
+                break;
+            case <= 0:
+                Die();
+                break;
         }
-        if (currentHealth <= 0) Die();
     }
 
     protected override void Die()

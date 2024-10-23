@@ -12,7 +12,7 @@ public sealed class ButtonNavigator(bool continuous = true, bool looping = true,
     
     private static readonly Keyboard.Key[] _selectKeys = [Enter, Space];
 
-    private Sound _clickSound = AssetManager.LoadSound("click1");
+    private readonly Sound _clickSound = AssetManager.LoadSound("click1");
 
     
     protected override List<Keyboard.Key> _allKeys
@@ -25,14 +25,11 @@ public sealed class ButtonNavigator(bool continuous = true, bool looping = true,
         }
     }
 
-    protected override int Count()
-    {
-        return _buttons.Count();
-    }
+    protected override int Count => _buttons.Count;
 
     protected override void Initialize()
     {
-        if (Active && _buttons.Count() > 0)
+        if (Active && _buttons.Any())
         {
             PointerAction(p => _buttons[p].Select());
         }
@@ -96,13 +93,11 @@ public sealed class ButtonNavigator(bool continuous = true, bool looping = true,
 
     public void AddButton(IClickable button, Action listener)
     {
-        if (!_buttons.Contains(button))
-        {
-            button.Activate();
-            _buttons.Add(button);
-            button.Clicked += listener;
-            _listeners.Add(listener); // save listeners on same index for unsubbing in Destroy
-        }
+        if (_buttons.Contains(button)) return;
+        button.Activate();
+        _buttons.Add(button);
+        button.Clicked += listener;
+        _listeners.Add(listener); // save listeners on same index for unsubbing in Destroy
     }
 
     public override void SetIndex(int index)

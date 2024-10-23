@@ -13,9 +13,9 @@ public class Juggernaut : AbstractEnemy
     private float _timeUntilFire;
     private float _fireTimer;
     private (bool left, bool right) _availableHands = (true, true);
-    private readonly Sprite _leftHand = new Sprite();
-    private readonly Sprite _rightHand = new Sprite();
-    private readonly float _handRecoveryTime = 1f;
+    private readonly Sprite _leftHand = new();
+    private readonly Sprite _rightHand = new();
+    private const float _handRecoveryTime = 1f;
     private float _leftHandTimer;
     private float _rightHandTimer;
     private bool _lastShotLeftHand;
@@ -54,56 +54,55 @@ public class Juggernaut : AbstractEnemy
     public override void Update(float deltaTime)
     {
         base.Update(deltaTime);
+
+        if (WillDie) return;
         
-        if (!WillDie)
+        if (Position.Y < Settings.TopGuiHeight) return;
+            
+        _fireTimer += deltaTime; 
+            
+        if (_fireTimer >= _timeUntilFire)
         {
-            if (Position.Y < Settings.TopGuiHeight) return;
-            
-            _fireTimer += deltaTime; 
-            
-            if (_fireTimer >= _timeUntilFire)
+            if (!_lastShotLeftHand)
             {
-                if (!_lastShotLeftHand)
-                {
-                    _leftHandTimer = 0;
-                    _availableHands.left = false;
-                    _lastShotLeftHand = true;
-                    ShootHand(true);
-                }
-                else
-                {
-                    _rightHandTimer = 0;
-                    _availableHands.right = false;
-                    _lastShotLeftHand = false;
-                    ShootHand(false);
-                }
-                _fireTimer = 0;
-                _timeUntilFire = GetNewFireTime();
-            }
-
-            if (!_availableHands.left) _leftHandTimer += deltaTime;
-            if (!_availableHands.right) _rightHandTimer += deltaTime;
-
-            if (_leftHandTimer >= _handRecoveryTime)
-            {
-                _availableHands.left = true;
                 _leftHandTimer = 0;
+                _availableHands.left = false;
+                _lastShotLeftHand = true;
+                ShootHand(true);
             }
-            if (_rightHandTimer >= _handRecoveryTime)
+            else
             {
-                _availableHands.right = true;
                 _rightHandTimer = 0;
+                _availableHands.right = false;
+                _lastShotLeftHand = false;
+                ShootHand(false);
             }
+            _fireTimer = 0;
+            _timeUntilFire = GetNewFireTime();
+        }
+
+        if (!_availableHands.left) _leftHandTimer += deltaTime;
+        if (!_availableHands.right) _rightHandTimer += deltaTime;
+
+        if (_leftHandTimer >= _handRecoveryTime)
+        {
+            _availableHands.left = true;
+            _leftHandTimer = 0;
+        }
+        if (_rightHandTimer >= _handRecoveryTime)
+        {
+            _availableHands.right = true;
+            _rightHandTimer = 0;
         }
     }
 
     private void ShootHand(bool left)
     {
         Bullet bullet;
-        if (left) bullet = new("juggernautLeft", bulletSpeed, bulletDamage);
-        else bullet = new("juggernautRight", bulletSpeed, bulletDamage);
-        if (left) bullet.Position = bulletOrigin;
-        else bullet.Position = bulletOriginRight;
+        bullet = left
+            ? new("juggernautLeft", bulletSpeed, bulletDamage)
+            : new("juggernautRight", bulletSpeed, bulletDamage);
+        bullet.Position = left ? bulletOrigin : bulletOriginRight;
         bullet.Layer = CollisionLayer.Enemy;
         Scene.QueueSpawn(bullet);
         bulletSoundEffect.Play();
@@ -125,12 +124,12 @@ public class Juggernaut : AbstractEnemy
         }
     }
 
-    private float GetNewFireTime()
+    private static float GetNewFireTime()
     {
         return 1.3f;
     }
 
-    private Animation.FrameRenderer[] idleFrames = 
+    private readonly Animation.FrameRenderer[] idleFrames = 
     [
         (animatable, target) =>
         {

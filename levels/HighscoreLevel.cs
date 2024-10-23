@@ -7,7 +7,7 @@ namespace invaders.levels;
 
 public class HighscoreLevel() : Level("highscores")
 {
-    private List<TextGUI> _loadedScores = new();
+    private readonly List<TextGUI> _loadedScores = new();
     
     protected override void LoadObjects()
     {
@@ -72,8 +72,8 @@ public class HighscoreLevel() : Level("highscores")
         SectionSelector.Section tabs = new SectionSelector.Section("tabs");
         SectionSelector.Section back = new SectionSelector.Section("back");
         
-        scoreBoardSelectTabs.OrthogonalExit += (down) => { if (down) selector.ActivateSection("back"); };
-        bottomButtons.OrthogonalExit += (down) => { if (!down) selector.ActivateSection("tabs"); };
+        scoreBoardSelectTabs.OrthogonalExit += down => { if (down) selector.ActivateSection("back"); };
+        bottomButtons.OrthogonalExit += down => { if (!down) selector.ActivateSection("tabs"); };
         
         // navigators handle enabling and disabling of their INavigatables
         tabs.AddSectionObject(scoreBoardSelectTabs);
@@ -92,7 +92,7 @@ public class HighscoreLevel() : Level("highscores")
 
     private void DisplayScores(Dictionary<string, int> scores)
     {
-        Scene.QueueDestroy(_loadedScores.Select(t => t as SceneObject).ToList());
+        Scene.QueueDestroy(_loadedScores.Select(t => (SceneObject)t).ToList());
         _loadedScores.Clear();
         
         
@@ -130,10 +130,10 @@ public class HighscoreLevel() : Level("highscores")
         }
         
         // we take the first 30 texts so we only display the first 10 entries since each entry has three texts
-        Scene.QueueSpawn(_loadedScores.Take(30).Select(t => t as SceneObject).ToList());
+        Scene.QueueSpawn(_loadedScores.Take(30).Select(t => (SceneObject)t).ToList());
     }
     
-    private async Task<Dictionary<string, int>> LoadScores(bool endless)
+    private static async Task<Dictionary<string, int>> LoadScores(bool endless)
     {
         ScoresSaveObject s = await SaveManager.LoadSave<ScoresSaveObject>();
         Dictionary<string, int> scores = endless ? s.EndlessScores : s.Scores;

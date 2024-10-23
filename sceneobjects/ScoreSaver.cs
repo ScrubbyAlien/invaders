@@ -32,7 +32,6 @@ public sealed class ScoreSaver : SceneObject
                              " \n" +
                              "Well done pilot!\n" +
                              "What is your name?");
-            _message.Position = MiddleOfScreen(_message.Bounds, new Vector2f(0, -140));
         }
         else
         {
@@ -41,9 +40,9 @@ public sealed class ScoreSaver : SceneObject
                              " \n" +
                              "Valiant effort pilot!\n" +
                              "What is your name?");
-            _message.Position = MiddleOfScreen(_message.Bounds, new Vector2f(0, -140));
-
         }
+        _message.Position = MiddleOfScreen(_message.Bounds, new Vector2f(0, -140));
+
     }
 
     private void SaveScore(object? _, string name)
@@ -63,9 +62,13 @@ public sealed class ScoreSaver : SceneObject
         // remove any preexisting warnings
         Scene.FindAllByType<FadingTextGUI>().ForEach(o => Scene.QueueDestroy(o));
         
-        FadingTextGUI fadingWarning = new FadingTextGUI(2f, "Another pilot with that\nname already exists", 30);
+        FadingTextGUI fadingWarning = new FadingTextGUI(
+            2f, 
+            "Another pilot with that\nname already exists", 
+            30,
+            new Vector2f(0, 10)
+            );
         fadingWarning.Position = MiddleOfScreen(fadingWarning.Bounds, new Vector2f(0, 170));
-        fadingWarning.SetDrift(new Vector2f(0, 1) * 10);
         Scene.QueueSpawn(fadingWarning);
     }
 }

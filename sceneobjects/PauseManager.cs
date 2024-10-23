@@ -11,10 +11,8 @@ public sealed class PauseManager(Keyboard.Key pauseKey) : SceneObject
     private bool _isPaused;
     private readonly Keyboard.Key _pauseKey = pauseKey;
 
-    public override bool Active
-    {
-        get => true; // you can't pause the pause manager
-    }
+    // you can't pause the pause manager
+    public override bool Active { get; } = true;
 
     protected override void Initialize()
     {

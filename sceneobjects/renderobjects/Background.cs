@@ -8,8 +8,8 @@ public sealed class Background : RenderObject
 {
     private const float StarDensity = 0.0002f;
 
-    private readonly Dictionary<Vector2f, string> StarMap =  new();
-    private int _seed;
+    private readonly Dictionary<Vector2f, string> _starMap =  new();
+    private readonly int _seed;
     private float _scroll;
     private float _scrollSpeed = Settings.AmbientScrollInLevel;
     private float _targetScrollSpeed = Settings.AmbientScrollInLevel;
@@ -26,7 +26,6 @@ public sealed class Background : RenderObject
         DontDestroyOnClear = true;
     }
     public Background(int seed) : this() { _seed = seed; }
-    public Background(int seed, float scroll) : this(seed) { _scroll = scroll; }
 
     protected override void Initialize()
     {
@@ -58,7 +57,7 @@ public sealed class Background : RenderObject
 
     public override void Render(RenderTarget target)
     {
-        foreach (KeyValuePair<Vector2f,string> star in StarMap)
+        foreach (KeyValuePair<Vector2f,string> star in _starMap)
         {
             float y = (star.Key.Y + _scroll) % Program.ScreenHeight;
             sprite.Position = new Vector2f(star.Key.X, y);
@@ -78,7 +77,7 @@ public sealed class Background : RenderObject
         Random random = new Random();
         if (_seed != 0) random = new Random(_seed);
         
-        StarMap.Clear();
+        _starMap.Clear();
         
         for (int i = 0; i < Program.ScreenHeight - TextureRects["largestStar"].Height; i++)
         {
@@ -86,7 +85,7 @@ public sealed class Background : RenderObject
             {
                 if (random.NextDouble() < StarDensity)
                 {
-                    StarMap[new Vector2f(j, i)] = random.Next(10) switch
+                    _starMap[new Vector2f(j, i)] = random.Next(10) switch
                     {
                         0 => "smallStar",
                         1 => "smallStar",

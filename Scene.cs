@@ -48,14 +48,12 @@ public static class Scene
 
     private static void ProcessLoadLevel()
     {
-        if (_nextLevel != "")
-        {
-            Clear();
-            List<SceneObject> initialLevelObjects = LevelManager.LoadLevel(_nextLevel);
-            QueueSpawn(initialLevelObjects);
-            LevelLoaded?.Invoke();
-            _nextLevel = "";
-        }
+        if (_nextLevel == "") return;
+        Clear();
+        List<SceneObject> initialLevelObjects = LevelManager.LoadLevel(_nextLevel);
+        QueueSpawn(initialLevelObjects);
+        LevelLoaded?.Invoke();
+        _nextLevel = "";
     }
     
     public static void QueueSpawn(SceneObject o) { _spawnQueue.Add(o); }
@@ -88,7 +86,7 @@ public static class Scene
         _sceneObjects.ForEach(o => { if(!o.Dead && o.Active) o.Update(deltaTime); });
     }
     
-    public static void Clear()
+    private static void Clear()
     {
         _sceneObjects.ForEach(o =>
         {
@@ -97,7 +95,7 @@ public static class Scene
         _sceneObjects = _sceneObjects.Where(o => o.DontDestroyOnClear).ToList();
     }
 
-    public static void Bury()
+    private static void Bury()
     {
         _sceneObjects.ForEach(
             _sceneObject =>
@@ -236,11 +234,11 @@ public static class Scene
 
 // solution for dynamically invoking method on an instance inspired by solution here
 // https://stackoverflow.com/questions/6469027/call-methods-using-names-in-c-sharp
-public class DeferredMethodCall(Object instance, string methodName, object[] arguments)
+public class DeferredMethodCall(object instance, string methodName, object[] arguments)
 {
-    private Object _instance = instance;
-    private string _methodName = methodName;
-    private object[] _arguments = arguments;
+    private readonly object _instance = instance;
+    private readonly string _methodName = methodName;
+    private readonly object[] _arguments = arguments;
 
     public void Invoke()
     {

@@ -1,6 +1,4 @@
-using invaders.enums;
 using SFML.System;
-using invaders.sceneobjects;
 using invaders.sceneobjects.renderobjects.gui;
 using static invaders.Utility;
 

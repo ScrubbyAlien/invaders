@@ -1,6 +1,6 @@
 namespace invaders.sceneobjects.renderobjects.gui;
 
-public class SectionSelector() : SceneObject
+public class SectionSelector : SceneObject
 {
     private readonly List<Section> _sections = new();
 
@@ -17,13 +17,10 @@ public class SectionSelector() : SceneObject
     
     public class Section(string name)
     {
-        public string Name = name;
-        private List<ISectionable> _section = new();
+        public readonly string Name = name;
+        private readonly List<ISectionable> _section = new();
         public void AddSectionObject(ISectionable sectionable) => _section.Add(sectionable);
-        public void SetInactive() => _section.ForEach(s =>
-        {
-            s.SetInactiveSelection();
-        });
+        public void SetInactive() => _section.ForEach(s => s.SetInactiveSelection());
         public void SetActive() => _section.ForEach(s => s.SetActiveSelection());
     }
 }

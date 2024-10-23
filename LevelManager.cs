@@ -5,14 +5,14 @@ namespace invaders;
 
 public static class LevelManager
 {
-    private readonly static List<Level> _levels = new();
+    private static readonly List<Level> _levels = new();
 
     public static void Instantiate()
     {
         // get all classes in the current assembly
         // borrowed from example 1 https://www.iditect.com/program-example/c--how-to-get-all-classes-within-a-namespace.html
         Type[] levelTypes = Assembly.GetExecutingAssembly().GetTypes()
-            .Where(t => String.Equals(t.Namespace, "invaders.levels"))
+            .Where(t => string.Equals(t.Namespace, "invaders.levels"))
             .ToArray();
 
         // runtime constructor calls borrowed from question at
@@ -21,8 +21,8 @@ public static class LevelManager
         {
             // <>c appears when lambda expressions exist in the class definition
             // it crashes if we try to call it's constructor so we ignore it
-            if (level.Name.Contains("<")) continue; 
-            Level? l = (Level?) level.GetConstructor(Type.EmptyTypes)?.Invoke(new object[0]);
+            if (level.Name.Contains('<')) continue; 
+            Level? l = (Level?) level.GetConstructor(Type.EmptyTypes)?.Invoke(Array.Empty<object>());
             if (l != null) _levels.Add(l);
         }
     }

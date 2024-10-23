@@ -14,7 +14,7 @@ public abstract class Invasion : SceneObject
     public virtual bool InTransition => inEndLevel;
     
     // entity constructor dictionary system borrowed from lab project 4
-    public static readonly Dictionary<char, Func<AbstractEnemy>> Constructors = new()
+    protected static readonly Dictionary<char, Func<AbstractEnemy>> Constructors = new()
     {
         { 'g', () => new Grunt() },
         { 'r', () => new Runner() },
@@ -39,20 +39,19 @@ public abstract class Invasion : SceneObject
 
     public override void Update(float deltaTime)
     {
-        if (inEndLevel)
+        if (!inEndLevel) return;
+        
+        if (AreAnyKeysPressed([Keyboard.Key.Space]))
         {
-            if (AreAnyKeysPressed([Keyboard.Key.Space]))
-            {
-                if (!_spaceReleased) return;
-                GlobalEventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInLevel, 1f);
+            if (!_spaceReleased) return;
+            GlobalEventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInLevel, 1f);
                 
-                Scene.LoadLevel("scoresave");
-            }
-            else _spaceReleased = true;
+            Scene.LoadLevel("scoresave");
         }
+        else _spaceReleased = true;
     }
 
-    protected void PlayerDied()
+    private void PlayerDied()
     {
         inEndLevel = true; 
         

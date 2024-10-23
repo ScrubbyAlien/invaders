@@ -1,4 +1,3 @@
-using invaders.enums;
 using SFML.System;
 using static invaders.Utility;
 
@@ -41,35 +40,34 @@ public sealed class Runner : AbstractEnemy
     {
         base.Update(deltaTime);
 
-        if (!WillDie)
+        if (WillDie) return;
+        
+        if (Position.Y > Settings.TopGuiHeight) _fireTimer += deltaTime;
+        if (_fireTimer >= _timeUntilFire)
         {
-            if (Position.Y > Settings.TopGuiHeight) _fireTimer += deltaTime;
-            if (_fireTimer >= _timeUntilFire)
+            Shoot("runner");
+            _burstIndex++;
+            if (_burstIndex < _burstLength)
             {
-                Shoot("runner");
-                _burstIndex++;
-                if (_burstIndex < _burstLength)
-                {
-                    _timeUntilFire = 0.2f;
-                }
-                else
-                {
-                    _timeUntilFire = GetNewFireTime();
-                    _burstIndex = 0;
-                }
-                _fireTimer = 0;
+                _timeUntilFire = 0.2f;
             }
+            else
+            {
+                _timeUntilFire = GetNewFireTime();
+                _burstIndex = 0;
+            }
+            _fireTimer = 0;
         }
     }
 
-    private float GetNewFireTime()
+    private static float GetNewFireTime()
     {
         return 2f + new Random().NextSingle() * 2;
     }
     
-    private Animation.FrameRenderer[] idleFrames =
+    private readonly Animation.FrameRenderer[] idleFrames =
     [
         BasicFrameRenderer(TextureRects["runner1"]),
-        BasicFrameRenderer(TextureRects["runner2"]),
+        BasicFrameRenderer(TextureRects["runner2"])
     ];
 }

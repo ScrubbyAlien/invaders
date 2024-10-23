@@ -10,9 +10,9 @@ public sealed class PowerUp : RenderObject
     private readonly Types _type;
     public Types PowerUpType => _type;
     private Background? _background;
-    private readonly Sound blip = AssetManager.LoadSound("powerup");
+    private readonly Sound _blip = AssetManager.LoadSound("powerup");
 
-    public static Dictionary<string, Types> StringToType = new()
+    public static readonly Dictionary<string, Types> StringToType = new()
     {
         {"triple", Types.TripleShot},
         {"health", Types.RepairShip},
@@ -37,7 +37,7 @@ public sealed class PowerUp : RenderObject
         }
         
         // if there is no invasion going on there shouldn't be any power ups on screen
-        if (Scene.FindAllByType<Invasion>().Count() == 0) Scene.QueueDestroy(this);
+        if (Scene.FindAllByType<Invasion>().Any()) Scene.QueueDestroy(this);
     }
 
     public override void Update(float deltaTime)
@@ -50,7 +50,7 @@ public sealed class PowerUp : RenderObject
 
     public Types Absorb()
     {
-        blip.Play();
+        _blip.Play();
         Scene.QueueDestroy(this);
         return _type;
     }

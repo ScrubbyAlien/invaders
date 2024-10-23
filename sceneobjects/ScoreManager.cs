@@ -1,7 +1,6 @@
 using invaders.enums;
 using invaders.sceneobjects.renderobjects;
 using invaders.sceneobjects.renderobjects.gui;
-using SFML.Graphics;
 using SFML.System;
 using static invaders.Utility;
 
@@ -18,13 +17,11 @@ public sealed class ScoreManager : SceneObject
     private readonly float _passiveScoreInterval;
     private readonly int _passiveScore;
 
-    private TextGUI _scoreText = new TextGUI("0");
-    private TextGUI _multiplierText = new TextGUI("x1", 8);
-    private SpriteGUI _multiplierBar = new SpriteGUI(TextureRects["multiplierBar"]);
+    private readonly TextGUI _scoreText = new("0");
+    private readonly TextGUI _multiplierText = new("x1", 8);
+    private readonly SpriteGUI _multiplierBar = new(TextureRects["multiplierBar"]);
     private SpriteGUI _middleGui = null!;
     private SpriteGUI _rightGui = null!;
-    
-    public int CurrentScore => _currentScore;
     
     public ScoreManager(int passiveScore = 0, float interval = 1)
     {
@@ -151,11 +148,10 @@ public sealed class ScoreManager : SceneObject
         return _rightGui.GetPositionInAvailableArea(new Vector2f(6.5f, 6.5f)); // it works here! makes no sense
     }
 
-    private void CreateFadingScoreText(float fadeTime, string text, uint size, Func<FadingTextGUI, Vector2f> positionFunc, Vector2f drift)
+    private static void CreateFadingScoreText(float fadeTime, string text, uint size, Func<FadingTextGUI, Vector2f> positionFunc, Vector2f drift)
     {
-        FadingTextGUI fadingScore = new FadingTextGUI(fadeTime, text, size);
+        FadingTextGUI fadingScore = new FadingTextGUI(fadeTime, text, size, drift);
         fadingScore.Position = positionFunc(fadingScore);
-        fadingScore.SetDrift(drift);
         Scene.QueueSpawn(fadingScore);
     }
     

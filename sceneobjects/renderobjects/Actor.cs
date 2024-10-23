@@ -29,12 +29,10 @@ public abstract class Actor : RenderObject
     protected bool inDeathAnimation => timeSinceDeath < deathAnimationLength && WillDie;
     protected float deathAnimationLength = 0f;
     protected float timeSinceDeath;
-    protected Sound explosionSound = AssetManager.LoadSound("explosion");
-    protected Sound hitSound = AssetManager.LoadSound("hit_sound");
+    protected Sound explosionSound { get; } = AssetManager.LoadSound("explosion");
+    protected Sound hitSound { get; } = AssetManager.LoadSound("hit_sound");
 
-    protected static readonly IntRect NoSprite = new(0, 0, 0, 0);
-
-    public Actor(string textureName, IntRect initRect, float scale) : base(textureName, initRect, scale) { }
+    protected Actor(string textureName, IntRect initRect, float scale) : base(textureName, initRect, scale) { }
 
     protected virtual Vector2f bulletOrigin => Position;
     protected virtual float bulletSpeed => 700f;
@@ -87,8 +85,7 @@ public abstract class Actor : RenderObject
     }
 
     public abstract void HitByBullet(Bullet bullet);
-
-    protected virtual void TakeDamage(int damage) {}
+    protected abstract void TakeDamage(int damage);
     
     protected virtual void Die()
     {
@@ -106,7 +103,7 @@ public abstract class Actor : RenderObject
         _bulletSoundEffect = AssetManager.LoadSound(name);
     }
 
-    protected Animation.FrameRenderer[] blinkFrames =
+    protected readonly Animation.FrameRenderer[] blinkFrames =
     [
         (_, _) => { },
         (animatable, target) =>
@@ -116,7 +113,7 @@ public abstract class Actor : RenderObject
         }
     ];
     
-    protected Animation.FrameRenderer[] explosionFrames =
+    protected readonly Animation.FrameRenderer[] explosionFrames =
     {
         (animatable, target) =>
         { // simulates explosion by randomly placing bullet sprites over the enemy rapidly

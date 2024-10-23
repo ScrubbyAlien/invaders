@@ -13,7 +13,7 @@ public sealed class Squid : AbstractEnemy
     private float _fireTimer;
     private float _bulletAmplitude => 500f + touchedBottom * 50;
     private const float _movementFrequency = 1f;
-    private float _movementPhase;
+    private readonly float _movementPhase;
     private const float _movementAmplitude = 100f;
     private float _timeAlive;
 
@@ -46,7 +46,7 @@ public sealed class Squid : AbstractEnemy
         base.Initialize();
     }
     
-    private float GetNewFireTime()
+    private static float GetNewFireTime()
     {
         return 3f + new Random().NextSingle() * 2;
     }
@@ -56,36 +56,34 @@ public sealed class Squid : AbstractEnemy
         _timeAlive += deltaTime;
         base.Update(deltaTime);
 
-        if (!WillDie)
+        if (WillDie) return;
+        
+        if (Position.Y > Settings.TopGuiHeight) _fireTimer += deltaTime;
+        if (_fireTimer >= _timeUntilFire)
         {
-            if (Position.Y > Settings.TopGuiHeight) _fireTimer += deltaTime;
-            if (_fireTimer >= _timeUntilFire)
-            {
-                Shoot("squid");
-                _fireTimer = 0;
-                _timeUntilFire = GetNewFireTime();
-            }
+            Shoot("squid");
+            _fireTimer = 0;
+            _timeUntilFire = GetNewFireTime();
         }
     }
 
     protected override void Move(float deltaTime)
     {
-        if (!WillDie)
-        {
-            Vector2f velocity = new Vector2f(
-                MathF.Sin(_movementFrequency * _timeAlive + _movementPhase) * _movementAmplitude,
-                GetVerticalSpeed()
-            );
-            
-            Position += velocity * deltaTime;
-            
-            if (Position.Y > Program.ScreenHeight)
-            {
-                Position = new Vector2f(Position.X, 0);
-                touchedBottom++;
-            }
-        }
+        if (WillDie) return;
         
+        Vector2f velocity = new Vector2f(
+            MathF.Sin(_movementFrequency * _timeAlive + _movementPhase) * _movementAmplitude,
+            GetVerticalSpeed()
+        );
+            
+        Position += velocity * deltaTime;
+            
+        if (Position.Y > Program.ScreenHeight)
+        {
+            Position = new Vector2f(Position.X, 0);
+            touchedBottom++;
+        }
+
     }
 
     private Func<float, float, Vector2f, Vector2f> SpecialShoot(bool left)
@@ -116,7 +114,7 @@ public sealed class Squid : AbstractEnemy
     private Animation.FrameRenderer[] idleFrames =
     [
         BasicFrameRenderer(TextureRects["squid1"]),
-        BasicFrameRenderer(TextureRects["squid2"]),
+        BasicFrameRenderer(TextureRects["squid2"])
     ];
 
 }

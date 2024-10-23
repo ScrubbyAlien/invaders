@@ -4,8 +4,11 @@ namespace invaders.sceneobjects.renderobjects.gui;
 
 public sealed class TextButtonGUI : TextGUI, IClickable
 {
+    private const float _darkGray = 50;
+    private const float _white = 255;
+    
     public event Action? Clicked;
-
+    
     public TextButtonGUI(string buttonDisplayText) : base(buttonDisplayText)
     {
         Deactivate();
@@ -36,18 +39,16 @@ public sealed class TextButtonGUI : TextGUI, IClickable
 
     public void Click() { Clicked?.Invoke(); }
 
-    private Animation.FrameRenderer[] selectedFrames =
+    private readonly Animation.FrameRenderer[] selectedFrames =
     [
         (animatable, target) =>
         {
-            float darkGray = 50;
-            float white = 255;
             float progress = animatable.Animator.FrameCount / 13f;
             progress %= MathF.PI; // resulting sin value should always be positive
-            byte lerp = (byte) MathF.Round(float.Lerp(white, darkGray, MathF.Sin(progress)));
+            byte lerp = (byte) MathF.Round(float.Lerp(_white, _darkGray, MathF.Sin(progress)));
             Color lerpedColor = new Color(lerp, lerp, lerp);
             animatable.Text.FillColor = lerpedColor;
             target.Draw(animatable.Text);
-        },
+        }
     ];
 }

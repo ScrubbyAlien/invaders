@@ -18,7 +18,7 @@ public class EndlessManager : Invasion
     private const float _lowestSpawnRate = 0.7f;
 
     // the order needs to be defined so we use list of tuples instead of dictionary
-    private List<(char, float)> enemyProbabilities = new()
+    private readonly List<(char, float)> enemyProbabilities = new()
     { // probability that each enemy should spawn every spawn tick, which happens every spawnRate seconds
         ('g', 0.8f),
         ('r', 0.07f),
@@ -27,7 +27,7 @@ public class EndlessManager : Invasion
     };
     
     private float _timeFromStart;
-    private TextGUI _timer = new TextGUI("");
+    private readonly TextGUI _timer = new("");
     
     protected override void Initialize()
     {
@@ -73,11 +73,11 @@ public class EndlessManager : Invasion
             _timer.SetText(GetTimeString(_timeFromStart));
             
             if (_timeFromStart >= _enemyRange * 30) _enemyRange++;
-            if (_enemyRange > enemyProbabilities.Count())
+            if (_enemyRange > enemyProbabilities.Count)
             {
                 // if all enemies have been added to the pool, we increase their probability of spawning instead
                 enemyProbabilities.ForEach(pair => pair.Item2 *= 1.10f);
-                _enemyRange = enemyProbabilities.Count();
+                _enemyRange = enemyProbabilities.Count;
             }
             
             _spawnTimer += deltaTime;
@@ -110,7 +110,7 @@ public class EndlessManager : Invasion
     /// </summary>
     /// <param name="time">a time in seconds</param>
     /// <returns></returns>
-    private string GetTimeString(float time)
+    private static string GetTimeString(float time)
     {
         float seconds = MathF.Floor(time % 60);
         float minutes = MathF.Floor(time / 60f);

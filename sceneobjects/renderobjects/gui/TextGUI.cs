@@ -7,7 +7,6 @@ public class TextGUI : GUI, INavigatable
 {
     protected readonly Text text = new();
     private readonly Alignment _alignment;
-    protected bool unavailable;
 
     public override Vector2f Position
     {
@@ -39,14 +38,12 @@ public class TextGUI : GUI, INavigatable
     public void Activate()
     {
         text.FillColor = Color.White;
-        unavailable = false;
     }
 
     public void Deactivate()
     {
         animator.StopAnimation();
         SetFillColor(new Color(80, 80, 80, 140));
-        unavailable = true;
     }
     
     public void SetText(string newText)
@@ -62,8 +59,7 @@ public class TextGUI : GUI, INavigatable
     }
 
     public void SetFillColor(Color color) => text.FillColor = color;
-    public void SetStyle(Text.Styles style) => text.Style = style;
-    public override Animatable GetAnimatable() => new Animatable(this, text, animator);
+    public override Animatable GetAnimatable() => new(this, text, animator);
 
     private void AlignText()
     {
@@ -80,13 +76,11 @@ public class TextGUI : GUI, INavigatable
         HashSet<char> charactersInText = new() { ' ' };
         foreach (char c in text.DisplayedString)
         {
-            if (charactersInText.Contains(c)) continue;
             charactersInText.Add(c);
         }
         foreach (char c in charactersInText)
         {
-            if (characterToWidth.ContainsKey(c)) continue;
-            characterToWidth.Add(c, text.Font.GetGlyph(c, text.CharacterSize, false, 0).Bounds.Width);
+            characterToWidth.TryAdd(c, text.Font.GetGlyph(c, text.CharacterSize, false, 0).Bounds.Width);
         }
         // calculate line lengths
         List<string> lines = text.DisplayedString.Split("\n").ToList();
@@ -130,7 +124,7 @@ public class TextGUI : GUI, INavigatable
         text.DisplayedString = String.Join("\n", lines);
     }
 
-    private Animation.FrameRenderer[] blinking =
+    private readonly Animation.FrameRenderer[] blinking =
     [
         (_, _) => { },
         (animatable, target) =>

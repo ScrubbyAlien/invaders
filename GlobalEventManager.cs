@@ -1,4 +1,3 @@
-using invaders.sceneobjects;
 using invaders.sceneobjects.renderobjects;
 
 namespace invaders;
@@ -10,7 +9,7 @@ public static class GlobalEventManager
         Scene.GlobalEvents += BroadcastEvents;
     }
     
-    public static void BroadcastEvents()
+    private static void BroadcastEvents()
     {
         BroadcastPlayerChangeHealth();
         BroadcastBackgroundSetScrollSpeed();
@@ -18,8 +17,8 @@ public static class GlobalEventManager
         BroadcastPlayerHit();
         BroadcastEnemyDeath();
     }
-    
-    public delegate void ValueChangeEvent<T>(T diff); // FIX: T should be value type
+
+    public delegate void ValueChangeEvent<T>(T diff);
     
     public static event ValueChangeEvent<int>? PlayerChangeHealth;
     private static int _playerHealthDiff;
@@ -75,7 +74,7 @@ public static class GlobalEventManager
     public delegate void EnemyEvent(AbstractEnemy enemy);
 
     public static event EnemyEvent? EnemyDeath;
-    private static List<AbstractEnemy> _deadEnemies = new();
+    private static readonly List<AbstractEnemy> _deadEnemies = new();
     public static void PublishEnemyDead(AbstractEnemy enemy) { _deadEnemies.Add(enemy); }
     private static void BroadcastEnemyDeath()
     {

@@ -10,9 +10,9 @@ namespace invaders;
 public class ConfirmationPrompt
 {
     
-    private readonly ButtonNavigator _yesOrNoMenu = new ButtonNavigator(false, false, true);
-    private readonly TextButtonGUI _yesButton = new TextButtonGUI("yes");
-    private readonly TextButtonGUI _noButton = new TextButtonGUI("no");
+    private readonly ButtonNavigator _yesOrNoMenu = new(false, false, true);
+    private readonly TextButtonGUI _yesButton = new("yes");
+    private readonly TextButtonGUI _noButton = new("no");
     private readonly List<SceneObject> _prompt = new();
 
     public ConfirmationPrompt(string message, Action yes, Action no)

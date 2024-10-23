@@ -5,6 +5,9 @@ namespace invaders.sceneobjects.renderobjects.gui;
 
 public class SpriteGUI : GUI
 {
+    private const float _transparant = 50;
+    private const float _opaque = 255;
+    
     private IntRect _availableArea;
     public IntRect AvailableArea
     {
@@ -56,23 +59,21 @@ public class SpriteGUI : GUI
         sprite.Color = color;
     }
     
-    private Animation.FrameRenderer[] pulsingFrames =
+    private readonly Animation.FrameRenderer[] pulsingFrames =
     [
         (animatable, target) =>
         {
-            float transparant = 50;
-            float opaque = 255;
             float progress = animatable.Animator.FrameCount / 5f;
             progress %= MathF.PI; // resulting sin value should always be positive
-            byte lerp = (byte) MathF.Round(float.Lerp(opaque, transparant, MathF.Sin(progress)));
+            byte lerp = (byte) MathF.Round(float.Lerp(_opaque, _transparant, MathF.Sin(progress)));
             Color c = animatable.Sprite.Color;
             Color lerped = new Color(c.R, c.G, c.B, lerp);
             animatable.Sprite.Color = lerped;
             target.Draw(animatable.Sprite);
-        },
+        }
     ];
 
-    private Animation.FrameRenderer[] opaqueFrames =
+    private readonly Animation.FrameRenderer[] opaqueFrames =
     [
         (animatable, target) =>
         {

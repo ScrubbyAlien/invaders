@@ -9,8 +9,8 @@ public sealed class WaveManager : Invasion
     
     private float _waveTimer;
     private int _currentWave;
-    private int _currentAssault;
-    public int CurrentAssault => _currentAssault;
+    public int CurrentAssault { get; private set; }
+
     public override bool InTransition => _inTransition || inEndLevel;
     
     private const float _transitionBuffer = 5f;
@@ -24,7 +24,7 @@ public sealed class WaveManager : Invasion
     {
         _waveTimer = 0;
         _currentWave = 0;
-        _currentAssault = -1;
+        CurrentAssault = -1;
         _inTransition = true;
         _transitionBufferTimer = 0;
     }
@@ -48,27 +48,26 @@ public sealed class WaveManager : Invasion
         {
             _waveTimer += deltaTime;
             
-            if (_currentWave == _assaults[_currentAssault].Waves.Count())
-            { // end of assault
-                if (!Scene.FindByType(out AbstractEnemy _))
+            if (_currentWave == _assaults[CurrentAssault].Waves.Count)
+            {
+                // end of assault
+                if (Scene.FindAllByType<AbstractEnemy>().Any()) return;
+                
+                if (CurrentAssault == _assaults.Count - 1)
                 {
-                    if (_currentAssault == _assaults.Count - 1)
-                    {
-                        EndLevel();
-                        return;
-                    }
-
-                    if (_currentAssault == _assaults.Count - 2)
-                    {
-                        MusicManager.ChangeMusic("finale");
-                    }
-                        
-                    StartTransition();
+                    EndLevel();
+                    return;
                 }
+                if (CurrentAssault == _assaults.Count - 2)
+                {
+                    MusicManager.ChangeMusic("finale");
+                }
+                        
+                StartTransition();
             }
             else
             {
-                Wave wave = _assaults[_currentAssault].Waves[_currentWave];
+                Wave wave = _assaults[CurrentAssault].Waves[_currentWave];
                 if (_waveTimer >= wave.Timer)
                 {
                     SpawnWave(wave);
@@ -94,19 +93,18 @@ public sealed class WaveManager : Invasion
             if (_transitionBufferTimer > _transitionBuffer / 2f)
             {
                 // should avoid out of bounds errors becuase StartTransition is not called after last assault
-                DrawText(_assaults[_currentAssault + 1].BeforeAssault, new Vector2f(0, -100));
+                DrawText(_assaults[CurrentAssault + 1].BeforeAssault, new Vector2f(0, -100));
             }
             if (_transitionBufferTimer >= _transitionBuffer)
             {
                 HideText();
                 _inTransition = false;
                 _currentWave = 0;
-                _currentAssault++;
+                CurrentAssault++;
             }
         }
     }
 
-    public void AddAssault(Assault assault) => _assaults.Add(assault);
     public void AddAssault(Assault[] assaults) => _assaults.AddRange(assaults);
     
     private void StartTransition()
@@ -117,7 +115,7 @@ public sealed class WaveManager : Invasion
         _scrollSpedUp = false;
         _scrollSlowedDown = false;
         
-        DrawText(_assaults[_currentAssault].AfterAssault, new Vector2f(0, -100));
+        DrawText(_assaults[CurrentAssault].AfterAssault, new Vector2f(0, -100));
     }
     
     private void EndLevel()
@@ -134,7 +132,7 @@ public sealed class WaveManager : Invasion
         GlobalEventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInTransition, 3f);
     }
     
-    public void SpawnWave(Wave wave)
+    private static void SpawnWave(Wave wave)
     {
         foreach (KeyValuePair<char,int> group in wave.Enemies)
         {
@@ -149,31 +147,29 @@ public sealed class WaveManager : Invasion
 
 public struct Wave(float timer)
 {
-    private Dictionary<char, int> _enemies = new();
     public float Timer = timer;
-    public Dictionary<char, int> Enemies => _enemies;
+    public Dictionary<char, int> Enemies { get; } = new();
 
     public Wave Group(char type, int number)
     {
-        _enemies.Add(type, number);
+        Enemies.Add(type, number);
         return this;
     }
 }
 
 public struct Assault(string[] assaultStrings)
 {
-    private List<Wave> _waves = new();
-    private string[] _assaultStrings = assaultStrings;
+    private readonly string[] _assaultStrings = assaultStrings;
     public string BeforeAssault => _assaultStrings[0];
     public string AfterAssault => _assaultStrings[1];
-    public List<Wave> Waves => _waves;
-        
+    public List<Wave> Waves { get; } = new();
+
     public Assault AddWave(Wave wave)
     {
-        _waves.Add(wave);
+        Waves.Add(wave);
         return this;
     }
 
-    public void AddWave(Wave[] waves) => _waves.AddRange(waves); 
+    public void AddWave(Wave[] waves) => Waves.AddRange(waves); 
 }
 

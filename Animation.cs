@@ -19,8 +19,6 @@ public sealed class Animation
     private readonly List<FrameRenderer> _frameRenderers = new();
     private float _frameTimer;
     private float _animationTimer;
-
-    public int CurrentFrame => _currentFrame;
     
     public Animation(string name, bool looping, float fps, float length, FrameRenderer[] frames)
     {
@@ -54,40 +52,34 @@ public sealed class Animation
 
     public void ProgressAnimation(float deltaTime)
     {
-        if (_playingAnimation)
-        {
-            _animationTimer += deltaTime;
-            _frameTimer += deltaTime;
+        if (!_playingAnimation) return;
+        
+        _animationTimer += deltaTime;
+        _frameTimer += deltaTime;
             
-            if (_frameTimer >= _framelength)
-            {
-                _currentFrame++;
-                _frameTimer = 0f;
+        if (_frameTimer >= _framelength)
+        {
+            _currentFrame++;
+            _frameTimer = 0f;
                 
-                FrameFinished?.Invoke(this);
-            }
-
-            if (_currentFrame == _frameRenderers.Count())
-            {
-                _currentFrame = 0;
-                _playingAnimation = _looping;
-            }
-
-            if (_animationLength != 0 && _animationTimer >= _animationLength)
-            {
-                _playingAnimation = false;
-                _animationTimer = 0f;
-            }
-            if (!_playingAnimation) AnimationFinished?.Invoke(this);
+            FrameFinished?.Invoke(this);
         }
+
+        if (_currentFrame == _frameRenderers.Count)
+        {
+            _currentFrame = 0;
+            _playingAnimation = _looping;
+        }
+
+        if (_animationLength != 0 && _animationTimer >= _animationLength)
+        {
+            _playingAnimation = false;
+            _animationTimer = 0f;
+        }
+        if (!_playingAnimation) AnimationFinished?.Invoke(this);
     }
 
-    public void AddFrame(FrameRenderer frame)
-    {
-        _frameRenderers.Add(frame);
-    }
-
-    public void AddFrames(FrameRenderer[] frames)
+    private void AddFrames(FrameRenderer[] frames)
     {
         _frameRenderers.AddRange(frames);
     }

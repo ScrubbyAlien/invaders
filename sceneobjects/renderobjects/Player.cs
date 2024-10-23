@@ -23,6 +23,7 @@ public sealed class Player : Actor
     private const float _fireRate = 0.5f;
     private const float _burstRate = 0.1f;
     private float _fireTimer;
+    private int _burstIndex;
     private int _burstLength
     {
         get
@@ -33,7 +34,6 @@ public sealed class Player : Actor
         }
     }
 
-    private int _burstIndex;
     
     // invincibility
     private const float _invicibilityWindow = 1f;
@@ -55,7 +55,7 @@ public sealed class Player : Actor
     {
         { PowerUp.Types.RepairShip, new SpriteGUI(TextureRects["healthPower"]) },
         { PowerUp.Types.ThrusterBoost, new SpriteGUI(TextureRects["speedPower"]) },
-        { PowerUp.Types.TripleShot, new SpriteGUI(TextureRects["triplePower"]) },
+        { PowerUp.Types.TripleShot, new SpriteGUI(TextureRects["triplePower"]) }
     };
     
     public Player() : base("invaders", TextureRects["player"], Scale)
@@ -67,8 +67,9 @@ public sealed class Player : Actor
         zIndex = 10;
         InitPosition = Position = new Vector2f(
             (Program.ScreenWidth - Bounds.Width) / 2,
-            (Program.ScreenHeight - 120)
+            Program.ScreenHeight - 120
         );
+        hitSound.PlayingOffset = Time.FromMilliseconds(350);
     }
 
     protected override Vector2f bulletOrigin => Position + new Vector2f(40, 24);
@@ -85,7 +86,7 @@ public sealed class Player : Actor
         base.Initialize();
         GlobalEventManager.PublishPlayerChangeHealth(maxHealth);
         animator.SetDefaultSprite(TextureRects["player"]);
-        Animation invincible = new Animation("invincible", true, 25, _invicibilityWindow, blinking);
+        Animation invincible = new Animation("invincible", true, 25, _invicibilityWindow, blinkFrames);
         Animation explode = new Animation("explode", true, 2, deathAnimationLength, explosionFrames);
         animator.AddAnimation(invincible);
         animator.AddAnimation(explode);
@@ -124,13 +125,18 @@ public sealed class Player : Actor
         bool left = AreAnyKeysPressed([Left, A]);
         bool up = AreAnyKeysPressed([Up, W]);
         bool down = AreAnyKeysPressed([Down, S]);
-        
-        if (right) newPos.X = 1;
-        if (left) newPos.X = -1;
-        if (right && left) newPos.X = 0;
-        if (up) newPos.Y = -1;
-        if (down) newPos.Y = 1;
-        if (up && down) newPos.Y = 0;
+
+        // XOR: if only one direction is held then move in that direction
+        newPos.X = (right ^ left) switch
+        {
+            true => 0,
+            false => right ? 1 : -1
+        };
+        newPos.Y = (up ^ down) switch
+        {
+            true => 0,
+            false => down ? 1 : -1
+        };
 
         if (newPos.X > 0) sprite.TextureRect = TextureRects["playerRight"];
         else if (newPos.X < 0) sprite.TextureRect = TextureRects["playerLeft"];
@@ -181,9 +187,9 @@ public sealed class Player : Actor
         List<SpriteGUI> powerUpActiveSprites = new();
         foreach (PowerUp.Types powerUp in PowerUp.StringToType.Values)
         {
-            if (_activePowerUps.ContainsKey(powerUp))
+            if (_activePowerUps.TryGetValue(powerUp, out float timer))
             {
-                if (_activePowerUps[powerUp] > _powerUpLifeTime - 2f)
+                if (timer > _powerUpLifeTime - 2f)
                 {
                     _activePowerUpsSymbols[powerUp].GetAnimatable().Animator.PlayAnimation("pulsing", false);
                 }
@@ -199,7 +205,7 @@ public sealed class Player : Actor
         
         // draw active sprites in bottom left corner
         float y = Program.ScreenHeight - _activePowerUpsSymbols[PowerUp.Types.RepairShip].Bounds.Height - 8;
-        for (int i = 0; i < powerUpActiveSprites.Count(); i++)
+        for (int i = 0; i < powerUpActiveSprites.Count; i++)
         {
             float x = 8 + (8 + powerUpActiveSprites[i].Bounds.Width) * i;
             powerUpActiveSprites[i].Position = new Vector2f(x, y);
@@ -209,7 +215,7 @@ public sealed class Player : Actor
         }        
     }
 
-    public void ResetHealth()
+    private void ResetHealth()
     {
         GlobalEventManager.PublishPlayerChangeHealth(maxHealth - currentHealth);
         currentHealth = maxHealth;
@@ -261,12 +267,17 @@ public sealed class Player : Actor
         currentHealth -= realDamage;
         _invincibilityTimer = 0f;
         animator.PlayAnimation("invincible", true);
-        if (currentHealth > 0)
+        
+        switch (currentHealth)
         {
-            hitSound.PlayingOffset = Time.FromMilliseconds(350);
-            hitSound.Play();
+            case > 0:
+                hitSound.Play();
+                break;
+            case <= 0:
+                Die();
+                break;
         }
-        if (currentHealth <= 0) Die();
+
         GlobalEventManager.PublishPlayerHit();
         GlobalEventManager.PublishPlayerChangeHealth(-realDamage);
     }
@@ -281,34 +292,25 @@ public sealed class Player : Actor
     protected override void OnOutsideScreen((ScreenState x, ScreenState y) state, Vector2f outsidePos, out Vector2f adjustedPos)
     {
         adjustedPos = outsidePos;
-        switch (state.x)
+        adjustedPos.X = state.x switch
         {
-            case ScreenState.OutSideRight:
-                adjustedPos.X = Program.ScreenWidth - Bounds.Width - Settings.MarginSide;
-                break;
-            case ScreenState.OutSideLeft:
-                adjustedPos.X = Settings.MarginSide;
-                break;
-        }
+            ScreenState.OutSideRight => Program.ScreenWidth - Bounds.Width - Settings.MarginSide,
+            ScreenState.OutSideLeft => Settings.MarginSide,
+            _ => adjustedPos.X
+        };
 
-        switch (state.y)
+        adjustedPos.Y = state.y switch
         {
-            case ScreenState.OutSideBottom:
-                adjustedPos.Y = Program.ScreenHeight - Bounds.Height - Settings.MarginSide;
-                break;
-            case ScreenState.OutSideTop:
-                adjustedPos.Y = Settings.MarginSide + Settings.TopGuiHeight;
-                break;
-        }
+            ScreenState.OutSideBottom => Program.ScreenHeight - Bounds.Height - Settings.MarginSide,
+            ScreenState.OutSideTop => Settings.MarginSide + Settings.TopGuiHeight,
+            _ => adjustedPos.Y
+        };
     }
 
-    private Animation.FrameRenderer[] blinking =
+    private readonly new Animation.FrameRenderer[] blinkFrames =
     [
         (_, _) => { },
-        (animatable, target) =>
-        {
-            target.Draw(animatable.Sprite);
-        },
+        (animatable, target) => target.Draw(animatable.Sprite)
     ];
     
     private void CheckPowerUpIntersections()
@@ -340,11 +342,10 @@ public sealed class Player : Actor
         }
     }
     
-    private void DrawPowerUpText(string message)
+    private static void DrawPowerUpText(string message)
     {
         int length = message.Length;
-        FadingTextGUI text = new FadingTextGUI(0.07f * length, message, 40);
-        text.SetDrift(new Vector2f(0, -20));
+        FadingTextGUI text = new FadingTextGUI(0.07f * length, message, 40, new Vector2f(0, -20));
         text.Position = MiddleOfScreen(text.Bounds, new Vector2f(0, -50));
         Scene.QueueSpawn(text);
     }

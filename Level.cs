@@ -19,10 +19,8 @@ public abstract class Level(string name)
         return _initialObjects;
     }
 
-    public void AddObject(SceneObject o) { _initialObjects.Add(o); }
-    public void AddObject(List<SceneObject> o) { _initialObjects.AddRange(o); }
-    public void AddObject(SceneObject[] o) { _initialObjects.AddRange(o); }
-
+    protected void AddObject(SceneObject o) { _initialObjects.Add(o); }
+    
     public void CreateLevel()
     {
         ClearObjects();
@@ -30,12 +28,12 @@ public abstract class Level(string name)
     }
     protected abstract void LoadObjects();
     
-    protected void ClearObjects()
+    private void ClearObjects()
     {
         _initialObjects.Clear();
     }
 
-    protected void SetBackgroundMusic(string music = "")
+    protected static void SetBackgroundMusic(string music = "")
     {
         if (music == "")
         {
@@ -69,18 +67,17 @@ public abstract class Level(string name)
         guiBackgroundMiddle.AddTag(SceneObjectTag.GuiBackgroundMiddle);
         guiBackgroundMiddle.Position = new Vector2f(
             (Program.ScreenWidth - guiBackgroundMiddle.Bounds.Width) / 2f,
-            (Settings.TopGuiHeight - guiBackgroundMiddle.Bounds.Height)
+            Settings.TopGuiHeight - guiBackgroundMiddle.Bounds.Height
         );
         guiBackgroundMiddle.SetZIndex(300);
         guiBackgroundMiddle.SetAvailableArea(new IntRect(7, 6, 82, 12));
-        AddObject(guiBackgroundMiddle);
 
         SpriteGUI guiBackgroundLeft = new SpriteGUI(TextureRects["guiBackgroundLeft"]);
         guiBackgroundLeft.AddTag(SceneObjectTag.GuiBackgroundLeft);
         guiBackgroundLeft.Position = new Vector2f(0, Settings.TopGuiHeight - guiBackgroundLeft.Bounds.Height);
         guiBackgroundLeft.SetAvailableArea(new IntRect(7, 6, 34, 12));
         guiBackgroundLeft.SetZIndex(300);
-        AddObject(guiBackgroundLeft);
+        
 
         SpriteGUI guiBackgroundRight = new SpriteGUI(TextureRects["guiBackgroundRight"]);
         guiBackgroundRight.AddTag(SceneObjectTag.GuiBackgroundRight);
@@ -90,6 +87,8 @@ public abstract class Level(string name)
         );
         guiBackgroundRight.SetAvailableArea(new IntRect(2, 6, 34, 12));
         guiBackgroundRight.SetZIndex(300);
+        AddObject(guiBackgroundMiddle);
+        AddObject(guiBackgroundLeft);
         AddObject(guiBackgroundRight);
     }
 
