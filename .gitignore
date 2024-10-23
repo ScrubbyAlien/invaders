@@ -1,4 +1,5 @@
 /obj/Debug
+/obj/Release
 /bin/
 Folder.DotSettings.user
 *.DotSettings
