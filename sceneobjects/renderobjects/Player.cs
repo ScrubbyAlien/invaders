@@ -40,8 +40,8 @@ public sealed class Player : Actor
     private float _invincibilityTimer;
     
     // upgrade and power up
-    private const float _bulletSpeedModifier = 20f;
-    private const int _healthRegainAmount = 5;
+    private const float _bulletSpeedModifier = 50f;
+    private const int _healthRegainAmount = 7;
     private int _bulletSpeedLevel;
     private int _defenseLevel;
     private int _burstLengthLevel;
@@ -373,26 +373,46 @@ public sealed class Player : Actor
         switch (powerUpType)
         {
             case PowerUp.Types.RepairShip:
-                UpgradeDefense();
                 RegainHealth(_healthRegainAmount);
-                DrawPowerUpText("ship repaired\nhull reinforced");
+                if (UpgradeDefense())
+                {
+                    DrawPowerUpText("ship repaired\nhull reinforced");
+                } else DrawPowerUpText("ship repaired\nmax hull strength");
                 break;
             case PowerUp.Types.ThrusterBoost:
-                UpgradeBulletSpeed();
-                DrawPowerUpText("thruster boost\npower enhanced");
+                if (UpgradeBulletSpeed())
+                {
+                    DrawPowerUpText("thruster boost\npower enhanced");
+                } else DrawPowerUpText("thruster boost\nmaxium power");
                 break;
             case PowerUp.Types.TripleShot:
-                UpgradeBurstIndex();
-                DrawPowerUpText("triple fire\ncooling improved");
+                if (UpgradeBurstIndex())
+                {
+                    DrawPowerUpText("triple fire\ncooling improved");
+                } else DrawPowerUpText("triple fire\nmax cooling reached");
                 break;
             default: return;
         }
     }
 
-    private void UpgradeDefense() => _defenseLevel++;
-    private void UpgradeBulletSpeed() => _bulletSpeedLevel++;
-    private void UpgradeBurstIndex() => _burstLengthLevel++;
-    
+    private bool UpgradeDefense()
+    {
+        if (_defenseLevel <= 2) _defenseLevel++;
+        return _defenseLevel < 3;
+    }
+
+    private bool UpgradeBulletSpeed()
+    {
+        if (_bulletSpeedLevel <= 2) _bulletSpeedLevel++;
+        return _bulletSpeedLevel < 3;
+    }
+
+    private bool UpgradeBurstIndex()
+    {
+        if (_burstLengthLevel <= 2) _burstLengthLevel++;
+        return _burstLengthLevel < 3;
+    }
+
     private void RegainHealth(int regain)
     {
         if (currentHealth + regain >= maxHealth)

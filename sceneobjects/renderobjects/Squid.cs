@@ -7,7 +7,7 @@ namespace invaders.sceneobjects.renderobjects;
 public sealed class Squid : AbstractEnemy
 {
     public override int ScoreValue => 500;
-    protected override float powerUpSpawnChance => 0.5f;
+    protected override float powerUpSpawnChance => 0.8f;
 
     private float _timeUntilFire;
     private float _fireTimer;

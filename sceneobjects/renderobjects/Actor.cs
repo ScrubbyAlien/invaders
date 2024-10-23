@@ -121,7 +121,6 @@ public abstract class Actor : RenderObject
             target.Draw(animatable.Drawable);
 
             string name = animatable.Instance.GetType().Name;
-            if (name == "Runner") Console.WriteLine(name);
             
             // draw explosion
             Sprite explosion = new Sprite();

@@ -113,6 +113,7 @@ public class HighscoreLevel() : Level("highscores")
             TextGUI rank = new TextGUI(rankNumber.ToString());
             TextGUI name = new TextGUI(pair.Key);
             TextGUI score = new TextGUI(pair.Value.ToString());
+            
 
             rank.Position = new Vector2f(Settings.MarginSide, nextEntryYPosition);
             name.Position = new Vector2f(Settings.MarginSide * 5, nextEntryYPosition);

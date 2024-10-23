@@ -15,7 +15,7 @@ public class EndlessManager : Invasion
     private int _enemyRange = 1;
     private float _spawnTimer;
     private float _spawnRate = 3;
-    private const float _lowestSpawnRate = 0.7f;
+    private const float _lowestSpawnRate = 0.2f;
 
     // the order needs to be defined so we use list of tuples instead of dictionary
     private readonly List<(char, float)> enemyProbabilities = new()

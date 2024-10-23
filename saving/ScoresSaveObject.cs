@@ -4,8 +4,8 @@ public class ScoresSaveObject : ISaveObject
 {
     public string GetSaveFileName() => "scores";
 
-    public Dictionary<string, int> Scores { get; } = new();
-    public Dictionary<string, int> EndlessScores { get; } = new();
+    public Dictionary<string, int> Scores { get; set; } = new();
+    public Dictionary<string, int> EndlessScores { get; set; } = new();
 
     public bool AddEntry(string key, int value, bool endless = false)
     {

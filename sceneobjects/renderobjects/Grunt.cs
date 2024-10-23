@@ -6,7 +6,7 @@ namespace invaders.sceneobjects.renderobjects;
 public sealed class Grunt : AbstractEnemy
 {
     public override int ScoreValue => 20;
-    protected override float powerUpSpawnChance => 0.05f;
+    protected override float powerUpSpawnChance => 0.1f;
 
     private float _timeUntilFire;
     private float _fireTimer;

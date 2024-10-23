@@ -6,7 +6,7 @@ namespace invaders.sceneobjects.renderobjects;
 public sealed class Runner : AbstractEnemy
 {
     public override int ScoreValue => 250;
-    protected override float powerUpSpawnChance => 0.5f;
+    protected override float powerUpSpawnChance => 0.6f;
 
     private float _timeUntilFire;
     private float _fireTimer;

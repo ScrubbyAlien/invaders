@@ -8,7 +8,7 @@ namespace invaders.sceneobjects.renderobjects;
 public class Juggernaut : AbstractEnemy
 {
     public override int ScoreValue => 1000;
-    protected override float powerUpSpawnChance => 0.9f;
+    protected override float powerUpSpawnChance => 1f;
 
     private float _timeUntilFire;
     private float _fireTimer;
