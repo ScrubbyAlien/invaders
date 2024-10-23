@@ -44,8 +44,6 @@ public static class Utility
         ) + offset;
     }
     
-        
-    
     // Vector2f extension methods borrowed from Collision class from lab project breakout
     public static Vector2f Normalized(this Vector2f v)
     {
@@ -67,9 +65,9 @@ public static class Utility
         { "player", new(0, 1, 8, 7) },
         { "playerLeft", new(9, 1, 7, 7) },
         { "playerRight", new(17, 1, 7, 7) },
-        {"healthPower", new(24,40, 8, 8)},
-        {"triplePower", new(24, 48, 8, 8)},
-        {"speedPower", new(24,56, 8, 8)},
+        { "healthPower", new(24,40, 8, 8)},
+        { "triplePower", new(24, 48, 8, 8)},
+        { "speedPower", new(24,56, 8, 8)},
         { "grunt1", new(24, 0, 8, 8) },
         { "grunt2", new(24, 8, 8, 8) },
         { "runner1", new(72, 0, 8, 8) },
@@ -104,7 +102,8 @@ public static class Utility
         { "guiBackgroundLeft", new (84, 58, 44, 24)},
         { "guiBackgroundRight", new(84, 81, 44, 24)},
         { "guiBackgroundMiddle", new(0, 104, 96, 24)},
-        { "blackSquare", new (20, 114, 1, 1)}
+        { "blackSquare", new (20, 114, 1, 1)},
+        { "whiteSquare", new (9, 27, 1, 1) },
     };
 }
 

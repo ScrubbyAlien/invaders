@@ -1,6 +1,7 @@
 using invaders.enums;
 using invaders.sceneobjects.renderobjects;
 using invaders.sceneobjects.renderobjects.gui;
+using SFML.Graphics;
 using SFML.System;
 using static invaders.Utility;
 
@@ -12,14 +13,17 @@ public sealed class ScoreManager : SceneObject
     private int _multiplier = 1;
     private float _multiplierTimer;
     private const float _multiplierLifeSpan = 2f;
+    private const float _multiplierBarWidth = 70f;
     private float _passiveScoreTimer;
     private readonly float _passiveScoreInterval;
     private readonly int _passiveScore;
 
-    private TextGUI _scoreText = null!;
-    private TextGUI _multiplierText = null!;
-    private SpriteGUI _multiplierBar = null!;
-
+    private TextGUI _scoreText = new TextGUI("0");
+    private TextGUI _multiplierText = new TextGUI("x1", 8);
+    private SpriteGUI _multiplierBar = new SpriteGUI(TextureRects["multiplierBar"]);
+    private SpriteGUI _middleGui = null!;
+    private SpriteGUI _rightGui = null!;
+    
     public int CurrentScore => _currentScore;
     
     public ScoreManager(int passiveScore = 0, float interval = 1)
@@ -30,15 +34,29 @@ public sealed class ScoreManager : SceneObject
     
     protected override void Initialize()
     {
-        // could find the guibackground instead and create its own texts
-        // would allow easy movement of gui location by moving guibackground
-        _scoreText = Scene.FindByTag<TextGUI>(SceneObjectTag.ScoreText)!;
-        _multiplierText = Scene.FindByTag<TextGUI>(SceneObjectTag.MultiplierText)!;
-        _multiplierBar = Scene.FindByTag<SpriteGUI>(SceneObjectTag.MultiplierBar)!;
+        _scoreText.SetZIndex(310);
+        _multiplierText.SetZIndex(310);
+        _multiplierBar.SetZIndex(310);
+        _multiplierBar.SetScale(new Vector2f(_multiplierBarWidth, 5));
+        
+        _middleGui = Scene.FindByTag<SpriteGUI>(SceneObjectTag.GuiBackgroundMiddle)!;
+        _rightGui = Scene.FindByTag<SpriteGUI>(SceneObjectTag.GuiBackgroundRight)!;
+
+        _scoreText.Position = GetScoreTextPosition();
+        Scene.QueueSpawn(_scoreText);
+
+        _multiplierText.Position = GetMultiplierTextPosition();
+        Scene.QueueSpawn(_multiplierText);
+        
+        _multiplierBar.Position = 
+            _multiplierText.Position + 
+            new Vector2f(_multiplierText.Bounds.Width + 20, 8);
+        Scene.QueueSpawn(_multiplierBar);
         
         GlobalEventManager.EnemyDeath += OnEnemyDeath;
         GlobalEventManager.PlayerHit += ResetMultiplier;
     }
+
 
     public override void Destroy()
     {
@@ -47,7 +65,6 @@ public sealed class ScoreManager : SceneObject
 
     public override void Update(float deltaTime)
     {
-        
         _multiplierTimer += deltaTime;
         if (_multiplierTimer > _multiplierLifeSpan)
         {
@@ -55,24 +72,18 @@ public sealed class ScoreManager : SceneObject
         }
 
         _scoreText.SetText($"{_currentScore}");
-        _scoreText.Position = MiddleOfScreen(
-            _scoreText.Bounds, 
-            new Vector2f(0, 
-                -Program.ScreenHeight / 2f + 36 + (48 - _scoreText.Bounds.Height) / 2)
-        );
+        _scoreText.Position = GetScoreTextPosition();
         
         _multiplierText.SetText($"x{_multiplier}");
-        _multiplierText.Position = new Vector2f(
-            Program.ScreenWidth - (TextureRects["guiBackgroundRight"].Width - 2) * RenderObject.Scale + 8,
-            32f
-        );
+        _multiplierText.Position = GetMultiplierTextPosition();
+        
+        
         
         if (_multiplier > 1)
         {
             _multiplierBar.Unhide();
             float percent = _multiplierTimer / _multiplierLifeSpan;
-            _multiplierBar.SetScale(new Vector2f(80 - 80 * percent, RenderObject.Scale));
-            _multiplierBar.Position = _multiplierText.Position + new Vector2f(_multiplierText.Bounds.Width + 8, 6);
+            _multiplierBar.SetScale(new Vector2f(_multiplierBarWidth - _multiplierBarWidth * percent, RenderObject.Scale));
         }
         else
         {
@@ -105,7 +116,7 @@ public sealed class ScoreManager : SceneObject
             f => enemy.Position + new Vector2f((enemy.Bounds.Width - f.Bounds.Width) / 2, -enemy.Bounds.Height),
             new Vector2f(0, -1).Normalized() * 30
             );
-        GainScore(score);
+        GainScore(enemy.ScoreValue);
         IncrementMultiplier();
     }
     
@@ -126,7 +137,20 @@ public sealed class ScoreManager : SceneObject
         _multiplier = 1;
         _multiplierTimer = 0f;
     }
-    
+
+    private Vector2f GetScoreTextPosition()
+    {
+        return _middleGui.GetPositionInAvailableArea(new Vector2f(
+            (_middleGui.AvailableArea.Width - _scoreText.Bounds.Width) / 2f,
+            1.5f // should be 6.5f but if I set it to that the text appears too low for some reason, idk why
+        ));
+    }
+
+    private Vector2f GetMultiplierTextPosition()
+    {
+        return _rightGui.GetPositionInAvailableArea(new Vector2f(6.5f, 6.5f)); // it works here! makes no sense
+    }
+
     private void CreateFadingScoreText(float fadeTime, string text, uint size, Func<FadingTextGUI, Vector2f> positionFunc, Vector2f drift)
     {
         FadingTextGUI fadingScore = new FadingTextGUI(fadeTime, text, size);

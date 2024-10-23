@@ -33,7 +33,7 @@ public class HighscoreLevel() : Level("highscores")
         scoreBoardSelectTabs.AddTab(endless, () => DisplayScores(endlessScores));
         
 
-        ButtonNavigator bottomButtons = new ButtonNavigator(false, true);
+        ButtonNavigator bottomButtons = new ButtonNavigator(false, false, true);
         AddObject(bottomButtons);
         
         TextButtonGUI backButton = new TextButtonGUI("Main menu");

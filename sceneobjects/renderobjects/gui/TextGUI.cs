@@ -19,6 +19,8 @@ public class TextGUI : GUI, INavigatable
 
     public TextGUI(string displayText, uint size = 10, Alignment alignment = Alignment.Center) : base("invaders", new IntRect(), 1)
     {
+        Animation blink = new Animation("blink", true, 3, 0, blinking);
+        animator.AddAnimation(blink);
         _alignment = alignment;
         text.DisplayedString = displayText;
         text.Font = AssetManager.LoadFont("pixel-font");
@@ -26,13 +28,6 @@ public class TextGUI : GUI, INavigatable
         text.FillColor = Color.White;
         zIndex = 200;
         AlignText();
-    }
-
-    protected override void Initialize()
-    {
-        Animation blink = new Animation("blink", true, 3, 0, blinking);
-        animator.AddAnimation(blink);
-        base.Initialize();
     }
     
     public override void Render(RenderTarget target)

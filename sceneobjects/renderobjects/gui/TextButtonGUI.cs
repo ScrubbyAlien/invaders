@@ -19,7 +19,6 @@ public sealed class TextButtonGUI : TextGUI, IClickable
 
     public void Select()
     {
-        Console.WriteLine($"select: {text.DisplayedString}");
         animator.PlayAnimation("selected", true);
     }
     public void Deselect()

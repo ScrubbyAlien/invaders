@@ -63,6 +63,7 @@ public sealed class Animation
             {
                 _currentFrame++;
                 _frameTimer = 0f;
+                
                 FrameFinished?.Invoke(this);
             }
 

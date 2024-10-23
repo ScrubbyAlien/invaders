@@ -6,6 +6,9 @@ namespace invaders.sceneobjects.renderobjects;
 
 public sealed class Squid : AbstractEnemy
 {
+    public override int ScoreValue => 500;
+    protected override float powerUpSpawnChance => 0.5f;
+
     private float _timeUntilFire;
     private float _fireTimer;
     private float _bulletAmplitude => 500f + touchedBottom * 50;
@@ -26,7 +29,6 @@ public sealed class Squid : AbstractEnemy
             new Random().Next((int) -Bounds.Height - Settings.SpawnInterval, (int) -Bounds.Height +  Settings.TopGuiHeight)
         );
     }
-    public override int ScoreValue => 500;
     
     protected override Vector2f bulletOrigin => Position + new Vector2f(40, 60);
     protected override float bulletSpeed => 150f;

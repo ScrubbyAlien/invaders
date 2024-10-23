@@ -76,7 +76,7 @@ public abstract class AbstractEnemy : Actor
         
         if (new Random().NextSingle() < powerUpSpawnChance)
         {
-            Scene.QueueSpawn(new PowerUp("health", Position));
+            Scene.QueueSpawn(new PowerUp(powerUp, Position));
         }
     }
 

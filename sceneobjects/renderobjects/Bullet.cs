@@ -10,7 +10,7 @@ public class Bullet : RenderObject
 {
     public readonly string Type;
     public readonly CollisionLayer EffectiveAgainstLayer; // the collision layer that this bullet should collide with
-    private readonly Vector2f _velocity;
+    private Vector2f _velocity;
     public readonly int Damage;
     private readonly Func<float, float, Vector2f, Vector2f> _movement;
     private float _timeAlive;
@@ -25,6 +25,12 @@ public class Bullet : RenderObject
         { "juggernautRight", TextureRects["juggernautBullet2"] },
     };
 
+    /// <summary>
+    /// A bullet that will collide with an Actor (enemies or the player)
+    /// </summary>
+    /// <param name="type">the type of object that created the bullet, determines the y component of the velocity</param>
+    /// <param name="speed">How fast the bullet will travel in pixels per second</param>
+    /// <param name="damage">How much damage the bullet will deal to the Actor it collides with</param>
     public Bullet(string type, float speed, int damage) : base("invaders", bulletTypes[type], Scale)
     {
         Type = type;
@@ -40,7 +46,14 @@ public class Bullet : RenderObject
             return velocity * deltaTime;
         };
     }
-
+    
+    /// <summary>
+    /// A bullet that will collide with an Actor (enemies or the player)
+    /// </summary>
+    /// <param name="type">the type of object that created the bullet, determines the y component of the velocity</param>
+    /// <param name="speed">How fast the bullet will travel in pixels per second</param>
+    /// <param name="damage">How much damage the bullet will deal to the Actor it collides with</param>
+    /// <param name="movement">A function that returns a vector2f that will be used to calculate the bullets new position every frame</param>
     public Bullet(string type, float speed, int damage, Func<float, float, Vector2f, Vector2f> movement) : this(type, speed, damage)
     {
         _movement = movement;
@@ -51,6 +64,7 @@ public class Bullet : RenderObject
         _timeAlive += deltaTime;
         
         Position += _movement(deltaTime, _timeAlive, _velocity);
+        
         if (Position.Y > Program.ScreenHeight + Bounds.Height || Position.Y < Settings.TopGuiHeight - Bounds.Height)
         {
             Dead = true;
@@ -72,11 +86,19 @@ public class Bullet : RenderObject
             // so player bullets actuall collide with them and are destroyed
             if (intersect.IntersectedEntity is Bullet bullet)
             {
+                if (bullet.Type == "squid")
+                { // juggernaut bullets are too strong to be destroyed
+                    bullet.Evaporate();
+                }
                 this.Evaporate();
-                bullet.Evaporate();
             }
         }
 
+    }
+
+    public void ScaleVelocity(float scale)
+    {
+        _velocity *= scale;
     }
 
     public void Evaporate()

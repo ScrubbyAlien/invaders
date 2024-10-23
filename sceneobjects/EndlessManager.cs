@@ -15,14 +15,15 @@ public class EndlessManager : Invasion
     private int _enemyRange = 1;
     private float _spawnTimer;
     private float _spawnRate = 3;
+    private const float _lowestSpawnRate = 0.7f;
 
     // the order needs to be defined so we use list of tuples instead of dictionary
     private List<(char, float)> enemyProbabilities = new()
-    { // how long until next enemy of type should spawn
-        ('g', 0.7f),
+    { // probability that each enemy should spawn every spawn tick, which happens every spawnRate seconds
+        ('g', 0.8f),
         ('r', 0.07f),
-        ('s', 0.03f),
-        ('j', 0.01f)
+        ('s', 0.07f),
+        ('j', 0.02f)
     };
     
     private float _timeFromStart;
@@ -86,7 +87,7 @@ public class EndlessManager : Invasion
                 _spawnTimer = 0;
             }
             // not linear but smooth, faster in the beginning
-            if (_spawnRate > 0.7f) _spawnRate = -0.3f * MathF.Sqrt(_timeFromStart) + 3;
+            if (_spawnRate > _lowestSpawnRate) _spawnRate = -0.3f * MathF.Sqrt(_timeFromStart) + 3;
         }
     }
     
@@ -102,14 +103,6 @@ public class EndlessManager : Invasion
                 Scene.QueueSpawn(enemy);
             }
         }
-    }
-
-    // n=1 => 1, n=2 => 3, n=3 => 6 ...
-    private float TriangularNumber(int n)
-    {
-        float acc = 0;
-        for (int i = 0; i < n; i++) acc += i; 
-        return acc;
     }
 
     /// <summary>

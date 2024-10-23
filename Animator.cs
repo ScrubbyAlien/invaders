@@ -40,7 +40,6 @@ public sealed class Animator
         else
         {
             ResetAnimations();
-            _frameCount = 0;
             _currentAnimation = animation;
             CurrentAnimation.Play();
         }
@@ -59,7 +58,7 @@ public sealed class Animator
     {
         if (_animationSet.ContainsKey(animation.Name)) return;
         animation.AnimationFinished += AnimationFinished;
-        animation.FrameFinished += s => _frameCount++;
+        animation.FrameFinished += _ => _frameCount++;
         _animationSet.Add(animation.Name, animation);
     }
 

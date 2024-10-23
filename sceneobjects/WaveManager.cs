@@ -1,6 +1,5 @@
 using invaders.sceneobjects.renderobjects;
 using SFML.System;
-using static invaders.Utility;
 
 namespace invaders.sceneobjects;
 
@@ -28,6 +27,11 @@ public sealed class WaveManager : Invasion
         _currentAssault = -1;
         _inTransition = true;
         _transitionBufferTimer = 0;
+    }
+
+    protected override void Initialize()
+    {
+        base.Initialize();
         DrawText("defeat the invaders!", new Vector2f(0, -100));
     }
 
@@ -90,12 +94,11 @@ public sealed class WaveManager : Invasion
             if (_transitionBufferTimer > _transitionBuffer / 2f)
             {
                 // should avoid out of bounds errors becuase StartTransition is not called after last assault
-                messageText.SetText(_assaults[_currentAssault + 1].BeforeAssault); 
-                messageText.Position = MiddleOfScreen(messageText.Bounds) - new Vector2f(0, 100);
+                DrawText(_assaults[_currentAssault + 1].BeforeAssault, new Vector2f(0, -100));
             }
             if (_transitionBufferTimer >= _transitionBuffer)
             {
-                Scene.QueueDestroy(messageText);
+                HideText();
                 _inTransition = false;
                 _currentWave = 0;
                 _currentAssault++;
@@ -108,8 +111,7 @@ public sealed class WaveManager : Invasion
     
     private void StartTransition()
     {
-        Scene.FindAllByType<Bullet>().ForEach(o => Scene.QueueDestroy(o));
-        Scene.FindAllByType<PowerUp>().ForEach(p => Scene.QueueDestroy(p));
+        Scene.FindAllByType<Bullet>().ForEach(b => Scene.QueueDestroy(b)); 
         _inTransition = true;
         _transitionBufferTimer = 0;
         _scrollSpedUp = false;

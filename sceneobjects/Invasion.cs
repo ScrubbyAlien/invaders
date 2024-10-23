@@ -25,6 +25,10 @@ public abstract class Invasion : SceneObject
     
     protected override void Initialize()
     {
+        messageText.SetSize(10);
+        messageText.GetAnimatable().Animator.PlayAnimation("blink", true);
+        messageText.Position = MiddleOfScreen(messageText.Bounds, new Vector2f(0, -100));
+        Scene.QueueSpawn(messageText);
         GlobalEventManager.PlayerDeath += PlayerDied;
     }
 
@@ -63,10 +67,13 @@ public abstract class Invasion : SceneObject
     {
         messageText.Unhide();
         messageText.SetText(text);
-        messageText.SetSize(8);
         messageText.Position = MiddleOfScreen(messageText.Bounds) + positionFromMiddle;
-        Scene.QueueSpawn(messageText);
-        // call PlayAnimatio after next ProcessSpawnQueue call so messageText's Initialize method can be called first
-        Scene.DeferredCall(messageText.GetAnimatable().Animator, "PlayAnimation", ["blink", true]);
+        messageText.GetAnimatable().Animator.PlayAnimation("blink", true);
+    }
+
+    protected void HideText()
+    {
+        messageText.Hide();
+        messageText.GetAnimatable().Animator.StopAnimation();
     }
 }
