@@ -18,9 +18,8 @@ public abstract class Invasion : SceneObject
         { 'g', () => new Grunt() },
         { 'r', () => new Runner() },
         { 's', () => new Squid() },
-        { 'j', () => new Juggernaut() }
+        { 'j', () => new Juggernaut() },
     };
-
 
     protected override void Initialize() {
         messageText.SetSize(10);
@@ -30,9 +29,7 @@ public abstract class Invasion : SceneObject
         GlobalEventManager.PlayerDeath += PlayerDied;
     }
 
-    public override void Destroy() {
-        GlobalEventManager.PlayerDeath -= PlayerDied;
-    }
+    public override void Destroy() => GlobalEventManager.PlayerDeath -= PlayerDied;
 
     public override void Update(float deltaTime) {
         if (!inEndLevel) return;
@@ -43,7 +40,9 @@ public abstract class Invasion : SceneObject
 
             Scene.LoadLevel("scoresave");
         }
-        else _spaceReleased = true;
+        else {
+            _spaceReleased = true;
+        }
     }
 
     private void PlayerDied() {

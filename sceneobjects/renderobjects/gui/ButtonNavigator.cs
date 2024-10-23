@@ -15,7 +15,6 @@ public sealed class ButtonNavigator(bool continuous = true, bool looping = true,
 
     private readonly Sound _clickSound = AssetManager.LoadSound("click1");
 
-
     protected override List<Keyboard.Key> _allKeys {
         get {
             List<Keyboard.Key> r = base._allKeys;
@@ -40,21 +39,16 @@ public sealed class ButtonNavigator(bool continuous = true, bool looping = true,
 
     protected override void NavigatorUpdate(float deltaTime) {
         if (AreAnyKeysPressed([Space, Enter])) {
-            PointerAction(pointer =>
-            {
+            PointerAction(pointer => {
                 _clickSound.Play();
                 _buttons[pointer].Click();
             });
         }
     }
 
-    protected override void SelectNext(int pointer) {
-        _buttons[pointer].Select();
-    }
+    protected override void SelectNext(int pointer) => _buttons[pointer].Select();
 
-    protected override void HandleLastIndex(int last) {
-        _buttons[last].Deselect();
-    }
+    protected override void HandleLastIndex(int last) => _buttons[last].Deselect();
 
     public override void SetActiveSelection() {
         base.SetActiveSelection();
@@ -71,10 +65,7 @@ public sealed class ButtonNavigator(bool continuous = true, bool looping = true,
         PointerAction(p => _buttons[p].Select());
     }
 
-    public override void DisableNavigator() {
-        _buttons.ForEach(b => b.SetInactiveSelection());
-    }
-
+    public override void DisableNavigator() => _buttons.ForEach(b => b.SetInactiveSelection());
 
     public void AddButton(IClickable button, Action listener) {
         if (_buttons.Contains(button)) return;
@@ -86,8 +77,7 @@ public sealed class ButtonNavigator(bool continuous = true, bool looping = true,
 
     public override void SetIndex(int index) {
         base.SetIndex(index);
-        PointerAction(p =>
-        {
+        PointerAction(p => {
             _buttons.ForEach(b => b.Deselect());
             _buttons[p].Select();
         });

@@ -29,19 +29,11 @@ public static class AssetManager
         _musics.Add("finale", new Music($"{AssetPath}/finale.wav"));
     }
 
-    public static Texture LoadTexture(string name) {
-        return _textures[name];
-    }
+    public static Texture LoadTexture(string name) => _textures[name];
 
-    public static Font LoadFont(string name) {
-        return _fonts[name];
-    }
+    public static Font LoadFont(string name) => _fonts[name];
 
-    public static Sound LoadSound(string name) {
-        return new Sound(_soundBuffers[name]);
-    }
+    public static Sound LoadSound(string name) => new(_soundBuffers[name]);
 
-    public static Music OpenMusic(string name) {
-        return _musics[name];
-    }
+    public static Music OpenMusic(string name) => _musics[name];
 }

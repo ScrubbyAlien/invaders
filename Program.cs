@@ -11,7 +11,7 @@ internal static class Program
     public const int ScreenHeight = 900;
 
     public static void Main(string[] args) {
-        using (RenderWindow window = new RenderWindow(new VideoMode(ScreenWidth, ScreenHeight), "Invaders")) {
+        using (RenderWindow window = new(new VideoMode(ScreenWidth, ScreenHeight), "Invaders")) {
             // ReSharper disable once AccessToDisposedClosure
             window.Closed += (_, _) => window.Close();
             window.SetFramerateLimit(Settings.FrameLimit);

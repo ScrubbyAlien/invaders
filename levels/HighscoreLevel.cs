@@ -14,14 +14,14 @@ public class HighscoreLevel() : Level("highscores")
 
         SetBackground();
 
-        TabNavigator scoreBoardSelectTabs = new TabNavigator(true, true, true);
+        TabNavigator scoreBoardSelectTabs = new(true, true, true);
         AddObject(scoreBoardSelectTabs);
 
-        TextButtonGUI standard = new TextButtonGUI("standard");
+        TextButtonGUI standard = new("standard");
         standard.Position = new Vector2f(Settings.MarginSide, Settings.MarginSide);
         AddObject(standard);
 
-        TextButtonGUI endless = new TextButtonGUI("endless");
+        TextButtonGUI endless = new("endless");
         endless.Position = new Vector2f(Settings.MarginSide * 2 + standard.Bounds.Width, Settings.MarginSide);
         AddObject(endless);
 
@@ -31,18 +31,17 @@ public class HighscoreLevel() : Level("highscores")
         scoreBoardSelectTabs.AddTab(standard, () => DisplayScores(standardScores));
         scoreBoardSelectTabs.AddTab(endless, () => DisplayScores(endlessScores));
 
-
-        ButtonNavigator bottomButtons = new ButtonNavigator(false, false, true);
+        ButtonNavigator bottomButtons = new(false, false, true);
         AddObject(bottomButtons);
 
-        TextButtonGUI backButton = new TextButtonGUI("Main menu");
+        TextButtonGUI backButton = new("Main menu");
         backButton.Position = new Vector2f(
             Settings.MarginSide,
             Program.ScreenHeight - backButton.Bounds.Height - Settings.MarginSide
         );
         AddObject(backButton);
 
-        TextButtonGUI resetButton = new TextButtonGUI("reset");
+        TextButtonGUI resetButton = new("reset");
         resetButton.Position = new Vector2f(
             Program.ScreenWidth - Settings.MarginSide - resetButton.Bounds.Width,
             Program.ScreenHeight - Settings.MarginSide - resetButton.Bounds.Height
@@ -50,12 +49,10 @@ public class HighscoreLevel() : Level("highscores")
         AddObject(resetButton);
 
         bottomButtons.AddButton(backButton, () => Scene.LoadLevel("mainmenu"));
-        bottomButtons.AddButton(resetButton, () =>
-        {
+        bottomButtons.AddButton(resetButton, () => {
             ConfirmationPrompt p = new(
                 "Reset all scoreboards?",
-                () =>
-                {
+                () => {
                     SaveManager.WriteSave(new ScoresSaveObject()).Wait();
                     Scene.LoadLevel("highscores");
                 },
@@ -65,18 +62,16 @@ public class HighscoreLevel() : Level("highscores")
         });
 
         // create section selector to change between tabs and buttons
-        SectionSelector selector = new SectionSelector();
+        SectionSelector selector = new();
         AddObject(selector);
 
-        SectionSelector.Section tabs = new SectionSelector.Section("tabs");
-        SectionSelector.Section back = new SectionSelector.Section("back");
+        SectionSelector.Section tabs = new("tabs");
+        SectionSelector.Section back = new("back");
 
-        scoreBoardSelectTabs.OrthogonalExit += down =>
-        {
+        scoreBoardSelectTabs.OrthogonalExit += down => {
             if (down) selector.ActivateSection("back");
         };
-        bottomButtons.OrthogonalExit += down =>
-        {
+        bottomButtons.OrthogonalExit += down => {
             if (!down) selector.ActivateSection("tabs");
         };
 
@@ -97,7 +92,6 @@ public class HighscoreLevel() : Level("highscores")
         Scene.QueueDestroy(_loadedScores.Select(t => (SceneObject)t).ToList());
         _loadedScores.Clear();
 
-
         // LINQ queries taken from these resources
         // https://learn.microsoft.com/en-us/dotnet/csharp/linq/get-started/introduction-to-linq-queries
         // https://stackoverflow.com/questions/289/how-do-you-sort-a-dictionary-by-value
@@ -111,10 +105,9 @@ public class HighscoreLevel() : Level("highscores")
         int rankNumber = 1;
 
         foreach (KeyValuePair<string, int> pair in sortedScores) {
-            TextGUI rank = new TextGUI(rankNumber.ToString());
-            TextGUI name = new TextGUI(pair.Key);
-            TextGUI score = new TextGUI(pair.Value.ToString());
-
+            TextGUI rank = new(rankNumber.ToString());
+            TextGUI name = new(pair.Key);
+            TextGUI score = new(pair.Value.ToString());
 
             rank.Position = new Vector2f(Settings.MarginSide, nextEntryYPosition);
             name.Position = new Vector2f(Settings.MarginSide * 5, nextEntryYPosition);

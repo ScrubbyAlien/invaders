@@ -6,13 +6,15 @@ public class SectionSelector : SceneObject
 
     public void AddSection(Section section) => _sections.Add(section);
 
-    public void ActivateSection(string name) {
-        _sections.ForEach(s =>
-        {
-            if (s.Name == name) s.SetActive();
-            else s.SetInactive();
+    public void ActivateSection(string name) =>
+        _sections.ForEach(s => {
+            if (s.Name == name) {
+                s.SetActive();
+            }
+            else {
+                s.SetInactive();
+            }
         });
-    }
 
     public class Section(string name)
     {

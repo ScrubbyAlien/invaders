@@ -24,8 +24,12 @@ public sealed class PauseManager(Keyboard.Key pauseKey) : SceneObject
     public override void Update(float deltaTime) {
         if (AreAnyKeysPressed([_pauseKey]) && !_pressedPause) {
             _pressedPause = true;
-            if (_isPaused) UnpauseScene();
-            else PauseScene();
+            if (_isPaused) {
+                UnpauseScene();
+            }
+            else {
+                PauseScene();
+            }
         }
 
         // prevents rapid pausing and unpausing if the pause key is held
@@ -38,7 +42,9 @@ public sealed class PauseManager(Keyboard.Key pauseKey) : SceneObject
                 o.Unpause();
                 if (o is RenderObject r) r.Unhide();
             }
-            else o.Pause();
+            else {
+                o.Pause();
+            }
         }
 
         _isPaused = true;
@@ -50,7 +56,9 @@ public sealed class PauseManager(Keyboard.Key pauseKey) : SceneObject
                 o.Pause();
                 if (o is RenderObject r) r.Hide();
             }
-            else o.Unpause();
+            else {
+                o.Unpause();
+            }
         }
 
         _isPaused = false;

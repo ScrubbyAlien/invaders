@@ -120,7 +120,7 @@ public sealed class WaveManager : Invasion
     private static void SpawnWave(Wave wave) {
         foreach (KeyValuePair<char, int> group in wave.Enemies) {
             for (int i = 0; i < group.Value; i++) {
-                AbstractEnemy enemy = Invasion.Constructors[group.Key]();
+                AbstractEnemy enemy = Constructors[group.Key]();
                 Scene.QueueSpawn(enemy);
             }
         }

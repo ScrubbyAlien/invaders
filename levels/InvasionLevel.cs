@@ -14,7 +14,7 @@ public sealed class InvasionLevel() : Level("invasion")
 
         CreateTopGuiBackground();
 
-        HealthGUI healthBar = new HealthGUI();
+        HealthGUI healthBar = new();
         healthBar.SetZIndex(310);
         AddObject(healthBar);
 
@@ -73,10 +73,10 @@ public sealed class InvasionLevel() : Level("invasion")
             assault4,
             assault5,
             assault6,
-            assault7
+            assault7,
         ];
 
-        WaveManager manager = new WaveManager();
+        WaveManager manager = new();
         manager.AddAssault(assaults);
         AddObject(manager);
 

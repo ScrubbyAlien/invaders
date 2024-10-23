@@ -17,7 +17,6 @@ public sealed class Squid : AbstractEnemy
     private const float _movementAmplitude = 100f;
     private float _timeAlive;
 
-
     public Squid() : base("invaders", TextureRects["squid1"], Scale) {
         horizontalSpeed = 0;
         maxHealth = 17;
@@ -36,7 +35,7 @@ public sealed class Squid : AbstractEnemy
         _timeUntilFire = GetNewFireTime();
 
         animator.SetDefaultSprite(TextureRects["squid1"]);
-        Animation idle = new Animation("idle", true, 3, 0, idleFrames);
+        Animation idle = new("idle", true, 3, 0, idleFrames);
 
         animator.AddAnimation(idle);
         animator.PlayAnimation("idle", true);
@@ -44,9 +43,7 @@ public sealed class Squid : AbstractEnemy
         base.Initialize();
     }
 
-    private static float GetNewFireTime() {
-        return 3f + new Random().NextSingle() * 2;
-    }
+    private static float GetNewFireTime() => 3f + new Random().NextSingle() * 2;
 
     public override void Update(float deltaTime) {
         _timeAlive += deltaTime;
@@ -65,7 +62,7 @@ public sealed class Squid : AbstractEnemy
     protected override void Move(float deltaTime) {
         if (WillDie) return;
 
-        Vector2f velocity = new Vector2f(
+        Vector2f velocity = new(
             MathF.Sin(_movementFrequency * _timeAlive + _movementPhase) * _movementAmplitude,
             GetVerticalSpeed()
         );
@@ -78,16 +75,14 @@ public sealed class Squid : AbstractEnemy
         }
     }
 
-    private Func<float, float, Vector2f, Vector2f> SpecialShoot(bool left) {
-        return (deltaTime, timeAlive, velocity) =>
-        {
+    private Func<float, float, Vector2f, Vector2f> SpecialShoot(bool left) =>
+        (deltaTime, timeAlive, velocity) => {
             float frequency = 5f + touchedBottom * 0.5f;
             float phase = left ? MathF.PI / 2f : -MathF.PI / 2f;
             float xComponent = MathF.Sin(frequency * timeAlive + phase) * -_bulletAmplitude;
             velocity.X = xComponent;
             return velocity * deltaTime;
         };
-    }
 
     protected override void Shoot(string type) {
         Bullet leftBullet = new(type, bulletSpeed, bulletDamage, SpecialShoot(true));
@@ -103,6 +98,6 @@ public sealed class Squid : AbstractEnemy
 
     private Animation.FrameRenderer[] idleFrames = [
         BasicFrameRenderer(TextureRects["squid1"]),
-        BasicFrameRenderer(TextureRects["squid2"])
+        BasicFrameRenderer(TextureRects["squid2"]),
     ];
 }

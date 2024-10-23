@@ -11,7 +11,7 @@ public static class SaveManager
     // async callbacks learned from here
     // https://stackoverflow.com/questions/14455293/how-and-when-to-use-async-and-await
     public static async Task<T> LoadSave<T>() where T : ISaveObject, new() {
-        T saveObject = new T();
+        T saveObject = new();
         // if the file does not exist return false
         if (!File.Exists(SaveFilePath(saveObject.GetSaveFileName()))) return saveObject;
 

@@ -24,7 +24,7 @@ public sealed class Grunt : AbstractEnemy
         _timeUntilFire = GetNewFireTime();
 
         animator.SetDefaultSprite(TextureRects["grunt1"]);
-        Animation idle = new Animation("idle", true, 3, 0, idleFrames);
+        Animation idle = new("idle", true, 3, 0, idleFrames);
         animator.AddAnimation(idle);
         animator.PlayAnimation("idle", true);
 
@@ -51,6 +51,6 @@ public sealed class Grunt : AbstractEnemy
 
     private readonly Animation.FrameRenderer[] idleFrames = [
         BasicFrameRenderer(TextureRects["grunt1"]),
-        BasicFrameRenderer(TextureRects["grunt2"])
+        BasicFrameRenderer(TextureRects["grunt2"]),
     ];
 }

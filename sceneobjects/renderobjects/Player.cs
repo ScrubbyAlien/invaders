@@ -32,7 +32,6 @@ public sealed class Player : Actor
         }
     }
 
-
     // invincibility
     private const float _invicibilityWindow = 1f;
     private float _invincibilityTimer;
@@ -54,7 +53,7 @@ public sealed class Player : Actor
     private readonly Dictionary<PowerUp.Types, SpriteGUI> _activePowerUpsSymbols = new() {
         { PowerUp.Types.RepairShip, new SpriteGUI(TextureRects["healthPower"]) },
         { PowerUp.Types.ThrusterBoost, new SpriteGUI(TextureRects["speedPower"]) },
-        { PowerUp.Types.TripleShot, new SpriteGUI(TextureRects["triplePower"]) }
+        { PowerUp.Types.TripleShot, new SpriteGUI(TextureRects["triplePower"]) },
     };
 
     public Player() : base("invaders", TextureRects["player"], Scale) {
@@ -78,13 +77,12 @@ public sealed class Player : Actor
 
     public int CurrentHealth => currentHealth;
 
-
     protected override void Initialize() {
         base.Initialize();
         GlobalEventManager.PublishPlayerChangeHealth(maxHealth);
         animator.SetDefaultSprite(TextureRects["player"]);
-        Animation invincible = new Animation("invincible", true, 25, _invicibilityWindow, blinkFrames);
-        Animation explode = new Animation("explode", true, 2, deathAnimationLength, explosionFrames);
+        Animation invincible = new("invincible", true, 25, _invicibilityWindow, blinkFrames);
+        Animation explode = new("explode", true, 2, deathAnimationLength, explosionFrames);
         animator.AddAnimation(invincible);
         animator.AddAnimation(explode);
 
@@ -95,9 +93,7 @@ public sealed class Player : Actor
         bulletSoundEffect.PlayingOffset = Time.FromMilliseconds(100);
     }
 
-    public override void Destroy() {
-        Scene.QueueSpawn(new LevelInfo<bool>(CurrentHealth > 0, "won"));
-    }
+    public override void Destroy() => Scene.QueueSpawn(new LevelInfo<bool>(CurrentHealth > 0, "won"));
 
     public override void Update(float deltaTime) {
         base.Update(deltaTime);
@@ -122,16 +118,22 @@ public sealed class Player : Actor
         // XOR: if only one direction is held then move in that direction
         newPos.X = (right ^ left) switch {
             false => 0,
-            true => right ? 1 : -1
+            true => right ? 1 : -1,
         };
         newPos.Y = (up ^ down) switch {
             false => 0,
-            true => down ? 1 : -1
+            true => down ? 1 : -1,
         };
 
-        if (newPos.X > 0) sprite.TextureRect = TextureRects["playerRight"];
-        else if (newPos.X < 0) sprite.TextureRect = TextureRects["playerLeft"];
-        else sprite.TextureRect = TextureRects["player"];
+        if (newPos.X > 0) {
+            sprite.TextureRect = TextureRects["playerRight"];
+        }
+        else if (newPos.X < 0) {
+            sprite.TextureRect = TextureRects["playerLeft"];
+        }
+        else {
+            sprite.TextureRect = TextureRects["player"];
+        }
 
         TryMoveWithinBounds(
             newPos.Normalized() * _speed * deltaTime,
@@ -183,15 +185,18 @@ public sealed class Player : Actor
             }
         }
 
-
         // draw active sprites in bottom left corner
         float y = Program.ScreenHeight - _activePowerUpsSymbols[PowerUp.Types.RepairShip].Bounds.Height - 8;
         for (int i = 0; i < powerUpActiveSprites.Count; i++) {
             float x = 8 + (8 + powerUpActiveSprites[i].Bounds.Width) * i;
             powerUpActiveSprites[i].Position = new Vector2f(x, y);
             Animatable a = powerUpActiveSprites[i].GetAnimatable();
-            if (a.Animator.IsAnimated) a.Animator.RenderAnimation(target);
-            else target.Draw(a.Sprite);
+            if (a.Animator.IsAnimated) {
+                a.Animator.RenderAnimation(target);
+            }
+            else {
+                target.Draw(a.Sprite);
+            }
         }
     }
 
@@ -209,15 +214,13 @@ public sealed class Player : Actor
         Bullet straightBullet = new(type, bulletSpeed, bulletDamage);
         straightBullet.Position = bulletOrigin;
 
-        Bullet rightBullet = new(type, bulletSpeed, bulletDamage, (deltaTime, _, velocity) =>
-        {
+        Bullet rightBullet = new(type, bulletSpeed, bulletDamage, (deltaTime, _, velocity) => {
             // travel 30 degrees to the left
             return new Vector2f(-velocity.Y / 2f, velocity.Y).Normalized() * deltaTime * velocity.Length();
         });
         rightBullet.Position = bulletOrigin + new Vector2f(16, 0);
 
-        Bullet leftBullet = new(type, bulletSpeed, bulletDamage, (deltaTime, _, velocity) =>
-        {
+        Bullet leftBullet = new(type, bulletSpeed, bulletDamage, (deltaTime, _, velocity) => {
             // travel 30 degrees to the right
             return new Vector2f(velocity.Y / 2f, velocity.Y).Normalized() * deltaTime * velocity.Length();
         });
@@ -267,19 +270,19 @@ public sealed class Player : Actor
         adjustedPos.X = state.x switch {
             ScreenState.OutSideRight => Program.ScreenWidth - Bounds.Width - Settings.MarginSide,
             ScreenState.OutSideLeft => Settings.MarginSide,
-            _ => adjustedPos.X
+            _ => adjustedPos.X,
         };
 
         adjustedPos.Y = state.y switch {
             ScreenState.OutSideBottom => Program.ScreenHeight - Bounds.Height - Settings.MarginSide,
             ScreenState.OutSideTop => Settings.MarginSide + Settings.TopGuiHeight,
-            _ => adjustedPos.Y
+            _ => adjustedPos.Y,
         };
     }
 
-    private readonly new Animation.FrameRenderer[] blinkFrames = [
+    private new readonly Animation.FrameRenderer[] blinkFrames = [
         (_, _) => { },
-        (animatable, target) => target.Draw(animatable.Sprite)
+        (animatable, target) => target.Draw(animatable.Sprite),
     ];
 
     private void CheckPowerUpIntersections() {
@@ -306,7 +309,7 @@ public sealed class Player : Actor
 
     private static void DrawPowerUpText(string message) {
         int length = message.Length;
-        FadingTextGUI text = new FadingTextGUI(0.07f * length, message, 40, new Vector2f(0, -20));
+        FadingTextGUI text = new(0.07f * length, message, 40, new Vector2f(0, -20));
         text.Position = MiddleOfScreen(text.Bounds, new Vector2f(0, -50));
         Scene.QueueSpawn(text);
     }
@@ -334,19 +337,28 @@ public sealed class Player : Actor
                 if (UpgradeDefense()) {
                     DrawPowerUpText("ship repaired\nhull reinforced");
                 }
-                else DrawPowerUpText("ship repaired\nmax hull strength");
+                else {
+                    DrawPowerUpText("ship repaired\nmax hull strength");
+                }
+
                 break;
             case PowerUp.Types.ThrusterBoost:
                 if (UpgradeBulletSpeed()) {
                     DrawPowerUpText("thruster boost\npower enhanced");
                 }
-                else DrawPowerUpText("thruster boost\nmaxium power");
+                else {
+                    DrawPowerUpText("thruster boost\nmaxium power");
+                }
+
                 break;
             case PowerUp.Types.TripleShot:
                 if (UpgradeBurstIndex()) {
                     DrawPowerUpText("triple fire\ncooling improved");
                 }
-                else DrawPowerUpText("triple fire\nmax cooling reached");
+                else {
+                    DrawPowerUpText("triple fire\nmax cooling reached");
+                }
+
                 break;
             default: return;
         }

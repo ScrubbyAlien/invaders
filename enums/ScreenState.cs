@@ -6,5 +6,5 @@ public enum ScreenState
     OutSideRight,
     OutSideTop,
     OutSideBottom,
-    Inside
+    Inside,
 }

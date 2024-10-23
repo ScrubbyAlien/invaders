@@ -27,9 +27,7 @@ public sealed class TabNavigator(bool continuous = true, bool looping = true, bo
         }
     }
 
-    protected override void HandleLastIndex(int last) {
-        _tabs[last].Deactivate();
-    }
+    protected override void HandleLastIndex(int last) => _tabs[last].Deactivate();
 
     public void AddTab(INavigatable tab, Action tabAction) {
         if (!_tabs.Contains(tab)) {
@@ -50,13 +48,9 @@ public sealed class TabNavigator(bool continuous = true, bool looping = true, bo
         DisableNavigator();
     }
 
-    public override void EnableNavigator() {
-        PointerAction(p => ActivateTab(p));
-    }
+    public override void EnableNavigator() => PointerAction(p => ActivateTab(p));
 
-    public override void DisableNavigator() {
-        _tabs.ForEach(t => t.Deactivate());
-    }
+    public override void DisableNavigator() => _tabs.ForEach(t => t.Deactivate());
 
     public override void SetIndex(int index) {
         base.SetIndex(index);

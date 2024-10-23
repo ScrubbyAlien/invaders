@@ -14,13 +14,9 @@ public abstract class Level(string name)
     public readonly string Name = name;
     private readonly List<SceneObject> _initialObjects = new();
 
-    public List<SceneObject> GetInitialObjects() {
-        return _initialObjects;
-    }
+    public List<SceneObject> GetInitialObjects() => _initialObjects;
 
-    protected void AddObject(SceneObject o) {
-        _initialObjects.Add(o);
-    }
+    protected void AddObject(SceneObject o) => _initialObjects.Add(o);
 
     public void CreateLevel() {
         ClearObjects();
@@ -29,9 +25,7 @@ public abstract class Level(string name)
 
     protected abstract void LoadObjects();
 
-    private void ClearObjects() {
-        _initialObjects.Clear();
-    }
+    private void ClearObjects() => _initialObjects.Clear();
 
     protected static void SetBackgroundMusic(string music = "") {
         if (music == "") {
@@ -52,13 +46,13 @@ public abstract class Level(string name)
     }
 
     protected void CreateTopGuiBackground() {
-        SpriteGUI blackBar = new SpriteGUI(TextureRects["blackSquare"]);
+        SpriteGUI blackBar = new(TextureRects["blackSquare"]);
         blackBar.Position = new Vector2f(0, 0);
         blackBar.SetScale(new Vector2f(Program.ScreenWidth, Settings.TopGuiHeight));
         blackBar.SetZIndex(290);
         AddObject(blackBar);
 
-        SpriteGUI guiBackgroundMiddle = new SpriteGUI(TextureRects["guiBackgroundMiddle"]);
+        SpriteGUI guiBackgroundMiddle = new(TextureRects["guiBackgroundMiddle"]);
         guiBackgroundMiddle.AddTag(SceneObjectTag.GuiBackgroundMiddle);
         guiBackgroundMiddle.Position = new Vector2f(
             (Program.ScreenWidth - guiBackgroundMiddle.Bounds.Width) / 2f,
@@ -67,14 +61,13 @@ public abstract class Level(string name)
         guiBackgroundMiddle.SetZIndex(300);
         guiBackgroundMiddle.SetAvailableArea(new IntRect(7, 6, 82, 12));
 
-        SpriteGUI guiBackgroundLeft = new SpriteGUI(TextureRects["guiBackgroundLeft"]);
+        SpriteGUI guiBackgroundLeft = new(TextureRects["guiBackgroundLeft"]);
         guiBackgroundLeft.AddTag(SceneObjectTag.GuiBackgroundLeft);
         guiBackgroundLeft.Position = new Vector2f(0, Settings.TopGuiHeight - guiBackgroundLeft.Bounds.Height);
         guiBackgroundLeft.SetAvailableArea(new IntRect(7, 6, 34, 12));
         guiBackgroundLeft.SetZIndex(300);
 
-
-        SpriteGUI guiBackgroundRight = new SpriteGUI(TextureRects["guiBackgroundRight"]);
+        SpriteGUI guiBackgroundRight = new(TextureRects["guiBackgroundRight"]);
         guiBackgroundRight.AddTag(SceneObjectTag.GuiBackgroundRight);
         guiBackgroundRight.Position = new Vector2f(
             Program.ScreenWidth - guiBackgroundRight.Bounds.Width,
@@ -89,10 +82,10 @@ public abstract class Level(string name)
 
     protected void CreatePauseMenu(string restartLevel) {
         AddObject(new PauseManager(Keyboard.Key.Escape));
-        ButtonNavigator pauseMenu = new ButtonNavigator();
+        ButtonNavigator pauseMenu = new();
         pauseMenu.AddTag(SceneObjectTag.PauseMenuItem);
 
-        SpriteGUI transparentScreen = new SpriteGUI(TextureRects["blackSquare"]);
+        SpriteGUI transparentScreen = new(TextureRects["blackSquare"]);
         transparentScreen.AddTag(SceneObjectTag.PauseMenuItem);
         transparentScreen.Position = new Vector2f(0, 0);
         transparentScreen.SetScale(new Vector2f(Program.ScreenWidth, Program.ScreenHeight));
@@ -100,26 +93,24 @@ public abstract class Level(string name)
         transparentScreen.SetZIndex(1000);
         AddObject(transparentScreen);
 
-        TextButtonGUI restartButton = new TextButtonGUI("restart");
+        TextButtonGUI restartButton = new("restart");
         restartButton.AddTag(SceneObjectTag.PauseMenuItem);
         restartButton.Position = MiddleOfScreen(restartButton.Bounds, new Vector2f(0, -45));
         restartButton.SetZIndex(1100);
         AddObject(restartButton);
 
-        TextButtonGUI quitButton = new TextButtonGUI("main menu");
+        TextButtonGUI quitButton = new("main menu");
         quitButton.AddTag(SceneObjectTag.PauseMenuItem);
         quitButton.Position = MiddleOfScreen(quitButton.Bounds, new Vector2f(0, 45));
         quitButton.SetZIndex(1100);
         AddObject(quitButton);
 
-        pauseMenu.AddButton(restartButton, () =>
-        {
+        pauseMenu.AddButton(restartButton, () => {
             GlobalEventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInLevel, 1f);
             Scene.LoadLevel(restartLevel);
             MusicManager.StopMusic();
         });
-        pauseMenu.AddButton(quitButton, () =>
-        {
+        pauseMenu.AddButton(quitButton, () => {
             GlobalEventManager.PublishBackgroundSetScrollSpeed(Settings.AmbientScrollInLevel, 1f);
             Scene.LoadLevel("mainmenu");
         });

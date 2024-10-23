@@ -34,13 +34,9 @@ public static class Scene
         _window.Close();
     }
 
-    public static void LoadFirstLevel() {
-        LoadLevel(Settings.StartLevel);
-    }
+    public static void LoadFirstLevel() => LoadLevel(Settings.StartLevel);
 
-    public static void LoadLevel(string levelName) {
-        _nextLevel = levelName;
-    }
+    public static void LoadLevel(string levelName) => _nextLevel = levelName;
 
     private static void ProcessLoadLevel() {
         if (_nextLevel == "") return;
@@ -51,28 +47,19 @@ public static class Scene
         _nextLevel = "";
     }
 
-    public static void QueueSpawn(SceneObject o) {
-        _spawnQueue.Add(o);
-    }
+    public static void QueueSpawn(SceneObject o) => _spawnQueue.Add(o);
 
-    public static void QueueSpawn(List<SceneObject> o) {
-        _spawnQueue.AddRange(o);
-    }
+    public static void QueueSpawn(List<SceneObject> o) => _spawnQueue.AddRange(o);
 
-    public static void QueueDestroy(SceneObject o) {
-        _destroyQueue.Add(o);
-    }
+    public static void QueueDestroy(SceneObject o) => _destroyQueue.Add(o);
 
-    public static void QueueDestroy(List<SceneObject> o) {
-        _destroyQueue.AddRange(o);
-    }
+    public static void QueueDestroy(List<SceneObject> o) => _destroyQueue.AddRange(o);
 
     private static void ProcessSpawnQueue() {
         _sceneObjects.AddRange(_spawnQueue);
         _spawnQueue.Clear();
 
-        _sceneObjects.ForEach(o =>
-        {
+        _sceneObjects.ForEach(o => {
             if (!o.Initialized) o.FullInitialize();
         });
     }
@@ -87,16 +74,13 @@ public static class Scene
         _deferredCalls.Clear();
     }
 
-    private static void UpdateSceneObjects(float deltaTime) {
-        _sceneObjects.ForEach(o =>
-        {
+    private static void UpdateSceneObjects(float deltaTime) =>
+        _sceneObjects.ForEach(o => {
             if (!o.Dead && o.Active) o.Update(deltaTime);
         });
-    }
 
     private static void Clear() {
-        _sceneObjects.ForEach(o =>
-        {
+        _sceneObjects.ForEach(o => {
             if (!o.DontDestroyOnClear) o.Destroy();
         });
         _sceneObjects = _sceneObjects.Where(o => o.DontDestroyOnClear).ToList();
@@ -104,8 +88,7 @@ public static class Scene
 
     private static void Bury() {
         _sceneObjects.ForEach(
-            _sceneObject =>
-            {
+            _sceneObject => {
                 if (_sceneObject.Dead) {
                     _sceneObject.Destroy();
                 }
@@ -131,7 +114,6 @@ public static class Scene
             if (!renderable.Dead && !renderable.Hidden) renderable.Render(target);
         }
     }
-
 
     // borrowed from lab project 4
     public static IEnumerable<IntersectResult<T>> FindIntersectingEntities<T>(
@@ -215,9 +197,8 @@ public static class Scene
     /// <param name="instance">The instance on which methodName should be invoked</param>
     /// <param name="methodName">The name of the method that will be invoked. Case sensitive!</param>
     /// <param name="arguments">The arguments that the method will be invoked with</param>
-    public static void DeferredCall(Object instance, string methodName, object[] arguments) {
+    public static void DeferredCall(object instance, string methodName, object[] arguments) =>
         _deferredCalls.Add(new DeferredMethodCall(instance, methodName, arguments));
-    }
 }
 
 // solution for dynamically invoking method on an instance inspired by solution here
@@ -228,7 +209,5 @@ public class DeferredMethodCall(object instance, string methodName, object[] arg
     private readonly string _methodName = methodName;
     private readonly object[] _arguments = arguments;
 
-    public void Invoke() {
-        _instance.GetType().GetMethod(_methodName)?.Invoke(_instance, _arguments);
-    }
+    public void Invoke() => _instance.GetType().GetMethod(_methodName)?.Invoke(_instance, _arguments);
 }

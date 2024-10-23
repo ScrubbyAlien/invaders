@@ -22,7 +22,7 @@ public abstract class Actor : RenderObject
     protected int maxHealth;
     protected int currentHealth;
     protected int bulletDamage;
-    private Sound _bulletSoundEffect = new Sound();
+    private Sound _bulletSoundEffect = new();
     protected Sound bulletSoundEffect => _bulletSoundEffect;
 
     public bool WillDie;
@@ -49,19 +49,22 @@ public abstract class Actor : RenderObject
         if (WillDie && timeSinceDeath >= deathAnimationLength) Dead = true;
     }
 
-    protected bool TryMoveWithinBounds(Vector2f velocity, int horizontalMargin, int verticalMargin) {
-        return TryMoveWithinBounds(velocity, horizontalMargin, horizontalMargin, verticalMargin, verticalMargin);
-    }
+    protected bool TryMoveWithinBounds(Vector2f velocity, int horizontalMargin, int verticalMargin) =>
+        TryMoveWithinBounds(velocity, horizontalMargin, horizontalMargin, verticalMargin, verticalMargin);
 
     protected bool TryMoveWithinBounds(Vector2f velocity, int leftMargin, int rightMargin, int topMargin,
         int bottomMargin) {
         Vector2f newPos = Position + velocity;
         (ScreenState x, ScreenState y) state = (ScreenState.Inside, ScreenState.Inside);
 
-        if (newPos.X >= Program.ScreenWidth - Bounds.Width - rightMargin) state.x = ScreenState.OutSideRight;
+        if (newPos.X >= Program.ScreenWidth - Bounds.Width - rightMargin) {
+            state.x = ScreenState.OutSideRight;
+        }
         else if (newPos.X <= leftMargin) state.x = ScreenState.OutSideLeft;
 
-        if (newPos.Y >= Program.ScreenHeight - Bounds.Height - bottomMargin) state.y = ScreenState.OutSideBottom;
+        if (newPos.Y >= Program.ScreenHeight - Bounds.Height - bottomMargin) {
+            state.y = ScreenState.OutSideBottom;
+        }
         else if (newPos.Y <= topMargin) state.y = ScreenState.OutSideTop;
 
         bool outside = state.x != ScreenState.Inside || state.y != ScreenState.Inside;
@@ -69,7 +72,9 @@ public abstract class Actor : RenderObject
             OnOutsideScreen(state, newPos, out Vector2f adjusted);
             Position = adjusted;
         }
-        else Position = newPos;
+        else {
+            Position = newPos;
+        }
 
         return outside;
     }
@@ -84,40 +89,33 @@ public abstract class Actor : RenderObject
     public abstract void HitByBullet(Bullet bullet);
     protected abstract void TakeDamage(int damage);
 
-    protected virtual void Die() {
-        WillDie = true;
-    }
+    protected virtual void Die() => WillDie = true;
 
     protected virtual void OnOutsideScreen(
         (ScreenState x, ScreenState y) state,
         Vector2f outsidePos,
-        out Vector2f adjustedPos) {
+        out Vector2f adjustedPos) =>
         adjustedPos = outsidePos;
-    }
 
-    protected void SetBulletSoundEffect(string name) {
-        _bulletSoundEffect = AssetManager.LoadSound(name);
-    }
+    protected void SetBulletSoundEffect(string name) => _bulletSoundEffect = AssetManager.LoadSound(name);
 
     protected readonly Animation.FrameRenderer[] blinkFrames = [
         (_, _) => { },
-        (animatable, target) =>
-        {
+        (animatable, target) => {
             animatable.SetTextureRect(animatable.Animator.GetDefaultSprite());
             target.Draw(animatable.Sprite);
-        }
+        },
     ];
 
     protected readonly Animation.FrameRenderer[] explosionFrames = {
-        (animatable, target) =>
-        { // simulates explosion by randomly placing bullet sprites over the actor rapidly
+        (animatable, target) => { // simulates explosion by randomly placing bullet sprites over the actor rapidly
             animatable.SetTextureRect(animatable.Animator.GetDefaultSprite());
             target.Draw(animatable.Drawable);
 
             string name = animatable.Instance.GetType().Name;
 
             // draw explosion
-            Sprite explosion = new Sprite();
+            Sprite explosion = new();
             int frameCount = animatable.Animator.FrameCount;
             string rectKey = new Random().Next(2) == 0 ? "explosionSmall" : "explosionLarge";
             explosion.Texture = AssetManager.LoadTexture("invaders");

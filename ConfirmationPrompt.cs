@@ -15,11 +15,11 @@ public class ConfirmationPrompt
     private readonly List<SceneObject> _prompt = new();
 
     public ConfirmationPrompt(string message, Action yes, Action no) {
-        TextGUI messageText = new TextGUI(message);
+        TextGUI messageText = new(message);
         messageText.SetZIndex(1100);
         messageText.Position = MiddleOfScreen(messageText.Bounds, new Vector2f(0, -100));
 
-        SpriteGUI background = new SpriteGUI(TextureRects["blackSquare"]);
+        SpriteGUI background = new(TextureRects["blackSquare"]);
         background.SetScale(new Vector2f(Program.ScreenWidth, Program.ScreenHeight));
         background.SetZIndex(1000);
         background.SetColor(new Color(0, 0, 0, 200));
@@ -36,13 +36,11 @@ public class ConfirmationPrompt
         );
         _noButton.SetZIndex(1100);
 
-        _yesOrNoMenu.AddButton(_yesButton, () =>
-        {
+        _yesOrNoMenu.AddButton(_yesButton, () => {
             ClosePrompt();
             yes();
         });
-        _yesOrNoMenu.AddButton(_noButton, () =>
-        {
+        _yesOrNoMenu.AddButton(_noButton, () => {
             ClosePrompt();
             no();
         });
@@ -56,8 +54,7 @@ public class ConfirmationPrompt
     }
 
     private void ClosePrompt() {
-        Scene.FindAllByType<SceneObject>().ForEach(o =>
-        {
+        Scene.FindAllByType<SceneObject>().ForEach(o => {
             if (!o.HasTag(SceneObjectTag.PauseMenuItem)) o.Unpause();
         });
         Scene.QueueDestroy(_prompt);

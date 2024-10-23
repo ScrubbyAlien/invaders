@@ -10,7 +10,7 @@ public sealed class Animator
     private string _currentAnimation = "";
 
     private readonly Dictionary<string, Animation> _animationSet = new() {
-        { "", new Animation("", false, 0, 0, []) }
+        { "", new Animation("", false, 0, 0, []) },
     };
 
     private readonly RenderObject _instance;
@@ -23,9 +23,7 @@ public sealed class Animator
         _instance = instance;
     }
 
-    public void SetDefaultSprite(IntRect rect) {
-        _defaultSprite = rect;
-    }
+    public void SetDefaultSprite(IntRect rect) => _defaultSprite = rect;
 
     public IntRect GetDefaultSprite() => _defaultSprite;
 
@@ -40,9 +38,7 @@ public sealed class Animator
         }
     }
 
-    public void PauseAnimation() {
-        CurrentAnimation.Pause();
-    }
+    public void PauseAnimation() => CurrentAnimation.Pause();
 
     public void StopAnimation() {
         CurrentAnimation.Reset();

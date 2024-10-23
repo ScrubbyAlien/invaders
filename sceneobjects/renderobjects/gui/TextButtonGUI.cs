@@ -14,13 +14,11 @@ public sealed class TextButtonGUI : TextGUI, IClickable
     }
 
     protected override void Initialize() {
-        Animation selected = new Animation("selected", true, 60, 0, selectedFrames);
+        Animation selected = new("selected", true, 60, 0, selectedFrames);
         animator.AddAnimation(selected);
     }
 
-    public void Select() {
-        animator.PlayAnimation("selected", true);
-    }
+    public void Select() => animator.PlayAnimation("selected", true);
 
     public void Deselect() {
         animator.StopAnimation();
@@ -32,20 +30,16 @@ public sealed class TextButtonGUI : TextGUI, IClickable
         Deselect();
     }
 
-
-    public void Click() {
-        Clicked?.Invoke();
-    }
+    public void Click() => Clicked?.Invoke();
 
     private readonly Animation.FrameRenderer[] selectedFrames = [
-        (animatable, target) =>
-        {
+        (animatable, target) => {
             float progress = animatable.Animator.FrameCount / 13f;
             progress %= MathF.PI; // resulting sin value should always be positive
             byte lerp = (byte)MathF.Round(float.Lerp(_white, _darkGray, MathF.Sin(progress)));
-            Color lerpedColor = new Color(lerp, lerp, lerp);
+            Color lerpedColor = new(lerp, lerp, lerp);
             animatable.Text.FillColor = lerpedColor;
             target.Draw(animatable.Text);
-        }
+        },
     ];
 }

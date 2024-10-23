@@ -25,7 +25,7 @@ public sealed class FadingTextGUI : TextGUI
         _fadeTimer += deltaTime;
         float percent = _fadeTimer / _fadeTime;
         byte alpha = (byte)MathF.Round(255 - 255 * percent);
-        Color fading = new Color(255, 255, 255, alpha);
+        Color fading = new(255, 255, 255, alpha);
         text.FillColor = fading;
         if (_fadeTimer >= _fadeTime) {
             Scene.QueueDestroy(this);

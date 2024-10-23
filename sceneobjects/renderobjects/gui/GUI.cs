@@ -9,11 +9,7 @@ public abstract class GUI : RenderObject, ISectionable
 
     protected GUI(string textureName, IntRect initRect, float scale) : base(textureName, initRect, scale) { }
 
-    public virtual void SetActiveSelection() {
-        _inActiveSelection = true;
-    }
+    public virtual void SetActiveSelection() => _inActiveSelection = true;
 
-    public virtual void SetInactiveSelection() {
-        _inActiveSelection = false;
-    }
+    public virtual void SetInactiveSelection() => _inActiveSelection = false;
 }

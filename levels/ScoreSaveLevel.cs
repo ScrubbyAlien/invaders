@@ -12,12 +12,12 @@ public sealed class ScoreSaveLevel() : Level("scoresave")
         SetBackgroundMusic("finale");
         SetBackground();
 
-        TextGUI message = new TextGUI("");
+        TextGUI message = new("");
         message.AddTag(SceneObjectTag.Message);
         message.Position = MiddleOfScreen(message.Bounds, new Vector2f(0, -280));
         AddObject(message);
 
-        TextInputGUI input = new TextInputGUI(10);
+        TextInputGUI input = new(10);
         input.PositionCalculator(o => MiddleOfScreen(o.Bounds, new Vector2f(0, 70)));
         AddObject(input);
 

@@ -35,17 +35,11 @@ public sealed class Animation
         AddFrames(frames);
     }
 
-    public void Play() {
-        _playingAnimation = true;
-    }
+    public void Play() => _playingAnimation = true;
 
-    public void Pause() {
-        _playingAnimation = false;
-    }
+    public void Pause() => _playingAnimation = false;
 
-    public void Unpause() {
-        _playingAnimation = true;
-    }
+    public void Unpause() => _playingAnimation = true;
 
     public void Reset() {
         _currentFrame = 0;
@@ -54,9 +48,8 @@ public sealed class Animation
         _playingAnimation = false;
     }
 
-    public void DrawFrame(Animatable animatable, RenderTarget target) {
+    public void DrawFrame(Animatable animatable, RenderTarget target) =>
         _frameRenderers[_currentFrame](animatable, target);
-    }
 
     public void ProgressAnimation(float deltaTime) {
         if (!_playingAnimation) return;
@@ -84,7 +77,5 @@ public sealed class Animation
         if (!_playingAnimation) AnimationFinished?.Invoke(this);
     }
 
-    private void AddFrames(FrameRenderer[] frames) {
-        _frameRenderers.AddRange(frames);
-    }
+    private void AddFrames(FrameRenderer[] frames) => _frameRenderers.AddRange(frames);
 }

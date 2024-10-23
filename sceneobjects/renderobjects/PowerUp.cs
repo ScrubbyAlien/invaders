@@ -15,7 +15,7 @@ public sealed class PowerUp : RenderObject
     public static readonly Dictionary<string, Types> StringToType = new() {
         { "triple", Types.TripleShot },
         { "health", Types.RepairShip },
-        { "speed", Types.ThrusterBoost }
+        { "speed", Types.ThrusterBoost },
     };
 
     public PowerUp(string name, Vector2f position) : base("invaders", TextureRects[name + "Power"], Scale) {
@@ -23,7 +23,6 @@ public sealed class PowerUp : RenderObject
         Position = position;
         _type = StringToType[name];
     }
-
 
     protected override void Initialize() {
         _background = Scene.FindByType<Background>();
@@ -38,7 +37,7 @@ public sealed class PowerUp : RenderObject
         // if there is no invasion going on there shouldn't be any power ups on screen
         if (!Scene.FindAllByType<Invasion>().Any()) Scene.QueueDestroy(this);
 
-        Vector2f velocity = new Vector2f(0, _background?.ScrollSpeed ?? 0);
+        Vector2f velocity = new(0, _background?.ScrollSpeed ?? 0);
         Position += velocity * deltaTime;
 
         if (Position.Y > Program.ScreenHeight) Scene.QueueDestroy(this);
@@ -54,6 +53,6 @@ public sealed class PowerUp : RenderObject
     {
         TripleShot,
         RepairShip,
-        ThrusterBoost
+        ThrusterBoost,
     }
 }

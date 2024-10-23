@@ -23,7 +23,7 @@ public abstract class AbstractEnemy : Actor
         { 3, 30f },
         { 4, 35f },
         { 5, 35f },
-        { 6, 40f }
+        { 6, 40f },
     };
 
     protected AbstractEnemy(string textureName, IntRect initRect, float scale) :
@@ -51,14 +51,13 @@ public abstract class AbstractEnemy : Actor
 
         horizontalSpeed = new Random().Next(2) == 0 ? horizontalSpeed : -horizontalSpeed;
 
-
         foreach (IntersectResult<AbstractEnemy> r in
                  this.FindIntersectingEntities<AbstractEnemy>(CollisionLayer.Enemy)) {
             Position += r.Diff;
         }
 
-        Animation death = new Animation("death", true, 18, deathAnimationLength, explosionFrames);
-        Animation blink = new Animation("blink", true, 45, 0.3f, blinkFrames);
+        Animation death = new("death", true, 18, deathAnimationLength, explosionFrames);
+        Animation blink = new("blink", true, 45, 0.3f, blinkFrames);
         animator.AddAnimation(death);
         animator.AddAnimation(blink);
         SetBulletSoundEffect("enemy_shot");
@@ -88,14 +87,11 @@ public abstract class AbstractEnemy : Actor
     protected virtual void Move(float deltaTime) {
         if (WillDie) return;
 
-        Vector2f velocity = new Vector2f(horizontalSpeed, GetVerticalSpeed());
+        Vector2f velocity = new(horizontalSpeed, GetVerticalSpeed());
         TryMoveWithinBounds(velocity * deltaTime, Settings.MarginSide, 0);
     }
 
-
-    private void Reverse() {
-        horizontalSpeed = -horizontalSpeed;
-    }
+    private void Reverse() => horizontalSpeed = -horizontalSpeed;
 
     protected override void OnOutsideScreen((ScreenState x, ScreenState y) state, Vector2f outsidePos,
         out Vector2f adjustedPos) {
@@ -127,9 +123,7 @@ public abstract class AbstractEnemy : Actor
         return _speedByLevel[-1] + touchedBottom * 3;
     }
 
-    public override void HitByBullet(Bullet bullet) {
-        TakeDamage(bullet.Damage);
-    }
+    public override void HitByBullet(Bullet bullet) => TakeDamage(bullet.Damage);
 
     protected override void TakeDamage(int damage) {
         currentHealth -= damage;

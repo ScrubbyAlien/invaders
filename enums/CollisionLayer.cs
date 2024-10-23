@@ -5,5 +5,5 @@ public enum CollisionLayer
     Player,
     Enemy,
     PowerUp,
-    None
+    None,
 }

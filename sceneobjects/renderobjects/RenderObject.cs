@@ -14,7 +14,7 @@ public abstract class RenderObject : SceneObject
     public bool Hidden => _hidden;
 
     protected RenderObject(string textureName, IntRect initRect, float scale) {
-        animator = new(this);
+        animator = new Animator(this);
         if (initRect.Width != 0) sprite.Texture = AssetManager.LoadTexture(textureName);
         sprite.TextureRect = initRect;
         sprite.Scale = new Vector2f(scale, scale); // scale is constructor parameter so it can be changed by children
@@ -29,25 +29,21 @@ public abstract class RenderObject : SceneObject
 
     public virtual CollisionLayer Layer { get; set; } = CollisionLayer.None;
 
-    public override void Update(float deltaTime) {
-        animator.ProgressAnimation(deltaTime);
-    }
+    public override void Update(float deltaTime) => animator.ProgressAnimation(deltaTime);
 
     public virtual void Render(RenderTarget target) {
-        if (animator.IsAnimated) animator.RenderAnimation(target);
-        else target.Draw(sprite);
+        if (animator.IsAnimated) {
+            animator.RenderAnimation(target);
+        }
+        else {
+            target.Draw(sprite);
+        }
     }
 
-    public void Hide() {
-        _hidden = true;
-    }
-
-    public void Unhide() {
-        _hidden = false;
-    }
+    public void Hide() => _hidden = true;
+    public void Unhide() => _hidden = false;
 
     public void SetZIndex(int index) => zIndex = index;
-
 
     public static int CompareByZIndex(RenderObject? e1, RenderObject? e2) {
         if (e1 == null && e2 == null) return 0;
@@ -56,15 +52,11 @@ public abstract class RenderObject : SceneObject
         return e1.zIndex - e2.zIndex;
     }
 
-    protected static Animation.FrameRenderer BasicFrameRenderer(IntRect rect) {
-        return (animatable, target) =>
-        {
+    protected static Animation.FrameRenderer BasicFrameRenderer(IntRect rect) =>
+        (animatable, target) => {
             animatable.SetTextureRect(rect);
             target.Draw(animatable.Sprite);
         };
-    }
 
-    public virtual Animatable GetAnimatable() {
-        return new Animatable(this, sprite, animator);
-    }
+    public virtual Animatable GetAnimatable() => new(this, sprite, animator);
 }

@@ -52,10 +52,7 @@ public sealed class ScoreManager : SceneObject
         GlobalEventManager.PlayerHit += ResetMultiplier;
     }
 
-
-    public override void Destroy() {
-        Scene.QueueSpawn(new LevelInfo<int>(_currentScore, "score"));
-    }
+    public override void Destroy() => Scene.QueueSpawn(new LevelInfo<int>(_currentScore, "score"));
 
     public override void Update(float deltaTime) {
         _multiplierTimer += deltaTime;
@@ -69,7 +66,6 @@ public sealed class ScoreManager : SceneObject
         _multiplierText.SetText($"x{_multiplier}");
         _multiplierText.Position = GetMultiplierTextPosition();
 
-
         if (_multiplier > 1) {
             _multiplierBar.Unhide();
             float percent = _multiplierTimer / _multiplierLifeSpan;
@@ -80,7 +76,6 @@ public sealed class ScoreManager : SceneObject
             _multiplierBar.Hide();
         }
 
-
         Scene.FindByType(out Invasion? invasion);
         if (_passiveScore > 0 && !invasion!.InTransition) {
             _passiveScoreTimer += deltaTime;
@@ -90,7 +85,6 @@ public sealed class ScoreManager : SceneObject
             }
         }
     }
-
 
     private void OnEnemyDeath(AbstractEnemy enemy) {
         int score = enemy.ScoreValue * _multiplier;
@@ -106,9 +100,7 @@ public sealed class ScoreManager : SceneObject
         IncrementMultiplier();
     }
 
-    private void GainScore(int scoreGained) {
-        _currentScore += scoreGained * _multiplier;
-    }
+    private void GainScore(int scoreGained) => _currentScore += scoreGained * _multiplier;
 
     private void IncrementMultiplier() {
         _multiplier++;
@@ -121,20 +113,18 @@ public sealed class ScoreManager : SceneObject
         _multiplierTimer = 0f;
     }
 
-    private Vector2f GetScoreTextPosition() {
-        return _middleGui.GetPositionInAvailableArea(new Vector2f(
+    private Vector2f GetScoreTextPosition() =>
+        _middleGui.GetPositionInAvailableArea(new Vector2f(
             (_middleGui.AvailableArea.Width - _scoreText.Bounds.Width) / 2f,
             1.5f // should be 6.5f but if I set it to that the text appears too low for some reason, idk why
         ));
-    }
 
-    private Vector2f GetMultiplierTextPosition() {
-        return _rightGui.GetPositionInAvailableArea(new Vector2f(6.5f, 6.5f)); // it works here! makes no sense
-    }
+    private Vector2f GetMultiplierTextPosition() =>
+        _rightGui.GetPositionInAvailableArea(new Vector2f(6.5f, 6.5f)); // it works here! makes no sense
 
     private static void CreateFadingScoreText(float fadeTime, string text, uint size,
         Func<FadingTextGUI, Vector2f> positionFunc, Vector2f drift) {
-        FadingTextGUI fadingScore = new FadingTextGUI(fadeTime, text, size, drift);
+        FadingTextGUI fadingScore = new(fadeTime, text, size, drift);
         fadingScore.Position = positionFunc(fadingScore);
         Scene.QueueSpawn(fadingScore);
     }

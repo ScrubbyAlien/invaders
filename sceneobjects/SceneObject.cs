@@ -27,13 +27,9 @@ public abstract class SceneObject
 
     public virtual void Update(float deltaTime) { }
 
-    public void AddTag(SceneObjectTag tag) {
-        _tags.Add(tag);
-    }
+    public void AddTag(SceneObjectTag tag) => _tags.Add(tag);
 
-    public bool HasTag(SceneObjectTag tag) {
-        return _tags.Contains(tag);
-    }
+    public bool HasTag(SceneObjectTag tag) => _tags.Contains(tag);
 
     public virtual void Pause() => _paused = true;
     public virtual void Unpause() => _paused = false;

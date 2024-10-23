@@ -33,7 +33,9 @@ public sealed class TextInputGUI : TextGUI
                 RemoveLastCharacter();
             }
         }
-        else _backspacePressed = false;
+        else {
+            _backspacePressed = false;
+        }
 
         if (AreAnyKeysPressed([Enter]) && text.DisplayedString.Length > 0) {
             if (!_enterPressed) {
@@ -41,10 +43,12 @@ public sealed class TextInputGUI : TextGUI
                 InputEntered?.Invoke(this, text.DisplayedString);
             }
         }
-        else _enterPressed = false;
+        else {
+            _enterPressed = false;
+        }
 
         Position = _positionCalculator(this);
-        Vector2f caretPosition = new Vector2f(Position.X + Bounds.Width + 4, Position.Y - 5);
+        Vector2f caretPosition = new(Position.X + Bounds.Width + 4, Position.Y - 5);
         _caret.Position = caretPosition;
         if (text.DisplayedString.Length == 0) {
             FloatRect glyphBounds = text.Font.GetGlyph('|', text.CharacterSize, false, 0).Bounds;
@@ -52,9 +56,8 @@ public sealed class TextInputGUI : TextGUI
         }
     }
 
-    public void PositionCalculator(Func<RenderObject, Vector2f> positionCalculator) {
+    public void PositionCalculator(Func<RenderObject, Vector2f> positionCalculator) =>
         _positionCalculator = positionCalculator;
-    }
 
     private void OnTextEntered(object? o, TextEventArgs args) {
         if (text.DisplayedString.Length < _maxCharacterCount) {

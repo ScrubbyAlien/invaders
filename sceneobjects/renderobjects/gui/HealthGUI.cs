@@ -15,13 +15,9 @@ public sealed class HealthGUI : SpriteGUI
         GlobalEventManager.PlayerChangeHealth += OnHealthChange;
     }
 
-    protected override void Initialize() {
-        _leftGui = Scene.FindByTag<SpriteGUI>(SceneObjectTag.GuiBackgroundLeft)!;
-    }
+    protected override void Initialize() => _leftGui = Scene.FindByTag<SpriteGUI>(SceneObjectTag.GuiBackgroundLeft)!;
 
-    public override void Destroy() {
-        GlobalEventManager.PlayerChangeHealth -= OnHealthChange;
-    }
+    public override void Destroy() => GlobalEventManager.PlayerChangeHealth -= OnHealthChange;
 
     public override void Render(RenderTarget target) {
         for (int i = 0; i < _currentHealth; i++) {
@@ -44,7 +40,5 @@ public sealed class HealthGUI : SpriteGUI
         }
     }
 
-    private void OnHealthChange(int diff) {
-        _currentHealth += diff;
-    }
+    private void OnHealthChange(int diff) => _currentHealth += diff;
 }

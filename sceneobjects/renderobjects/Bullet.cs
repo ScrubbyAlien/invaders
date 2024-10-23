@@ -3,7 +3,6 @@ using SFML.Graphics;
 using SFML.System;
 using static invaders.Utility;
 
-
 namespace invaders.sceneobjects.renderobjects;
 
 public class Bullet : RenderObject
@@ -21,7 +20,7 @@ public class Bullet : RenderObject
         { "runner", TextureRects["runnerBullet"] },
         { "squid", TextureRects["squidBullet"] },
         { "juggernautLeft", TextureRects["juggernautBullet1"] },
-        { "juggernautRight", TextureRects["juggernautBullet2"] }
+        { "juggernautRight", TextureRects["juggernautBullet2"] },
     };
 
     /// <summary>
@@ -83,7 +82,5 @@ public class Bullet : RenderObject
         }
     }
 
-    public void Evaporate() {
-        Dead = true;
-    }
+    public void Evaporate() => Dead = true;
 }

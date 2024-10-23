@@ -7,5 +7,5 @@ public enum SceneObjectTag
     GuiBackgroundRight,
     GuiBackgroundLeft,
     PauseMenuItem,
-    Message
+    Message,
 }

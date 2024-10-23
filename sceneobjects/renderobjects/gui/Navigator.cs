@@ -53,7 +53,7 @@ public abstract class Navigator(
 
     private List<Keyboard.Key> _navigationalKeys {
         get {
-            List<Keyboard.Key> r = new List<Keyboard.Key>();
+            List<Keyboard.Key> r = new();
             r.AddRange(_increaseIndexKeys);
             r.AddRange(_decreaseIndexKeys);
             r.AddRange(_oIncreaseIndexKeys);
@@ -64,18 +64,19 @@ public abstract class Navigator(
 
     protected virtual List<Keyboard.Key> _allKeys {
         get {
-            List<Keyboard.Key> r = new List<Keyboard.Key>();
+            List<Keyboard.Key> r = new();
             r.AddRange(_navigationalKeys);
             return r;
         }
     }
 
-
     public override void Update(float deltaTime) {
         if (_firstFrame && AreAnyKeysPressed(_allKeys.ToArray())) {
             return;
         }
-        else _firstFrame = false;
+        else {
+            _firstFrame = false;
+        }
 
         if (AreAnyKeysPressed(_oIncreaseIndexKeys) && !_keyPressed) OrthogonalExit?.Invoke(true);
         if (AreAnyKeysPressed(_oDecreaseIndexKeys) && !_keyPressed) OrthogonalExit?.Invoke(false);
@@ -143,9 +144,7 @@ public abstract class Navigator(
     protected abstract void SelectNext(int pointer);
     protected virtual void HandleLastIndex(int last) { }
 
-    protected void PointerAction(Action<int> action) {
-        action(_pointerIndex);
-    }
+    protected void PointerAction(Action<int> action) => action(_pointerIndex);
 
     public virtual void SetActiveSelection() {
         _navigateSound.Play();

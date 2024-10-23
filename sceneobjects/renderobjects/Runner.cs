@@ -26,7 +26,7 @@ public sealed class Runner : AbstractEnemy
         _timeUntilFire = GetNewFireTime();
 
         animator.SetDefaultSprite(TextureRects["runner1"]);
-        Animation idle = new Animation("idle", true, 3, 0, idleFrames);
+        Animation idle = new("idle", true, 3, 0, idleFrames);
         animator.AddAnimation(idle);
         animator.PlayAnimation("idle", true);
         bulletSoundEffect.Volume = 25;
@@ -55,12 +55,10 @@ public sealed class Runner : AbstractEnemy
         }
     }
 
-    private static float GetNewFireTime() {
-        return 2f + new Random().NextSingle() * 2;
-    }
+    private static float GetNewFireTime() => 2f + new Random().NextSingle() * 2;
 
     private readonly Animation.FrameRenderer[] idleFrames = [
         BasicFrameRenderer(TextureRects["runner1"]),
-        BasicFrameRenderer(TextureRects["runner2"])
+        BasicFrameRenderer(TextureRects["runner2"]),
     ];
 }

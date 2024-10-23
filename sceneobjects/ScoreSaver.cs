@@ -57,7 +57,7 @@ public sealed class ScoreSaver : SceneObject
         // remove any preexisting warnings
         Scene.FindAllByType<FadingTextGUI>().ForEach(o => Scene.QueueDestroy(o));
 
-        FadingTextGUI fadingWarning = new FadingTextGUI(
+        FadingTextGUI fadingWarning = new(
             2f,
             "Another pilot with that\nname already exists",
             30,

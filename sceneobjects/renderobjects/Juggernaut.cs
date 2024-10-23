@@ -45,7 +45,7 @@ public class Juggernaut : AbstractEnemy
         _timeUntilFire = GetNewFireTime();
 
         animator.SetDefaultSprite(TextureRects["juggernaut"]);
-        Animation idle = new Animation("idle", false, 1, 0, idleFrames);
+        Animation idle = new("idle", false, 1, 0, idleFrames);
         animator.AddAnimation(idle);
 
         base.Initialize();
@@ -95,8 +95,8 @@ public class Juggernaut : AbstractEnemy
     private void ShootHand(bool left) {
         Bullet bullet;
         bullet = left
-            ? new("juggernautLeft", bulletSpeed, bulletDamage)
-            : new("juggernautRight", bulletSpeed, bulletDamage);
+            ? new Bullet("juggernautLeft", bulletSpeed, bulletDamage)
+            : new Bullet("juggernautRight", bulletSpeed, bulletDamage);
         bullet.Position = left ? bulletOrigin : bulletOriginRight;
         bullet.Layer = CollisionLayer.Enemy;
         Scene.QueueSpawn(bullet);
@@ -117,11 +117,9 @@ public class Juggernaut : AbstractEnemy
         }
     }
 
-    private static float GetNewFireTime() {
-        return 1.3f;
-    }
+    private static float GetNewFireTime() => 1.3f;
 
     private readonly Animation.FrameRenderer[] idleFrames = [
-        (animatable, target) => { target.Draw(animatable.Sprite); }
+        (animatable, target) => { target.Draw(animatable.Sprite); },
     ];
 }

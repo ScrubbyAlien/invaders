@@ -21,9 +21,7 @@ public static class GlobalEventManager
     public static event ValueChangeEvent<int>? PlayerChangeHealth;
     private static int _playerHealthDiff;
 
-    public static void PublishPlayerChangeHealth(int diff) {
-        _playerHealthDiff += diff;
-    }
+    public static void PublishPlayerChangeHealth(int diff) => _playerHealthDiff += diff;
 
     private static void BroadcastPlayerChangeHealth() {
         if (_playerHealthDiff != 0) {
@@ -44,18 +42,15 @@ public static class GlobalEventManager
         _newBackgroundScrollLerpTime = lerpTime;
     }
 
-    private static void BroadcastBackgroundSetScrollSpeed() {
+    private static void BroadcastBackgroundSetScrollSpeed() =>
         BackgroundSetScrollSpeed?.Invoke(_newBackgroundScroll, _newBackgroundScrollLerpTime);
-    }
 
     public delegate void SimpleEvent();
 
     public static event SimpleEvent? PlayerDeath;
     private static bool _broadcastPlayerDeath;
 
-    public static void PublishPlayerDeath() {
-        _broadcastPlayerDeath = true;
-    }
+    public static void PublishPlayerDeath() => _broadcastPlayerDeath = true;
 
     private static void BroadcastPlayerDeath() {
         if (_broadcastPlayerDeath) PlayerDeath?.Invoke();
@@ -65,24 +60,19 @@ public static class GlobalEventManager
     public static event SimpleEvent? PlayerHit;
     private static bool _broadcastPlayerHit;
 
-    public static void PublishPlayerHit() {
-        _broadcastPlayerHit = true;
-    }
+    public static void PublishPlayerHit() => _broadcastPlayerHit = true;
 
     private static void BroadcastPlayerHit() {
         if (_broadcastPlayerHit) PlayerHit?.Invoke();
         _broadcastPlayerHit = false;
     }
 
-
     public delegate void EnemyEvent(AbstractEnemy enemy);
 
     public static event EnemyEvent? EnemyDeath;
     private static readonly List<AbstractEnemy> _deadEnemies = new();
 
-    public static void PublishEnemyDead(AbstractEnemy enemy) {
-        _deadEnemies.Add(enemy);
-    }
+    public static void PublishEnemyDead(AbstractEnemy enemy) => _deadEnemies.Add(enemy);
 
     private static void BroadcastEnemyDeath() {
         foreach (AbstractEnemy enemy in _deadEnemies) {

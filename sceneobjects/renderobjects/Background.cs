@@ -29,13 +29,9 @@ public sealed class Background : RenderObject
         _seed = seed;
     }
 
-    protected override void Initialize() {
-        GlobalEventManager.BackgroundSetScrollSpeed += SetNewScrollSpeed;
-    }
+    protected override void Initialize() => GlobalEventManager.BackgroundSetScrollSpeed += SetNewScrollSpeed;
 
-    public override void Destroy() {
-        GlobalEventManager.BackgroundSetScrollSpeed -= SetNewScrollSpeed;
-    }
+    public override void Destroy() => GlobalEventManager.BackgroundSetScrollSpeed -= SetNewScrollSpeed;
 
     public override void Update(float deltaTime) {
         if (_lerping) {
@@ -68,7 +64,7 @@ public sealed class Background : RenderObject
     }
 
     private void GenerateStarMap() {
-        Random random = new Random();
+        Random random = new();
         if (_seed != 0) random = new Random(_seed);
 
         _starMap.Clear();
@@ -87,7 +83,7 @@ public sealed class Background : RenderObject
                         7 => "mediumStar",
                         8 => "largeStar",
                         9 => "largestStar",
-                        _ => "smallStar"
+                        _ => "smallStar",
                     };
                 }
             }

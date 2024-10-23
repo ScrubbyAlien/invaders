@@ -17,7 +17,7 @@ public class TextGUI : GUI, INavigatable
 
     public TextGUI(string displayText, uint size = 10, Alignment alignment = Alignment.Center) : base("invaders",
         new IntRect(), 1) {
-        Animation blink = new Animation("blink", true, 3, 0, blinking);
+        Animation blink = new("blink", true, 3, 0, blinking);
         animator.AddAnimation(blink);
         _alignment = alignment;
         text.DisplayedString = displayText;
@@ -29,13 +29,15 @@ public class TextGUI : GUI, INavigatable
     }
 
     public override void Render(RenderTarget target) {
-        if (animator.IsAnimated && Active) animator.RenderAnimation(target);
-        else target.Draw(text);
+        if (animator.IsAnimated && Active) {
+            animator.RenderAnimation(target);
+        }
+        else {
+            target.Draw(text);
+        }
     }
 
-    public void Activate() {
-        text.FillColor = Color.White;
-    }
+    public void Activate() => text.FillColor = Color.White;
 
     public void Deactivate() {
         animator.StopAnimation();
@@ -63,7 +65,7 @@ public class TextGUI : GUI, INavigatable
         Dictionary<char, float> characterToWidth = new() {
             // the width of ' ' when gotten from GetGlyph is 0 so we set it manually
             // the actual width of the space glyph is 1/3 of the A glyph, according to testing
-            { ' ', text.Font.GetGlyph('A', text.CharacterSize, false, 0).Bounds.Width / 3f }
+            { ' ', text.Font.GetGlyph('A', text.CharacterSize, false, 0).Bounds.Width / 3f },
         };
         HashSet<char> charactersInText = new() { ' ' };
         foreach (char c in text.DisplayedString) {
@@ -78,8 +80,7 @@ public class TextGUI : GUI, INavigatable
         List<string> lines = text.DisplayedString.Split("\n").ToList();
         if (lines.Count == 1) return;
         List<float> lineLengths =
-            lines.Select(line =>
-            {
+            lines.Select(line => {
                 return line.ToCharArray()
                     .ToList()
                     .Select(c => characterToWidth[c]) // convert characters to their width
@@ -111,18 +112,18 @@ public class TextGUI : GUI, INavigatable
             }
         }
 
-        text.DisplayedString = String.Join("\n", lines);
+        text.DisplayedString = string.Join("\n", lines);
     }
 
     private readonly Animation.FrameRenderer[] blinking = [
         (_, _) => { },
-        (animatable, target) => { target.Draw(animatable.Text); }
+        (animatable, target) => { target.Draw(animatable.Text); },
     ];
 
     public enum Alignment
     {
         Left,
         Center,
-        Right
+        Right,
     }
 }

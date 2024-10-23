@@ -22,7 +22,7 @@ public class EndlessManager : Invasion
         ('g', 0.8f),
         ('r', 0.07f),
         ('s', 0.07f),
-        ('j', 0.02f)
+        ('j', 0.02f),
     };
 
     private float _timeFromStart;

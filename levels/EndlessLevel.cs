@@ -9,13 +9,13 @@ public sealed class EndlessLevel() : Level("endless")
     protected override void LoadObjects() {
         SetBackgroundMusic("invasion");
 
-        Player player = new Player();
+        Player player = new();
         AddObject(player);
         SetBackground();
 
         CreateTopGuiBackground();
 
-        HealthGUI healthBar = new HealthGUI();
+        HealthGUI healthBar = new();
         healthBar.SetZIndex(310);
         AddObject(healthBar);
 

@@ -11,23 +11,23 @@ public sealed class MainMenuLevel() : Level("mainmenu")
 
         SetBackground();
 
-        SpriteGUI title = new SpriteGUI(TextureRects["title"]);
+        SpriteGUI title = new(TextureRects["title"]);
         title.SetScale(10);
         title.Position = MiddleOfScreen(title.Bounds, new Vector2f(0, -200));
 
         AddObject(title);
 
-        TextButtonGUI playButton = new TextButtonGUI("Play");
+        TextButtonGUI playButton = new("Play");
         playButton.Position = MiddleOfScreen(playButton.Bounds, new Vector2f(0, 70));
-        TextButtonGUI highScoreButton = new TextButtonGUI("Highscores");
+        TextButtonGUI highScoreButton = new("Highscores");
         highScoreButton.Position = MiddleOfScreen(highScoreButton.Bounds, new Vector2f(0, 140));
-        TextButtonGUI quitButton = new TextButtonGUI("Quit");
+        TextButtonGUI quitButton = new("Quit");
         quitButton.Position = MiddleOfScreen(quitButton.Bounds, new Vector2f(0, 210));
         AddObject(playButton);
         AddObject(highScoreButton);
         AddObject(quitButton);
 
-        ButtonNavigator manager = new ButtonNavigator();
+        ButtonNavigator manager = new();
         manager.AddButton(playButton, () => Scene.LoadLevel("gamemodeselect"));
         manager.AddButton(highScoreButton, () => Scene.LoadLevel("highscores"));
         manager.AddButton(quitButton, () => Scene.CloseWindow());
