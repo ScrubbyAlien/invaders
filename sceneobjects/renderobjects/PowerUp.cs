@@ -35,13 +35,13 @@ public sealed class PowerUp : RenderObject
         { // there can be no more than two of the same type of power up on the screen at the same time
             Scene.QueueDestroy(this);
         }
-        
-        // if there is no invasion going on there shouldn't be any power ups on screen
-        if (Scene.FindAllByType<Invasion>().Any()) Scene.QueueDestroy(this);
     }
 
     public override void Update(float deltaTime)
     {
+        // if there is no invasion going on there shouldn't be any power ups on screen
+        if (!Scene.FindAllByType<Invasion>().Any()) Scene.QueueDestroy(this);
+        
         Vector2f velocity = new Vector2f(0, _background?.ScrollSpeed ?? 0);
         Position += velocity * deltaTime;
         

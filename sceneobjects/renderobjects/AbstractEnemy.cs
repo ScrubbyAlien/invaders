@@ -84,7 +84,7 @@ public abstract class AbstractEnemy : Actor
     {
         base.Update(deltaTime);
         Move(deltaTime);
-        if (_blinking)
+        if (_blinking && !WillDie)
         {
             if (animator.CurrentAnimation.Name != "blink")
             {

@@ -64,10 +64,11 @@ public abstract class Invasion : SceneObject
     
     protected void DrawText(string text, Vector2f positionFromMiddle)
     {
+        
         messageText.Unhide();
         messageText.SetText(text);
         messageText.Position = MiddleOfScreen(messageText.Bounds) + positionFromMiddle;
-        messageText.GetAnimatable().Animator.PlayAnimation("blink", true);
+        messageText.GetAnimatable().Animator.PlayAnimation("blink", false);
     }
 
     protected void HideText()

@@ -39,12 +39,12 @@ public sealed class PauseManager(Keyboard.Key pauseKey) : SceneObject
     {
         foreach (SceneObject o in Scene.FindAllByType<SceneObject>())
         {
-            if (!o.HasTag(SceneObjectTag.PauseMenuItem)) o.Pause();
-            else 
+            if (o.HasTag(SceneObjectTag.PauseMenuItem))
             {
                 o.Unpause();
-                if (o is RenderObject r) r.Unhide(); 
+                if (o is RenderObject r) r.Unhide();
             }
+            else o.Pause();
         }
 
         _isPaused = true;
@@ -54,12 +54,12 @@ public sealed class PauseManager(Keyboard.Key pauseKey) : SceneObject
     {
         foreach (SceneObject o in Scene.FindAllByType<SceneObject>())
         {
-            if (!o.HasTag(SceneObjectTag.PauseMenuItem)) o.Unpause();
-            else 
+            if (o.HasTag(SceneObjectTag.PauseMenuItem))
             {
                 o.Pause();
-                if (o is RenderObject r) r.Hide(); 
+                if (o is RenderObject r) r.Hide();
             }
+            else o.Unpause();
         }
 
         _isPaused = false;

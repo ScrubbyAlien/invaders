@@ -116,9 +116,12 @@ public abstract class Actor : RenderObject
     protected readonly Animation.FrameRenderer[] explosionFrames =
     {
         (animatable, target) =>
-        { // simulates explosion by randomly placing bullet sprites over the enemy rapidly
+        { // simulates explosion by randomly placing bullet sprites over the actor rapidly
             animatable.SetTextureRect(animatable.Animator.GetDefaultSprite());
             target.Draw(animatable.Drawable);
+
+            string name = animatable.Instance.GetType().Name;
+            if (name == "Runner") Console.WriteLine(name);
             
             // draw explosion
             Sprite explosion = new Sprite();
