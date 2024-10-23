@@ -9,14 +9,12 @@ namespace invaders;
 
 public class ConfirmationPrompt
 {
-    
     private readonly ButtonNavigator _yesOrNoMenu = new(false, false, true);
     private readonly TextButtonGUI _yesButton = new("yes");
     private readonly TextButtonGUI _noButton = new("no");
     private readonly List<SceneObject> _prompt = new();
 
-    public ConfirmationPrompt(string message, Action yes, Action no)
-    {
+    public ConfirmationPrompt(string message, Action yes, Action no) {
         TextGUI messageText = new TextGUI(message);
         messageText.SetZIndex(1100);
         messageText.Position = MiddleOfScreen(messageText.Bounds, new Vector2f(0, -100));
@@ -48,7 +46,7 @@ public class ConfirmationPrompt
             ClosePrompt();
             no();
         });
-        
+
         _prompt.Add(background);
         _prompt.Add(messageText);
         _prompt.Add(_yesButton);
@@ -57,8 +55,7 @@ public class ConfirmationPrompt
         Scene.DeferredCall(_yesOrNoMenu, "SetIndex", [1]);
     }
 
-    private void ClosePrompt()
-    {
+    private void ClosePrompt() {
         Scene.FindAllByType<SceneObject>().ForEach(o =>
         {
             if (!o.HasTag(SceneObjectTag.PauseMenuItem)) o.Unpause();
@@ -66,8 +63,7 @@ public class ConfirmationPrompt
         Scene.QueueDestroy(_prompt);
     }
 
-    public void Prompt()
-    {
+    public void Prompt() {
         Scene.FindAllByType<SceneObject>().ForEach(o => o.Pause());
         Scene.QueueSpawn(_prompt);
     }

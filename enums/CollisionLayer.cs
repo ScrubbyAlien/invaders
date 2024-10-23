@@ -2,5 +2,8 @@ namespace invaders.enums;
 
 public enum CollisionLayer
 {
-    Player, Enemy, PowerUp, None
+    Player,
+    Enemy,
+    PowerUp,
+    None
 }

@@ -7,14 +7,13 @@ public class ScoresSaveObject : ISaveObject
     public Dictionary<string, int> Scores { get; set; } = new();
     public Dictionary<string, int> EndlessScores { get; set; } = new();
 
-    public bool AddEntry(string key, int value, bool endless = false)
-    {
-        if (endless)
-        {
+    public bool AddEntry(string key, int value, bool endless = false) {
+        if (endless) {
             if (EndlessScores.ContainsKey(key)) return false;
             EndlessScores.Add(key, value);
             return true;
         }
+
         if (Scores.ContainsKey(key)) return false;
         Scores.Add(key, value);
         return true;

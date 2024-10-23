@@ -15,52 +15,48 @@ public abstract class AbstractEnemy : Actor
 
     private static readonly List<string> _powerUps = new();
 
-    private static readonly Dictionary<int, float> _speedByLevel = new()
-    {
-        {-1, 50f},
-        {0, 20f},
-        {1, 25f},
-        {2, 30f},
-        {3, 30f},
-        {4, 35f},
-        {5, 35f},
-        {6, 40f}
+    private static readonly Dictionary<int, float> _speedByLevel = new() {
+        { -1, 50f },
+        { 0, 20f },
+        { 1, 25f },
+        { 2, 30f },
+        { 3, 30f },
+        { 4, 35f },
+        { 5, 35f },
+        { 6, 40f }
     };
 
-    protected AbstractEnemy(string textureName, IntRect initRect, float scale) : 
-           base(textureName, initRect, scale)
-    {
+    protected AbstractEnemy(string textureName, IntRect initRect, float scale) :
+        base(textureName, initRect, scale) {
         explosionSound.Volume = 25;
         _manager = null;
         deathAnimationLength = 0.5f;
 
-        foreach (string type in PowerUp.StringToType.Keys)
-        {
+        foreach (string type in PowerUp.StringToType.Keys) {
             _powerUps.Add(type);
         }
     }
 
     public override CollisionLayer Layer => CollisionLayer.Enemy;
-    
-    protected override void Initialize()
-    {
+
+    protected override void Initialize() {
         InitPosition = new Vector2f(
             new Random().Next(Settings.MarginSide, Program.ScreenWidth - Settings.MarginSide - (int)Bounds.Width),
-            new Random().Next((int) -Bounds.Height - Settings.SpawnInterval, (int) -Bounds.Height +  Settings.TopGuiHeight)
+            new Random().Next((int)-Bounds.Height - Settings.SpawnInterval, (int)-Bounds.Height + Settings.TopGuiHeight)
         );
         base.Initialize();
-        if (Scene.FindByType(out WaveManager? manager))
-        {
+        if (Scene.FindByType(out WaveManager? manager)) {
             _manager = manager;
         }
+
         horizontalSpeed = new Random().Next(2) == 0 ? horizontalSpeed : -horizontalSpeed;
-       
-        
-        foreach (IntersectResult<AbstractEnemy> r in this.FindIntersectingEntities<AbstractEnemy>(CollisionLayer.Enemy))
-        {
+
+
+        foreach (IntersectResult<AbstractEnemy> r in
+                 this.FindIntersectingEntities<AbstractEnemy>(CollisionLayer.Enemy)) {
             Position += r.Diff;
         }
-        
+
         Animation death = new Animation("death", true, 18, deathAnimationLength, explosionFrames);
         Animation blink = new Animation("blink", true, 45, 0.3f, blinkFrames);
         animator.AddAnimation(death);
@@ -69,62 +65,53 @@ public abstract class AbstractEnemy : Actor
         bulletSoundEffect.Volume = 25;
     }
 
-    public override void Destroy()
-    {
+    public override void Destroy() {
         int randomIndex = new Random().Next(_powerUps.Count);
         string powerUp = _powerUps[randomIndex];
-        
-        if (new Random().NextSingle() < powerUpSpawnChance)
-        {
+
+        if (new Random().NextSingle() < powerUpSpawnChance) {
             Scene.QueueSpawn(new PowerUp(powerUp, Position));
         }
     }
 
-    public override void Update(float deltaTime)
-    {
+    public override void Update(float deltaTime) {
         base.Update(deltaTime);
         Move(deltaTime);
-        if (_blinking && !WillDie)
-        {
-            if (animator.CurrentAnimation.Name != "blink")
-            {
+        if (_blinking && !WillDie) {
+            if (animator.CurrentAnimation.Name != "blink") {
                 _blinking = false;
                 animator.PlayAnimation("idle", true);
             }
         }
     }
 
-    protected virtual void Move(float deltaTime)
-    {
+    protected virtual void Move(float deltaTime) {
         if (WillDie) return;
-        
+
         Vector2f velocity = new Vector2f(horizontalSpeed, GetVerticalSpeed());
         TryMoveWithinBounds(velocity * deltaTime, Settings.MarginSide, 0);
     }
-    
-    
-    private void Reverse()
-    {
+
+
+    private void Reverse() {
         horizontalSpeed = -horizontalSpeed;
     }
 
-    protected override void OnOutsideScreen((ScreenState x, ScreenState y) state, Vector2f outsidePos, out Vector2f adjustedPos)
-    {
+    protected override void OnOutsideScreen((ScreenState x, ScreenState y) state, Vector2f outsidePos,
+        out Vector2f adjustedPos) {
         adjustedPos = outsidePos;
 
-        if (adjustedPos.Y > Program.ScreenHeight + Bounds.Height)
-        {
+        if (adjustedPos.Y > Program.ScreenHeight + Bounds.Height) {
             adjustedPos.Y = Settings.TopGuiHeight - Bounds.Height;
             touchedBottom++;
         }
-        
-        switch (state.x)
-        {
-            case ScreenState.OutSideLeft: 
+
+        switch (state.x) {
+            case ScreenState.OutSideLeft:
                 adjustedPos.X = Settings.MarginSide;
                 Reverse();
                 break;
-            case ScreenState.OutSideRight: 
+            case ScreenState.OutSideRight:
                 adjustedPos.X = Program.ScreenWidth - Bounds.Width - Settings.MarginSide;
                 Reverse();
                 break;
@@ -132,25 +119,21 @@ public abstract class AbstractEnemy : Actor
         }
     }
 
-    protected float GetVerticalSpeed()
-    {
-        if (_manager != null && _speedByLevel.TryGetValue(_manager.CurrentAssault, out float speed))
-        {
+    protected float GetVerticalSpeed() {
+        if (_manager != null && _speedByLevel.TryGetValue(_manager.CurrentAssault, out float speed)) {
             return speed + touchedBottom * 3;
         }
+
         return _speedByLevel[-1] + touchedBottom * 3;
     }
 
-    public override void HitByBullet(Bullet bullet)
-    {
+    public override void HitByBullet(Bullet bullet) {
         TakeDamage(bullet.Damage);
     }
 
-    protected override void TakeDamage(int damage)
-    {
+    protected override void TakeDamage(int damage) {
         currentHealth -= damage;
-        switch (currentHealth)
-        {
+        switch (currentHealth) {
             case > 0:
                 animator.PlayAnimation("blink", true);
                 _blinking = true;
@@ -161,8 +144,7 @@ public abstract class AbstractEnemy : Actor
         }
     }
 
-    protected override void Die()
-    {
+    protected override void Die() {
         base.Die();
         animator.StopAnimation();
         GlobalEventManager.PublishEnemyDead(this);

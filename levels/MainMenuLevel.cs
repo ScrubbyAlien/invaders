@@ -6,18 +6,17 @@ namespace invaders.levels;
 
 public sealed class MainMenuLevel() : Level("mainmenu")
 {
-    protected override void LoadObjects()
-    {
+    protected override void LoadObjects() {
         SetBackgroundMusic("mainmenu");
-        
+
         SetBackground();
 
         SpriteGUI title = new SpriteGUI(TextureRects["title"]);
         title.SetScale(10);
         title.Position = MiddleOfScreen(title.Bounds, new Vector2f(0, -200));
-        
+
         AddObject(title);
-        
+
         TextButtonGUI playButton = new TextButtonGUI("Play");
         playButton.Position = MiddleOfScreen(playButton.Bounds, new Vector2f(0, 70));
         TextButtonGUI highScoreButton = new TextButtonGUI("Highscores");

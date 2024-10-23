@@ -7,24 +7,22 @@ public class SpriteGUI : GUI
 {
     private const float _transparant = 50;
     private const float _opaque = 255;
-    
+
     private IntRect _availableArea;
-    public IntRect AvailableArea
-    {
-        get
-        {
+
+    public IntRect AvailableArea {
+        get {
             IntRect scaled = new IntRect(
-                    _availableArea.Left * (int)Scale,
-                    _availableArea.Top * (int)Scale,
-                    _availableArea.Width * (int)Scale,
-                    _availableArea.Height * (int)Scale
-                );
+                _availableArea.Left * (int)Scale,
+                _availableArea.Top * (int)Scale,
+                _availableArea.Width * (int)Scale,
+                _availableArea.Height * (int)Scale
+            );
             return scaled;
         }
     }
 
-    public SpriteGUI(IntRect initRect) : base("invaders", initRect, Scale)
-    {
+    public SpriteGUI(IntRect initRect) : base("invaders", initRect, Scale) {
         _availableArea = new IntRect(0, 0, initRect.Width, initRect.Height);
         Animation pulsing = new Animation("pulsing", true, 60, 0, pulsingFrames);
         Animation opaque = new Animation("opaque", false, 1, 0, opaqueFrames);
@@ -32,40 +30,35 @@ public class SpriteGUI : GUI
         animator.AddAnimation(opaque);
     }
 
-    public void SetAvailableArea(IntRect area)
-    {
+    public void SetAvailableArea(IntRect area) {
         _availableArea = area;
     }
 
-    public Vector2f GetPositionInAvailableArea(Vector2f position = new())
-    {
-        Vector2f positionInArea = Position + 
+    public Vector2f GetPositionInAvailableArea(Vector2f position = new()) {
+        Vector2f positionInArea = Position +
                                   new Vector2f(AvailableArea.Left, AvailableArea.Top) +
                                   position;
         return positionInArea;
     }
 
-    public void SetScale(float scale)
-    {
+    public void SetScale(float scale) {
         sprite.Scale = new Vector2f(scale, scale);
     }
-    public void SetScale(Vector2f scale)
-    {
+
+    public void SetScale(Vector2f scale) {
         sprite.Scale = scale;
     }
 
-    public void SetColor(Color color)
-    {
+    public void SetColor(Color color) {
         sprite.Color = color;
     }
-    
-    private readonly Animation.FrameRenderer[] pulsingFrames =
-    [
+
+    private readonly Animation.FrameRenderer[] pulsingFrames = [
         (animatable, target) =>
         {
             float progress = animatable.Animator.FrameCount / 5f;
             progress %= MathF.PI; // resulting sin value should always be positive
-            byte lerp = (byte) MathF.Round(float.Lerp(_opaque, _transparant, MathF.Sin(progress)));
+            byte lerp = (byte)MathF.Round(float.Lerp(_opaque, _transparant, MathF.Sin(progress)));
             Color c = animatable.Sprite.Color;
             Color lerped = new Color(c.R, c.G, c.B, lerp);
             animatable.Sprite.Color = lerped;
@@ -73,8 +66,7 @@ public class SpriteGUI : GUI
         }
     ];
 
-    private readonly Animation.FrameRenderer[] opaqueFrames =
-    [
+    private readonly Animation.FrameRenderer[] opaqueFrames = [
         (animatable, target) =>
         {
             Color c = animatable.Sprite.Color;

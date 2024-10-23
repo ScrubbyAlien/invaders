@@ -8,8 +8,7 @@ namespace invaders.levels;
 
 public sealed class ScoreSaveLevel() : Level("scoresave")
 {
-    protected override void LoadObjects()
-    {
+    protected override void LoadObjects() {
         SetBackgroundMusic("finale");
         SetBackground();
 
@@ -21,7 +20,7 @@ public sealed class ScoreSaveLevel() : Level("scoresave")
         TextInputGUI input = new TextInputGUI(10);
         input.PositionCalculator(o => MiddleOfScreen(o.Bounds, new Vector2f(0, 70)));
         AddObject(input);
-        
+
         AddObject(new ScoreSaver());
     }
 }

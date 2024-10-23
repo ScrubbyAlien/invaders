@@ -11,12 +11,11 @@ public static class AssetManager
     private static readonly Dictionary<string, SoundBuffer> _soundBuffers = new();
     private static readonly Dictionary<string, Music> _musics = new();
 
-    static AssetManager()
-    {
+    static AssetManager() {
         // to make more resusable get all file names in AssetPath and add entries dynamically
         _fonts.Add("pixel-font", new Font($"{AssetPath}/pixel-font.ttf"));
         _textures.Add("invaders", new Texture($"{AssetPath}/invaders.png"));
-        
+
         _soundBuffers.Add("enemy_shot", new SoundBuffer($"{AssetPath}/enemy_shot.wav"));
         _soundBuffers.Add("player_shot", new SoundBuffer($"{AssetPath}/player_shot.wav"));
         _soundBuffers.Add("click1", new SoundBuffer($"{AssetPath}/click1.wav"));
@@ -24,29 +23,25 @@ public static class AssetManager
         _soundBuffers.Add("explosion", new SoundBuffer($"{AssetPath}/explosion.wav"));
         _soundBuffers.Add("hit_sound", new SoundBuffer($"{AssetPath}/hitsound.wav"));
         _soundBuffers.Add("powerup", new SoundBuffer($"{AssetPath}/powerup.wav"));
-        
+
         _musics.Add("mainmenu", new Music($"{AssetPath}/mainmenu.wav"));
         _musics.Add("invasion", new Music($"{AssetPath}/invasion.wav"));
         _musics.Add("finale", new Music($"{AssetPath}/finale.wav"));
     }
-    
-    public static Texture LoadTexture(string name)
-    {
+
+    public static Texture LoadTexture(string name) {
         return _textures[name];
     }
 
-    public static Font LoadFont(string name)
-    {
+    public static Font LoadFont(string name) {
         return _fonts[name];
     }
 
-    public static Sound LoadSound(string name)
-    {
+    public static Sound LoadSound(string name) {
         return new Sound(_soundBuffers[name]);
     }
 
-    public static Music OpenMusic(string name)
-    {
+    public static Music OpenMusic(string name) {
         return _musics[name];
     }
 }

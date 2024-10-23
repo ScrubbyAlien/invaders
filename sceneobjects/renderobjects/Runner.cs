@@ -12,61 +12,54 @@ public sealed class Runner : AbstractEnemy
     private float _fireTimer;
     private int _burstIndex;
     private int _burstLength => 3 + touchedBottom;
-    
+
     protected override Vector2f bulletOrigin => Position + new Vector2f(32, 40);
     protected override float bulletSpeed => 400f;
-    
-    public Runner() : base("invaders", TextureRects["runner1"], Scale)
-    {
+
+    public Runner() : base("invaders", TextureRects["runner1"], Scale) {
         horizontalSpeed = 150;
         maxHealth = 10;
         bulletDamage = 3;
     }
-    
-    protected override void Initialize()
-    {
+
+    protected override void Initialize() {
         _timeUntilFire = GetNewFireTime();
-        
+
         animator.SetDefaultSprite(TextureRects["runner1"]);
         Animation idle = new Animation("idle", true, 3, 0, idleFrames);
         animator.AddAnimation(idle);
         animator.PlayAnimation("idle", true);
         bulletSoundEffect.Volume = 25;
-        
+
         base.Initialize();
     }
-    
-    public override void Update(float deltaTime)
-    {
+
+    public override void Update(float deltaTime) {
         base.Update(deltaTime);
 
         if (WillDie) return;
-        
+
         if (Position.Y > Settings.TopGuiHeight) _fireTimer += deltaTime;
-        if (_fireTimer >= _timeUntilFire)
-        {
+        if (_fireTimer >= _timeUntilFire) {
             Shoot("runner");
             _burstIndex++;
-            if (_burstIndex < _burstLength)
-            {
+            if (_burstIndex < _burstLength) {
                 _timeUntilFire = 0.2f;
             }
-            else
-            {
+            else {
                 _timeUntilFire = GetNewFireTime();
                 _burstIndex = 0;
             }
+
             _fireTimer = 0;
         }
     }
 
-    private static float GetNewFireTime()
-    {
+    private static float GetNewFireTime() {
         return 2f + new Random().NextSingle() * 2;
     }
-    
-    private readonly Animation.FrameRenderer[] idleFrames =
-    [
+
+    private readonly Animation.FrameRenderer[] idleFrames = [
         BasicFrameRenderer(TextureRects["runner1"]),
         BasicFrameRenderer(TextureRects["runner2"])
     ];

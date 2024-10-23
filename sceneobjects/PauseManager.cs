@@ -14,33 +14,27 @@ public sealed class PauseManager(Keyboard.Key pauseKey) : SceneObject
     // you can't pause the pause manager
     public override bool Active { get; } = true;
 
-    protected override void Initialize()
-    {
-        foreach (RenderObject r in Scene.FindAllByTag<RenderObject>(SceneObjectTag.PauseMenuItem))
-        {
+    protected override void Initialize() {
+        foreach (RenderObject r in Scene.FindAllByTag<RenderObject>(SceneObjectTag.PauseMenuItem)) {
             r.Hide();
             r.Pause();
         }
     }
 
-    public override void Update(float deltaTime)
-    {
-        if (AreAnyKeysPressed([_pauseKey]) && !_pressedPause)
-        {
+    public override void Update(float deltaTime) {
+        if (AreAnyKeysPressed([_pauseKey]) && !_pressedPause) {
             _pressedPause = true;
             if (_isPaused) UnpauseScene();
             else PauseScene();
         }
+
         // prevents rapid pausing and unpausing if the pause key is held
-        if (!AreAnyKeysPressed([_pauseKey])) _pressedPause = false; 
+        if (!AreAnyKeysPressed([_pauseKey])) _pressedPause = false;
     }
 
-    private void PauseScene()
-    {
-        foreach (SceneObject o in Scene.FindAllByType<SceneObject>())
-        {
-            if (o.HasTag(SceneObjectTag.PauseMenuItem))
-            {
+    private void PauseScene() {
+        foreach (SceneObject o in Scene.FindAllByType<SceneObject>()) {
+            if (o.HasTag(SceneObjectTag.PauseMenuItem)) {
                 o.Unpause();
                 if (o is RenderObject r) r.Unhide();
             }
@@ -50,12 +44,9 @@ public sealed class PauseManager(Keyboard.Key pauseKey) : SceneObject
         _isPaused = true;
     }
 
-    private void UnpauseScene()
-    {
-        foreach (SceneObject o in Scene.FindAllByType<SceneObject>())
-        {
-            if (o.HasTag(SceneObjectTag.PauseMenuItem))
-            {
+    private void UnpauseScene() {
+        foreach (SceneObject o in Scene.FindAllByType<SceneObject>()) {
+            if (o.HasTag(SceneObjectTag.PauseMenuItem)) {
                 o.Pause();
                 if (o is RenderObject r) r.Hide();
             }

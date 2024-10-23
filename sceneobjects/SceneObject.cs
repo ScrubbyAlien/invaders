@@ -17,8 +17,7 @@ public abstract class SceneObject
     /// </summary>
     protected virtual void Initialize() { }
 
-    public void FullInitialize()
-    {
+    public void FullInitialize() {
         Initialize();
         _paused = HasTag(SceneObjectTag.PauseMenuItem);
         Initialized = true;
@@ -28,13 +27,11 @@ public abstract class SceneObject
 
     public virtual void Update(float deltaTime) { }
 
-    public void AddTag(SceneObjectTag tag)
-    {
+    public void AddTag(SceneObjectTag tag) {
         _tags.Add(tag);
     }
 
-    public bool HasTag(SceneObjectTag tag)
-    {
+    public bool HasTag(SceneObjectTag tag) {
         return _tags.Contains(tag);
     }
 

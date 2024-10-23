@@ -6,8 +6,7 @@ namespace invaders.levels;
 
 public sealed class InvasionLevel() : Level("invasion")
 {
-    protected override void LoadObjects()
-    {
+    protected override void LoadObjects() {
         SetBackgroundMusic("invasion");
 
         AddObject(new Player());
@@ -64,11 +63,10 @@ public sealed class InvasionLevel() : Level("invasion")
             .AddWave(new Wave(15f).Group('g', 15).Group('r', 6).Group('s', 4).Group('j', 1))
             .AddWave(new Wave(15f).Group('g', 20).Group('r', 7).Group('s', 5).Group('j', 2))
             .AddWave(new Wave(15f).Group('g', 20).Group('r', 8).Group('s', 6).Group('j', 3));
-        
+
         #endregion
 
-        Assault[] assaults =
-        [
+        Assault[] assaults = [
             assault1,
             assault2,
             assault3,
