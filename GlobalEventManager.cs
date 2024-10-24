@@ -5,10 +5,10 @@ namespace invaders;
 public static class GlobalEventManager
 {
     static GlobalEventManager() {
-        Scene.GlobalEvents += BroadcastEvents;
+        Scene.GlobalEvents += BroadcastGlobalEvents;
     }
 
-    private static void BroadcastEvents() {
+    private static void BroadcastGlobalEvents() {
         BroadcastPlayerChangeHealth();
         BroadcastBackgroundSetScrollSpeed();
         BroadcastPlayerDeath();
@@ -44,10 +44,8 @@ public static class GlobalEventManager
 
     private static void BroadcastBackgroundSetScrollSpeed() =>
         BackgroundSetScrollSpeed?.Invoke(_newBackgroundScroll, _newBackgroundScrollLerpTime);
-
-    public delegate void SimpleEvent();
-
-    public static event SimpleEvent? PlayerDeath;
+    
+    public static event Action? PlayerDeath;
     private static bool _broadcastPlayerDeath;
 
     public static void PublishPlayerDeath() => _broadcastPlayerDeath = true;
@@ -57,7 +55,7 @@ public static class GlobalEventManager
         _broadcastPlayerDeath = false;
     }
 
-    public static event SimpleEvent? PlayerHit;
+    public static event Action? PlayerHit;
     private static bool _broadcastPlayerHit;
 
     public static void PublishPlayerHit() => _broadcastPlayerHit = true;

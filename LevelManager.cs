@@ -16,9 +16,11 @@ public static class LevelManager
 
         // runtime constructor calls borrowed from question at
         // https://stackoverflow.com/questions/5622519/how-to-create-an-instance-for-a-given-type
+        // create instances of all classes of type Level within namespace levels, and add to _levels
         foreach (Type level in levelTypes) {
-            // <>c appears when lambda expressions exist in the class definition
-            // it crashes if we try to call it's constructor so we ignore it
+            // extra types appear when lambda expressions exist in the class definition
+            // there are a few versions of these types and none of them inheritly cast to Level
+            // all of them seem to include the char '<' so we ignore those, that way we doesn't crash when we cast to Level
             if (level.Name.Contains('<')) continue;
             Level? l = (Level?)level.GetConstructor(Type.EmptyTypes)?.Invoke(Array.Empty<object>());
             if (l != null) _levels.Add(l);

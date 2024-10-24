@@ -69,7 +69,7 @@ public abstract class AbstractEnemy : Actor
         string powerUp = _powerUps[randomIndex];
 
         if (new Random().NextSingle() < powerUpSpawnChance) {
-            Scene.QueueSpawn(new PowerUp(powerUp, Position));
+            new PowerUp(powerUp, Position).Spawn();
         }
     }
 

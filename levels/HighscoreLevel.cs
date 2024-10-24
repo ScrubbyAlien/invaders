@@ -125,7 +125,9 @@ public class HighscoreLevel() : Level("highscores")
         }
 
         // we take the first 30 texts so we only display the first 10 entries since each entry has three texts
-        Scene.QueueSpawn(_loadedScores.Take(30).Select(t => (SceneObject)t).ToList());
+        _loadedScores
+            .Take(30)
+            .ForEach(o => o.Spawn());
     }
 
     private static async Task<Dictionary<string, int>> LoadScores(bool endless) {

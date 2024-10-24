@@ -34,13 +34,13 @@ public class EndlessManager : Invasion
         _timer.SetText(GetTimeString(0));
         _timer.Position =
             MiddleOfScreen(_timer.Bounds, new Vector2f(0, Program.ScreenHeight / 2f - _timer.Bounds.Height));
-        Scene.QueueSpawn(_timer);
+        _timer.Spawn();
     }
 
     public override void Update(float deltaTime) {
         base.Update(deltaTime);
         if (inEndLevel) {
-            Scene.QueueSpawn(new LevelInfo<bool>(true, "endless"));
+            new LevelInfo<bool>(true, "endless").Spawn();
             return;
         }
 
@@ -90,7 +90,7 @@ public class EndlessManager : Invasion
             if (random <= pair.prob) {
                 AbstractEnemy enemy = Constructors[pair.type]();
                 enemy.InitPosition = new Vector2f(enemy.InitPosition.X, 0);
-                Scene.QueueSpawn(enemy);
+                enemy.Spawn();
             }
         }
     }

@@ -33,4 +33,10 @@ public abstract class SceneObject
 
     public virtual void Pause() => _paused = true;
     public virtual void Unpause() => _paused = false;
+
+    public void Spawn() {
+        if (!Initialized && !Scene.SceneObjectExists(this)) {
+            Scene.QueueSpawn(this);
+        }
+    }
 }

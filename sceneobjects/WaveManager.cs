@@ -36,7 +36,7 @@ public sealed class WaveManager : Invasion
     public override void Update(float deltaTime) {
         base.Update(deltaTime);
         if (inEndLevel) {
-            Scene.QueueSpawn(new LevelInfo<bool>(false, "endless"));
+            new LevelInfo<bool>(false, "endless").Spawn();
             return;
         }
 
@@ -121,7 +121,7 @@ public sealed class WaveManager : Invasion
         foreach (KeyValuePair<char, int> group in wave.Enemies) {
             for (int i = 0; i < group.Value; i++) {
                 AbstractEnemy enemy = Constructors[group.Key]();
-                Scene.QueueSpawn(enemy);
+                enemy.Spawn();
             }
         }
     }

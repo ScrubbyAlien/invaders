@@ -99,7 +99,7 @@ public class Juggernaut : AbstractEnemy
             : new Bullet("juggernautRight", bulletSpeed, bulletDamage);
         bullet.Position = left ? bulletOrigin : bulletOriginRight;
         bullet.Layer = CollisionLayer.Enemy;
-        Scene.QueueSpawn(bullet);
+        bullet.Spawn();
         bulletSoundEffect.Play();
     }
 

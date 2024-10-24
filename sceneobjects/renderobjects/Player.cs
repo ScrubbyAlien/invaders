@@ -93,7 +93,7 @@ public sealed class Player : Actor
         bulletSoundEffect.PlayingOffset = Time.FromMilliseconds(100);
     }
 
-    public override void Destroy() => Scene.QueueSpawn(new LevelInfo<bool>(CurrentHealth > 0, "won"));
+    public override void Destroy() => new LevelInfo<bool>(CurrentHealth > 0, "won").Spawn();
 
     public override void Update(float deltaTime) {
         base.Update(deltaTime);
@@ -226,9 +226,9 @@ public sealed class Player : Actor
         });
         leftBullet.Position = bulletOrigin - new Vector2f(16, 0);
 
-        Scene.QueueSpawn(leftBullet);
-        Scene.QueueSpawn(straightBullet);
-        Scene.QueueSpawn(rightBullet);
+        leftBullet.Spawn();
+        straightBullet.Spawn();
+        rightBullet.Spawn();
         bulletSoundEffect.Play();
     }
 
@@ -311,7 +311,7 @@ public sealed class Player : Actor
         int length = message.Length;
         FadingTextGUI text = new(0.07f * length, message, 40, new Vector2f(0, -20));
         text.Position = MiddleOfScreen(text.Bounds, new Vector2f(0, -50));
-        Scene.QueueSpawn(text);
+        text.Spawn();
     }
 
     private void GainPowerUp(PowerUp.Types powerUpType) {

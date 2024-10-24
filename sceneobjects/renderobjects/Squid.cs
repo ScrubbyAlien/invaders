@@ -91,8 +91,8 @@ public sealed class Squid : AbstractEnemy
         rightBullet.Position = bulletOrigin;
         leftBullet.Layer = CollisionLayer.Enemy;
         rightBullet.Layer = CollisionLayer.Enemy;
-        Scene.QueueSpawn(rightBullet);
-        Scene.QueueSpawn(leftBullet);
+        rightBullet.Spawn();
+        leftBullet.Spawn();
         bulletSoundEffect.Play();
     }
 

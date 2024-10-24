@@ -25,7 +25,7 @@ public abstract class Invasion : SceneObject
         messageText.SetSize(10);
         messageText.GetAnimatable().Animator.PlayAnimation("blink", true);
         messageText.Position = MiddleOfScreen(messageText.Bounds, new Vector2f(0, -100));
-        Scene.QueueSpawn(messageText);
+        messageText.Spawn();
         GlobalEventManager.PlayerDeath += PlayerDied;
     }
 

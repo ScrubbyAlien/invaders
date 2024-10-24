@@ -62,6 +62,6 @@ public class ConfirmationPrompt
 
     public void Prompt() {
         Scene.FindAllByType<SceneObject>().ForEach(o => o.Pause());
-        Scene.QueueSpawn(_prompt);
+        _prompt.ForEach(p => p.Spawn());
     }
 }

@@ -93,8 +93,8 @@ public static class Utility
 
 public struct IntersectResult<T>(T e, Vector2f diff)
 {
-    public T IntersectedEntity = e;
-    public Vector2f Diff = diff;
+    public readonly T IntersectedEntity = e;
+    public readonly Vector2f Diff = diff;
 }
 
 public class Animatable(RenderObject i, Drawable d, Animator a)

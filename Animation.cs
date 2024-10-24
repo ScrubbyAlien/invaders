@@ -11,8 +11,7 @@ public sealed class Animation
 
     private readonly float _framelength;
 
-    private readonly float
-        _animationLength; // length 0 means until frames end for non looping or indefinitely for looping
+    private readonly float _animationLength; // length 0 means until frames end for non looping or indefinitely for looping
 
     private int _currentFrame;
     private readonly bool _looping;

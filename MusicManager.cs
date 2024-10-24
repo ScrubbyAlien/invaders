@@ -1,6 +1,6 @@
 using SFML.Audio;
 
-namespace invaders.sceneobjects;
+namespace invaders;
 
 public static class MusicManager
 {

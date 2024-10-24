@@ -12,7 +12,7 @@ public sealed class TextInputGUI : TextGUI
 
     private readonly TextGUI _caret;
     private readonly int _maxCharacterCount;
-    private const string ValidCharacters = "abcdefghijklmnopqrstuvwxyzåäö1234567890:()/<>- ";
+    private const string _validCharacters = "abcdefghijklmnopqrstuvwxyzåäö1234567890:()/<>- ";
     private Func<RenderObject, Vector2f> _positionCalculator = o => o.Position;
     private bool _backspacePressed;
     private bool _enterPressed;
@@ -22,7 +22,7 @@ public sealed class TextInputGUI : TextGUI
         _maxCharacterCount = maxCharacterCount;
         _caret = new TextGUI("|", size + 2, alignment);
         Scene.TextEntered += OnTextEntered;
-        Scene.QueueSpawn(_caret);
+        _caret.Spawn();
         Scene.DeferredCall(_caret.GetAnimatable().Animator, "PlayAnimation", ["blink", true]);
     }
 
@@ -62,7 +62,7 @@ public sealed class TextInputGUI : TextGUI
     private void OnTextEntered(object? o, TextEventArgs args) {
         if (text.DisplayedString.Length < _maxCharacterCount) {
             char c = Convert.ToChar(args.Unicode);
-            if (ValidCharacters.Contains(c.ToString().ToLower())) {
+            if (_validCharacters.Contains(c.ToString().ToLower())) {
                 text.DisplayedString += c;
             }
         }

@@ -115,6 +115,12 @@ public static class Scene
         }
     }
 
+    public static bool SceneObjectExists(SceneObject sceneObject) {
+        bool inSceneObjects = _sceneObjects.Where(o => ReferenceEquals(o, sceneObject)).Any();
+        bool inSpawnQueue = _spawnQueue.Where(o => ReferenceEquals(o, sceneObject)).Any();
+        return inSceneObjects || inSpawnQueue;
+    }
+    
     // borrowed from lab project 4
     public static IEnumerable<IntersectResult<T>> FindIntersectingEntities<T>(
         this RenderObject renderObject,

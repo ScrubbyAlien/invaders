@@ -8,16 +8,11 @@ namespace invaders.sceneobjects.renderobjects;
 
 public abstract class Actor : RenderObject
 {
-    private Vector2f _initPosition;
-
     /// <summary>
     /// Position is set to InitPosition when the Actor is Initialized.
     /// Changing this property after the Actor has been Initialized will not change its Position.
     /// </summary>
-    public virtual Vector2f InitPosition {
-        get => _initPosition;
-        set => _initPosition = value;
-    }
+    public virtual Vector2f InitPosition { get; set; }
 
     protected int maxHealth;
     protected int currentHealth;
@@ -82,7 +77,7 @@ public abstract class Actor : RenderObject
     protected virtual void Shoot(string type) {
         Bullet bullet = new(type, bulletSpeed, bulletDamage);
         bullet.Position = bulletOrigin;
-        Scene.QueueSpawn(bullet);
+        bullet.Spawn();
         bulletSoundEffect.Play();
     }
 
@@ -111,8 +106,6 @@ public abstract class Actor : RenderObject
         (animatable, target) => { // simulates explosion by randomly placing bullet sprites over the actor rapidly
             animatable.SetTextureRect(animatable.Animator.GetDefaultSprite());
             target.Draw(animatable.Drawable);
-
-            string name = animatable.Instance.GetType().Name;
 
             // draw explosion
             Sprite explosion = new();

@@ -47,7 +47,7 @@ public sealed class ScoreSaver : SceneObject
         if (scores.AddEntry(name.ToLower(), _score, _endless)) // write new value
         {
             SaveManager.WriteSave(scores).Wait(); // write new save, overwriting old
-            Scene.QueueSpawn(new LevelInfo<bool>(_endless, "endless"));
+            new LevelInfo<bool>(_endless, "endless").Spawn();
             Scene.LoadLevel("highscores"); // load high score screen
             return;
         }
@@ -64,6 +64,6 @@ public sealed class ScoreSaver : SceneObject
             new Vector2f(0, 10)
         );
         fadingWarning.Position = MiddleOfScreen(fadingWarning.Bounds, new Vector2f(0, 170));
-        Scene.QueueSpawn(fadingWarning);
+        fadingWarning.Spawn();
     }
 }

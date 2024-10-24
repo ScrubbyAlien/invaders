@@ -38,21 +38,21 @@ public sealed class ScoreManager : SceneObject
         _rightGui = Scene.FindByTag<SpriteGUI>(SceneObjectTag.GuiBackgroundRight)!;
 
         _scoreText.Position = GetScoreTextPosition();
-        Scene.QueueSpawn(_scoreText);
+        _scoreText.Spawn();
 
         _multiplierText.Position = GetMultiplierTextPosition();
-        Scene.QueueSpawn(_multiplierText);
+        _multiplierText.Spawn();
 
         _multiplierBar.Position =
             _multiplierText.Position +
             new Vector2f(_multiplierText.Bounds.Width + 20, 8);
-        Scene.QueueSpawn(_multiplierBar);
+        _multiplierBar.Spawn();
 
         GlobalEventManager.EnemyDeath += OnEnemyDeath;
         GlobalEventManager.PlayerHit += ResetMultiplier;
     }
 
-    public override void Destroy() => Scene.QueueSpawn(new LevelInfo<int>(_currentScore, "score"));
+    public override void Destroy() => new LevelInfo<int>(_currentScore, "score").Spawn();
 
     public override void Update(float deltaTime) {
         _multiplierTimer += deltaTime;
@@ -126,6 +126,6 @@ public sealed class ScoreManager : SceneObject
         Func<FadingTextGUI, Vector2f> positionFunc, Vector2f drift) {
         FadingTextGUI fadingScore = new(fadeTime, text, size, drift);
         fadingScore.Position = positionFunc(fadingScore);
-        Scene.QueueSpawn(fadingScore);
+        fadingScore.Spawn();
     }
 }
